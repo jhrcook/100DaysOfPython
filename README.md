@@ -40,3 +40,7 @@ conda activate daysOfCode-env
 **Day 1 - October 21, 2019:**
 I got Anaconda installed, my virtual environment set up, and began working through Python for Data Analysis (PDA).
 I am also just getting used to VS Code.
+
+**Day 2 - October 22, 2019:**
+I am getting more confortable with VS Code and Jupyter notebooks.
+I continued working through PDA and learned about some of the basic Python types.
