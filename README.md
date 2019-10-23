@@ -19,21 +19,22 @@ Python for Data Analysis, 2nd Edition](http://shop.oreilly.com/product/063692005
 I am using the Anaconda distribution of Python 3.7, downloaded from [here](https://www.anaconda.com/distribution/).
 I created a virtual environment for this repository called "daysOfCode-env".
 
-```python
+```bash
 conda create --name "daysOfCode-env" python=3.7
 ```
 
 After that, I needed to initialize conda for `zsh`.
 
-```python
+```bash
 conda init zsh
 ```
 
 After that, I could activate the virtual environment.
 
-```python
+```bash
 conda activate daysOfCode-env
 ```
+
 
 ## Log
 
@@ -44,3 +45,7 @@ I am also just getting used to VS Code.
 **Day 2 - October 22, 2019:**
 I am getting more confortable with VS Code and Jupyter notebooks.
 I continued working through PDA and learned about some of the basic Python types.
+
+**Day 3 - October 23, 2019:**
+I learned about control flow in Python using `if`, `elif`, and `else`.
+I also covered tuples and lists.
