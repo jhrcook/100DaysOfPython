@@ -1160,8 +1160,6 @@ flattened
 ## 3.2 Functions
 
 
-
-
 ```python
 def my_function(x, y, z=1.5):
     if z > 1:
@@ -1179,5 +1177,458 @@ my_function(5, 6, z=0.7)
 
 
     0.06363636363636363
+
+
+
+Note that there are various ways to pass arguments to functions that are not covered here with several new ones available in Python 3.8.
+
+### Namespaces, scope, and local functions
+
+A function gets its own *local* namespace when it is called, this is immediately populated with the arguments, and it is destryoed once the function returns.
+A global variable can be created using the `global` keyword.
+
+
+```python
+a = None
+a
+```
+
+
+```python
+def bind_a_variable():
+    global a
+    a = []
+
+bind_a_variable()
+print(a)
+```
+
+    []
+
+
+### Returning multiple values
+
+Functions can only return one object, but by returning a tuple, unpacking can be used to create multiple variables.
+
+
+```python
+def f():
+    a = 5
+    b = 6
+    c = 7
+    return a, b, c
+
+a, b, c = f()
+print(f"a={a}, b={b}, c={c}")
+```
+
+    a=5, b=6, c=7
+
+
+Another option is to use a dictionary.
+This allows for the naming of the returned values.
+
+### Functions are objects
+
+Say we wanted to clean the input from a survey.
+
+
+```python
+states = ['    Alabama', 'Georgia!', 'Georgia', 'georgia', 'flOrIda', 'south   carolina###', 'West virginia?']
+```
+
+We could use one function to implement various string methods and methods from 're' for regular expressions.
+
+
+```python
+import re
+
+def clean_strings(strings):
+    result = []
+    for value in strings:
+        value = value.strip()
+        value = re.sub('[!#?]', '', value)
+        value = value.title()
+        result.append(value)
+    return result
+
+clean_strings(states)
+```
+
+
+
+
+    ['Alabama',
+     'Georgia',
+     'Georgia',
+     'Georgia',
+     'Florida',
+     'South   Carolina',
+     'West Virginia']
+
+
+
+Alternatively, we could make a few functions that each do one step in the processing and apply it to all of the values of a list.
+
+
+```python
+def remove_punctuation(value):
+    return re.sub('[!#?]', '', value)
+
+cleaning_operations = [str.strip, remove_punctuation, str.title]
+
+def clean_strings(strings, ops):
+    result = []
+    for value in strings:
+        for function in ops:
+            value = function(value)
+        result.append(value)
+    return result
+
+clean_strings(states, cleaning_operations)
+```
+
+
+
+
+    ['Alabama',
+     'Georgia',
+     'Georgia',
+     'Georgia',
+     'Florida',
+     'South   Carolina',
+     'West Virginia']
+
+
+
+### Anonymous (lambda) functions
+
+Thesse are single-line functions that autmatcially return the final value.
+They are defined by the keyword `lambda`.
+These are very useful in data analysis for passing a function as an argument to another function.
+
+
+```python
+anon = lambda x: x * 2
+anon(3)
+```
+
+
+
+
+    6
+
+
+
+
+```python
+def apply_to_list(some_list, f):
+    return [f(x) for x in some_list]
+
+ints = [4, 0, 1, 5, 6]
+apply_to_list(ints, lambda x: x * x)
+```
+
+
+
+
+    [16, 0, 1, 25, 36]
+
+
+
+Another example is where some common methods take functions for an argument to augment their default functionality.
+
+
+```python
+strings = ['foo', 'card', 'bar', 'aaaa', 'abab']
+strings.sort(key = lambda x: len(set(list(x))))
+strings
+```
+
+
+
+
+    ['aaaa', 'foo', 'abab', 'bar', 'card']
+
+
+
+### Currying: partia argument application
+
+*Currying* is a CS term that means deriving new functions from existing once by *partial argument application*.
+For example, `add_numbers` adds its two paramters, `x` and `y` together.
+It is *curried* by `add_five` which sets `x` to be 5, automatically.
+
+
+```python
+def add_numbers(x, y):
+    return x + y
+
+add_five = lambda y: add_numbers(5, y)
+```
+
+### Generators
+
+The *iterator protocol* is a generic way to make iterable objects.
+An iterator object can specifically be created from most built-in collection types.
+
+
+```python
+dict_iterator = iter(d1)
+dict_iterator
+```
+
+
+
+
+    <dict_keyiterator at 0x12358f530>
+
+
+
+
+```python
+list(dict_iterator)
+```
+
+
+
+
+    ['b', 7, 'c']
+
+
+
+The iterator yields the objects when it is used in a `for`-like context or passed to the common built-in methods that take collection types.
+
+A *geerator* is a way to create a new iterable object.
+They are like functions, but return multiple objects in a lazy fashion.
+A generator is created using the `yield` keyword instead of a `return`.
+
+
+```python
+def squares(n=10):
+    print(f'Generating squares from 1 to {n}.')
+    for i in range(1, n + 1):
+        yield i**2
+
+gen = squares() 
+```
+
+
+```python
+gen
+```
+
+
+
+
+    <generator object squares at 0x122cc9ed0>
+
+
+
+
+```python
+for x in gen:
+    print(x, end = ' ')
+```
+
+    Generating squares from 1 to 10.
+    1 4 9 16 25 36 49 64 81 100
+
+Generators can be created using a *generator expression* which is simillar in kind and syntax to list comprehensions.
+
+
+```python
+gen = (x**2 for x in range(100))
+gen
+```
+
+
+
+
+    <generator object <genexpr> at 0x121909e50>
+
+
+
+
+```python
+sum(gen)
+```
+
+
+
+
+    328350
+
+
+
+The `itertools` module from the standard library has a collection of generators for many common data algorithms.
+Here is an example of `groupby`.
+
+
+```python
+import itertools
+
+first_letter = lambda x: x[0]
+
+names = ['Alan', 'Adam', 'Wes', 'Will', 'Albert', 'Steven']
+
+for letter, names in itertools.groupby(names, first_letter):
+    print(letter, list(names))
+
+```
+
+    A ['Alan', 'Adam']
+    W ['Wes', 'Will']
+    A ['Albert']
+    S ['Steven']
+
+
+### Errors and exception handling
+
+Use `try-except` to fail gracefully.
+
+
+```python
+def attempt_float(x):
+    try:
+        return float(x)
+    except:
+        return x
+
+attempt_float('1.23')
+```
+
+
+
+
+    1.23
+
+
+
+
+```python
+attempt_float('a')
+```
+
+
+
+
+    'a'
+
+
+
+You can define `except` for different types of errors.
+For example, when `float()` is passed an improper string, it raises a `ValueError`.
+If it is passed a tuple, it raises a `TypeError`.
+
+
+```python
+attempt_float((1, 2))
+```
+
+
+
+
+    (1, 2)
+
+
+
+
+```python
+def attempt_float(x):
+    try:
+        return float(x)
+    except ValueError:
+        print('value error')
+    except TypeError:
+        print('type error')
+```
+
+
+```python
+attempt_float(5)
+```
+
+
+
+
+    5.0
+
+
+
+
+```python
+attempt_float('a')
+```
+
+    value error
+
+
+
+```python
+attempt_float((2, 3))
+```
+
+    type error
+
+
+A single `except` can recognize multiple error types.
+
+
+```python
+def attempt_float(x):
+    try:
+        return float(x)
+    except (TypeError, ValueError):
+        return x
+```
+
+Often, you want some code to execute after a command regardless of whether it succeeds or fails.
+
+
+```python
+def attempt_float(x):
+    try:
+        return float(x)
+    except ValueError:
+        print('error')
+        return x
+    else:
+        print('succeeded')
+    finally:
+        print('all done')
+```
+
+
+```python
+attempt_float(1)
+```
+
+    all done
+
+
+
+
+
+    1.0
+
+
+
+
+```python
+attempt_float('a')
+```
+
+    error
+    all done
+
+
+
+
+
+    'a'
+
+
+
+## 3.3 Files and the operating system
 
 

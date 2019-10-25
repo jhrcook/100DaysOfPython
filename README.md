@@ -52,3 +52,6 @@ I also covered tuples and lists.
 
 **Day 4 - October 24, 2019:**
 I learned about dictionaries, sets, and comprehensions.
+
+**Day 5 - October 25, 2019:**
+I learned about functions, iterators, generators, and error handling as I continue my journey through the basics of Python.
