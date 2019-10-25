@@ -49,3 +49,6 @@ I continued working through PDA and learned about some of the basic Python types
 **Day 3 - October 23, 2019:**
 I learned about control flow in Python using `if`, `elif`, and `else`.
 I also covered tuples and lists.
+
+**Day 4 - October 24, 2019:**
+I learned about dictionaries, sets, and comprehensions.

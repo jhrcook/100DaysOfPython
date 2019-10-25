@@ -705,3 +705,479 @@ list(reversed(range(10)))
 
 
 ### Dictionaries
+
+A flexibly-sized collection of *key-value* pairs.
+
+
+```python
+empty_dict = {}
+d1 = {'a': 'some value', 'b': [1, 2, 3, 4]}
+d1
+```
+
+
+
+
+    {'a': 'some value', 'b': [1, 2, 3, 4]}
+
+
+
+
+```python
+d1[7] = 'an integer'
+d1
+```
+
+
+
+
+    {'a': 'some value', 'b': [1, 2, 3, 4], 7: 'an integer'}
+
+
+
+
+```python
+d1['b']
+```
+
+
+
+
+    [1, 2, 3, 4]
+
+
+
+You can check if a key is in a dictionary.
+
+
+```python
+'b' in d1
+```
+
+
+
+
+    True
+
+
+
+A key-value pair can be deleted using `del` or the `pop` method which returns the value.
+
+
+```python
+d1[5] = 'some value'
+d1
+```
+
+
+
+
+    {'a': 'some value', 'b': [1, 2, 3, 4], 7: 'an integer', 5: 'some value'}
+
+
+
+
+```python
+del d1[5]
+```
+
+
+```python
+d1
+```
+
+
+
+
+    {'a': 'some value', 'b': [1, 2, 3, 4], 7: 'an integer'}
+
+
+
+
+```python
+ret = d1.pop('a')
+d1
+```
+
+
+
+
+    {'b': [1, 2, 3, 4], 7: 'an integer'}
+
+
+
+
+```python
+ret
+```
+
+
+
+
+    'some value'
+
+
+
+The `keys` and `values` methods return iteractors of the dictionary's keys and values.
+While they do not return in a particular order, they *do* return in the same order.
+
+
+```python
+list(d1.keys())
+```
+
+
+
+
+    ['b', 7]
+
+
+
+
+```python
+list(d1.values())
+```
+
+
+
+
+    [[1, 2, 3, 4], 'an integer']
+
+
+
+A dictionary can be added to another using the `update` method.
+
+
+```python
+d1.update({'b': 'foo', 'c': 12})
+d1
+```
+
+
+
+
+    {'b': 'foo', 7: 'an integer', 'c': 12}
+
+
+
+We will learn about dictionary comhrehensions later, but for now, here is a good way to contruct a dictionary from two lists or tuples.
+
+
+```python
+mapping = dict(zip(range(5), reversed(range(5))))
+mapping
+```
+
+
+
+
+    {0: 4, 1: 3, 2: 2, 3: 1, 4: 0}
+
+
+
+The `get` and `pop` methods for dicitonary can take default values for if the key does not exist in the dictionary.
+
+
+```python
+words = ['apple', 'bat', 'bar', 'atom', 'book']
+by_letter = {}
+for word in words:
+    letter = word[0]
+    if letter not in by_letter:
+        by_letter[letter] = [word]
+    else:
+        by_letter[letter].append(word)
+
+by_letter
+```
+
+
+
+
+    {'a': ['apple', 'atom'], 'b': ['bat', 'bar', 'book']}
+
+
+
+This can instead be written more concisely as follows.
+
+
+```python
+by_letter = {}
+for word in words:
+    letter = word[0]
+    by_letter.setdefault(letter, []).append(word)
+
+by_letter
+```
+
+
+
+
+    {'a': ['apple', 'atom'], 'b': ['bat', 'bar', 'book']}
+
+
+
+### Set
+
+An unordered collection of *unique* elements - the name comes from the mathematical term.
+
+
+```python
+set([1, 1, 2, 3, 4, 4, 5, 6, 6])
+```
+
+
+
+
+    {1, 2, 3, 4, 5, 6}
+
+
+
+
+```python
+{1, 1, 2, 3, 4, 4, 5, 6, 6}
+```
+
+
+
+
+    {1, 2, 3, 4, 5, 6}
+
+
+
+Sets support standard set operations such as union, intersection, difference, and symmetric difference.
+
+
+```python
+a = {1, 2, 3, 4, 5}
+b = {3, 4, 5, 6, 7, 8}
+a.union(b)
+```
+
+
+
+
+    {1, 2, 3, 4, 5, 6, 7, 8}
+
+
+
+
+```python
+a | b
+```
+
+
+
+
+    {1, 2, 3, 4, 5, 6, 7, 8}
+
+
+
+
+```python
+a.intersection(b)
+```
+
+
+
+
+    {3, 4, 5}
+
+
+
+
+```python
+a & b
+```
+
+
+
+
+    {3, 4, 5}
+
+
+
+
+```python
+a - b
+```
+
+
+
+
+    {1, 2}
+
+
+
+
+```python
+b - a
+```
+
+
+
+
+    {6, 7, 8}
+
+
+
+
+```python
+a ^ b
+```
+
+
+
+
+    {1, 2, 6, 7, 8}
+
+
+
+
+```python
+a.issubset(b)
+```
+
+
+
+
+    False
+
+
+
+
+```python
+a.issuperset({1, 2, 3})
+```
+
+
+
+
+    True
+
+
+
+### List, set, and dictionary comprehensions
+
+These are features for the easy (and fast) creation of the collection types.
+The basic format is as follows
+
+`[` *expr* `for` *val* `in` *collection* `if` *condition* `]`
+
+This is equivalent to the following loop.
+
+```python
+result = []
+for val in collection:
+    if condition:
+        result.append(expr)
+```
+
+The condition can be omitted if no filter is needed.
+
+
+```python
+strings = ['a', 'as', 'bat', 'car', 'dove', 'python']
+[x.upper() for x in strings if len(x) > 2]
+```
+
+
+
+
+    ['BAT', 'CAR', 'DOVE', 'PYTHON']
+
+
+
+A dicitonary comprehension is syntactically simillar.
+
+`{` *key-expr* `:` *value-expr* for *value* in *collection* `if` *condition*}
+
+A set comprehension is identical to a list comprehension save for it uses curly braces instead of square brackets.
+
+
+```python
+{val : index for index, val in enumerate(strings)}
+```
+
+
+
+
+    {'a': 0, 'as': 1, 'bat': 2, 'car': 3, 'dove': 4, 'python': 5}
+
+
+
+List comprehensions can be nested.
+Here is one example where a list of two lists are iterated over and only the names with at least two 'e's are kept.
+
+
+```python
+ all_data = [
+     ['John', 'Emily', 'Michael', 'Mary', 'Steven'],
+     ['Maria', 'Juan', 'Javier', 'Natalia', 'Pilar']
+]
+[name for names in all_data for name in names if name.count('e') >= 2]
+```
+
+
+
+
+    ['Steven']
+
+
+
+The next example is followed by an identical nested `for` loop.
+Notice that the order of the `for` expressions are the same.
+
+
+```python
+some_tuples = [(1, 2, 3), (4, 5, 6), (7, 8, 9)]
+[x for tup in some_tuples for x in tup]
+```
+
+
+
+
+    [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+
+
+
+```python
+flattened = []
+for tup in some_tuples:
+    for x in tup:
+        flattened.append(x)
+flattened
+```
+
+
+
+
+    [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+
+
+## 3.2 Functions
+
+
+
+
+```python
+def my_function(x, y, z=1.5):
+    if z > 1:
+        return z * (x + y)
+    else:
+        return z / (x + y)
+```
+
+
+```python
+my_function(5, 6, z=0.7)
+```
+
+
+
+
+    0.06363636363636363
+
+
