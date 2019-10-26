@@ -55,3 +55,7 @@ I learned about dictionaries, sets, and comprehensions.
 
 **Day 5 - October 25, 2019:**
 I learned about functions, iterators, generators, and error handling as I continue my journey through the basics of Python.
+
+**Day 6 - October 26, 2019:**
+I finished up Ch. 3 learning about how to open and read files.
+I then began Ch. 4 learning about NumPy and `ndarray`.

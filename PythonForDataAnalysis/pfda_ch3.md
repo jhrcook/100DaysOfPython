@@ -1380,7 +1380,7 @@ dict_iterator
 
 
 
-    <dict_keyiterator at 0x12358f530>
+    <dict_keyiterator at 0x11c920a10>
 
 
 
@@ -1420,7 +1420,7 @@ gen
 
 
 
-    <generator object squares at 0x122cc9ed0>
+    <generator object squares at 0x11da31bd0>
 
 
 
@@ -1444,7 +1444,7 @@ gen
 
 
 
-    <generator object <genexpr> at 0x121909e50>
+    <generator object <genexpr> at 0x11db32ed0>
 
 
 
@@ -1630,5 +1630,208 @@ attempt_float('a')
 
 
 ## 3.3 Files and the operating system
+
+Open a file for reasing using the `open` function.
+
+
+```python
+path  = "assets/segismundo.txt"
+f = open(path)
+```
+
+It is opened in a 'read-only' form, by default.
+Lines can be iterated through.
+
+
+```python
+for line in f:
+    print(line)
+```
+
+    Sueña el rico en su riqueza,
+    
+    que más cuidados le ofrece;
+    
+    
+    
+    sueña el pobre que padece
+    
+    su miseria y su pobreza;
+    
+    
+    
+    sueña el que a medrar empieza,
+    
+    sueña el que afana y pretende,
+    
+    sueña el que agravia y ofende,
+    
+    
+    
+    y en el mundo, en conclusión,
+    
+    todos sueñan lo que son,
+    
+    aunque ninguno lo entiende.
+    
+
+
+It is important to close files that are opened.
+
+
+```python
+f.close()
+```
+
+It is often useful to remove end-of-line markers.
+
+
+```python
+lines = [x.rstrip() for x in open(path)]
+lines
+```
+
+
+
+
+    ['Sueña el rico en su riqueza,',
+     'que más cuidados le ofrece;',
+     '',
+     'sueña el pobre que padece',
+     'su miseria y su pobreza;',
+     '',
+     'sueña el que a medrar empieza,',
+     'sueña el que afana y pretende,',
+     'sueña el que agravia y ofende,',
+     '',
+     'y en el mundo, en conclusión,',
+     'todos sueñan lo que son,',
+     'aunque ninguno lo entiende.']
+
+
+
+Alternatively, it is often easier to use a `with` statement that autmatcially cleans up the open file when it finishes.
+
+
+```python
+with open(path) as f:
+    lines = [x.rstrip() for x in f]
+```
+
+For readable files, a few commonly used methods are:
+
+- `read`: returns a certain number of characters from a file
+- `seek`: changes the file position to the indicated byte
+- `tell`: gives the current position  in the file
+
+
+```python
+f = open(path)
+f.read(10)
+```
+
+
+
+
+    'Sueña el '
+
+
+
+
+```python
+f2 = open(path, 'rb')  # binary mode
+f2.read(10)
+```
+
+
+
+
+    b'Suen\xcc\x83a el'
+
+
+
+
+```python
+f.tell()
+```
+
+
+
+
+    11
+
+
+
+
+```python
+f2.tell()
+```
+
+
+
+
+    10
+
+
+
+
+```python
+f.seek(3)
+```
+
+
+
+
+    3
+
+
+
+
+```python
+f.read(1)
+```
+
+
+
+
+    'n'
+
+
+
+
+```python
+f.close()
+f2.close()
+```
+
+Use `write` or `writelines` to write to a file.
+
+
+```python
+with open('assets/tmp.txt', 'w') as handle:
+    handle.writelines(x for x in open(path) if len(x) > 1)
+```
+
+
+```python
+with open("assets/tmp.txt") as f:
+    lines = f.readlines()
+
+lines
+```
+
+
+
+
+    ['Sueña el rico en su riqueza,\n',
+     'que más cuidados le ofrece;\n',
+     'sueña el pobre que padece\n',
+     'su miseria y su pobreza;\n',
+     'sueña el que a medrar empieza,\n',
+     'sueña el que afana y pretende,\n',
+     'sueña el que agravia y ofende,\n',
+     'y en el mundo, en conclusión,\n',
+     'todos sueñan lo que son,\n',
+     'aunque ninguno lo entiende.\n']
 
 
