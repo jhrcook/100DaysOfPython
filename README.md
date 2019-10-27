@@ -13,7 +13,6 @@ End Date: January 29, 2020**
 To begin, I am working through [
 Python for Data Analysis, 2nd Edition](http://shop.oreilly.com/product/0636920050896.do).
 
-
 ## Creating the environment
 
 I am using the Anaconda distribution of Python 3.7, downloaded from [here](https://www.anaconda.com/distribution/).
@@ -34,7 +33,6 @@ After that, I could activate the virtual environment.
 ```bash
 conda activate daysOfCode-env
 ```
-
 
 ## Log
 
@@ -59,3 +57,7 @@ I learned about functions, iterators, generators, and error handling as I contin
 **Day 6 - October 26, 2019:**
 I finished up Ch. 3 learning about how to open and read files.
 I then began Ch. 4 learning about NumPy and `ndarray`.
+
+**Day 7 - October 27, 2019:**
+I continued learning about using ndarrys in NumPy.
+We covered indexing and *ufuncs*.
