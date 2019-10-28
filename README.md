@@ -61,3 +61,7 @@ I then began Ch. 4 learning about NumPy and `ndarray`.
 **Day 7 - October 27, 2019:**
 I continued learning about using ndarrys in NumPy.
 We covered indexing and *ufuncs*.
+
+**Day 8 - October 28, 2019:**
+I finished the chapter on NumPy learning more about how vectorization is implemented in the library.
+We finished the chapter with an example of using NumPy to easily simulate many thousands of random walks simultaneously.
