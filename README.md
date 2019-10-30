@@ -65,3 +65,6 @@ We covered indexing and *ufuncs*.
 **Day 8 - October 28, 2019:**
 I finished the chapter on NumPy learning more about how vectorization is implemented in the library.
 We finished the chapter with an example of using NumPy to easily simulate many thousands of random walks simultaneously.
+
+**Day 9 - October 29, 2019:**
+I began learning about pandas DataFrames, mainly just the basics.
