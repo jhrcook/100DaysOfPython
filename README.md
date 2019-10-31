@@ -71,3 +71,7 @@ I began learning about pandas DataFrames, mainly just the basics.
 
 **Day 10 - October 30, 2019:**
 I learned more about indexing DataFrame objects using positional index, column and row names, and booleans data structures.
+
+**Day 11 - October 31, 2019:**
+The book is not introducing arithmetic using Series and DataFrames.
+They will definitely take some practice to get used to.
