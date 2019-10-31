@@ -68,3 +68,6 @@ We finished the chapter with an example of using NumPy to easily simulate many t
 
 **Day 9 - October 29, 2019:**
 I began learning about pandas DataFrames, mainly just the basics.
+
+**Day 10 - October 30, 2019:**
+I learned more about indexing DataFrame objects using positional index, column and row names, and booleans data structures.
