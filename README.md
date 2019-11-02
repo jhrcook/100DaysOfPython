@@ -79,3 +79,7 @@ They will definitely take some practice to get used to.
 **Day 12 - November 1, 2019:**
 I am still learning the basics of pandas.
 Today, we went over ranking, sorting, and applying functions over column and rows.
+
+**Day 13 - November 2, 2019:**
+I finally finished the chapter introducing pandas.
+We finished up by learning about computing descriptive and summary statistics on Series and DataFrames, including an example analysis using financial data.
