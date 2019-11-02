@@ -75,3 +75,7 @@ I learned more about indexing DataFrame objects using positional index, column a
 **Day 11 - October 31, 2019:**
 The book is not introducing arithmetic using Series and DataFrames.
 They will definitely take some practice to get used to.
+
+**Day 12 - November 1, 2019:**
+I am still learning the basics of pandas.
+Today, we went over ranking, sorting, and applying functions over column and rows.
