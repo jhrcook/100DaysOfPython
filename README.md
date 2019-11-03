@@ -83,3 +83,7 @@ Today, we went over ranking, sorting, and applying functions over column and row
 **Day 13 - November 2, 2019:**
 I finally finished the chapter introducing pandas.
 We finished up by learning about computing descriptive and summary statistics on Series and DataFrames, including an example analysis using financial data.
+
+**Day 14 - November 3, 2019:**
+I began chapter 6 on reading and writing data.
+So far, I am still learning about the various ways to read in files from disk.
