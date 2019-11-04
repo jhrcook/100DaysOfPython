@@ -211,3 +211,6 @@ vignettes/*.pdf
 
 # Virtual Studio Code
 .vscode/*
+
+# large data files
+assets/datasets/fec/P00000001-ALL.csv
