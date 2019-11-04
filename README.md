@@ -87,3 +87,6 @@ We finished up by learning about computing descriptive and summary statistics on
 **Day 14 - November 3, 2019:**
 I began chapter 6 on reading and writing data.
 So far, I am still learning about the various ways to read in files from disk.
+
+**Day 15 - November 04, 2019**
+I learned about reading in HTML, XML, HDF5, and Excel data.
