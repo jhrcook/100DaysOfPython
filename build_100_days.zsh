@@ -42,8 +42,7 @@ echo $readmeMessage >> README.md
 
 ## Git Commit
 commitMessage="$dayNumber of 100 Days of Python
-$(echo $todaysMessage | fold -w 80 -s)
-"
+$(echo $todaysMessage | fold -w 80 -s)"
 
 echo "\n---\nHere is todays commit message:"
 echo $commitMessage
