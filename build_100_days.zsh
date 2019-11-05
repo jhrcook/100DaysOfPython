@@ -16,7 +16,7 @@ fi
 
 ## Build Python for Data Analysis notebooks
 source activate daysOfCode-env
-zsh pfda_to_md.sh
+zsh pfda_to_md.zsh
 
 
 

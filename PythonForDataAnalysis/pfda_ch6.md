@@ -33,6 +33,8 @@ Here are some simple examples of reading data in with pandas.
 import pandas as pd
 import numpy as np
 
+np.random.seed(0)
+
 ex_dir = 'assets/examples/'
 df = pd.read_csv(ex_dir + 'ex1.csv')
 df
@@ -884,7 +886,7 @@ chunker
 
 
 
-    <pandas.io.parsers.TextFileReader at 0x12a1b7850>
+    <pandas.io.parsers.TextFileReader at 0x122787050>
 
 
 
@@ -1464,7 +1466,7 @@ It has interfaces for many other languages (including MATLAB).
 
 ```python
 frame = pd.DataFrame({'a': np.random.randn(100)})
-store = pd.HDFStore('mydata.h5')
+store = pd.HDFStore(ex_dir + 'mydata.h5')
 store['obj1'] = frame
 store['obj1_col'] = frame['a']
 store
@@ -1474,7 +1476,7 @@ store
 
 
     <class 'pandas.io.pytables.HDFStore'>
-    File path: mydata.h5
+    File path: assets/examples/mydata.h5
 
 
 
@@ -1510,23 +1512,23 @@ store['obj1']
   <tbody>
     <tr>
       <th>0</th>
-      <td>1.004904</td>
+      <td>1.764052</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>-1.217700</td>
+      <td>0.400157</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>0.730232</td>
+      <td>0.978738</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>2.472690</td>
+      <td>2.240893</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>-0.210362</td>
+      <td>1.867558</td>
     </tr>
     <tr>
       <th>...</th>
@@ -1534,23 +1536,23 @@ store['obj1']
     </tr>
     <tr>
       <th>95</th>
-      <td>-0.052125</td>
+      <td>0.706573</td>
     </tr>
     <tr>
       <th>96</th>
-      <td>-0.414059</td>
+      <td>0.010500</td>
     </tr>
     <tr>
       <th>97</th>
-      <td>-1.664849</td>
+      <td>1.785870</td>
     </tr>
     <tr>
       <th>98</th>
-      <td>-1.677772</td>
+      <td>0.126912</td>
     </tr>
     <tr>
       <th>99</th>
-      <td>0.745945</td>
+      <td>0.401989</td>
     </tr>
   </tbody>
 </table>
@@ -1595,27 +1597,27 @@ store.select('obj2', where=['index >= 10 and index <= 15'])
   <tbody>
     <tr>
       <th>10</th>
-      <td>0.569859</td>
+      <td>0.144044</td>
     </tr>
     <tr>
       <th>11</th>
-      <td>0.888640</td>
+      <td>1.454274</td>
     </tr>
     <tr>
       <th>12</th>
-      <td>-0.415623</td>
+      <td>0.761038</td>
     </tr>
     <tr>
       <th>13</th>
-      <td>-0.268048</td>
+      <td>0.121675</td>
     </tr>
     <tr>
       <th>14</th>
-      <td>-0.743706</td>
+      <td>0.443863</td>
     </tr>
     <tr>
       <th>15</th>
-      <td>0.583330</td>
+      <td>0.333674</td>
     </tr>
   </tbody>
 </table>
@@ -1632,8 +1634,8 @@ The `read_hdf()` function provides easy access to a HDF5 file.
 
 
 ```python
-frame.to_hdf('mydata.h5', 'obj3', format='table')
-pd.read_hdf('mydata.h5', 'obj3', where=['index < 5'])
+frame.to_hdf(ex_dir + 'mydata.h5', 'obj3', format='table')
+pd.read_hdf(ex_dir + 'mydata.h5', 'obj3', where=['index < 5'])
 ```
 
 
@@ -1663,23 +1665,23 @@ pd.read_hdf('mydata.h5', 'obj3', where=['index < 5'])
   <tbody>
     <tr>
       <th>0</th>
-      <td>1.004904</td>
+      <td>1.764052</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>-1.217700</td>
+      <td>0.400157</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>0.730232</td>
+      <td>0.978738</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>2.472690</td>
+      <td>2.240893</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>-0.210362</td>
+      <td>1.867558</td>
     </tr>
   </tbody>
 </table>
@@ -1862,7 +1864,197 @@ frame.to_excel(ex_dir + 'ex2.xlsx')
 
 ### Interacting with Web APIs
 
+One of the most popular libraries for interacting with web APIs is [*requests*](https://pypi.org/project/requests/2.7.0/) (Real Python put together a [tutorial](https://realpython.com/python-requests/), too).
+
+This example requests the last 30 issues from the pandas GitHub page.
+
 
 ```python
+import requests
 
+url = 'https://api.github.com/repos/pandas-dev/pandas/issues'
+resp = requests.get(url)
+resp
 ```
+
+
+
+
+    <Response [200]>
+
+
+
+The response can then be parsedto JSON.
+
+
+```python
+data = resp.json()  # convert to JSON
+data[0]  # show first issue
+```
+
+
+
+
+    {'url': 'https://api.github.com/repos/pandas-dev/pandas/issues/29411',
+     'repository_url': 'https://api.github.com/repos/pandas-dev/pandas',
+     'labels_url': 'https://api.github.com/repos/pandas-dev/pandas/issues/29411/labels{/name}',
+     'comments_url': 'https://api.github.com/repos/pandas-dev/pandas/issues/29411/comments',
+     'events_url': 'https://api.github.com/repos/pandas-dev/pandas/issues/29411/events',
+     'html_url': 'https://github.com/pandas-dev/pandas/issues/29411',
+     'id': 517663592,
+     'node_id': 'MDU6SXNzdWU1MTc2NjM1OTI=',
+     'number': 29411,
+     'title': 'Memory leak in Dataframe.memory_usage',
+     'user': {'login': 'hyfjjjj',
+      'id': 7194638,
+      'node_id': 'MDQ6VXNlcjcxOTQ2Mzg=',
+      'avatar_url': 'https://avatars2.githubusercontent.com/u/7194638?v=4',
+      'gravatar_id': '',
+      'url': 'https://api.github.com/users/hyfjjjj',
+      'html_url': 'https://github.com/hyfjjjj',
+      'followers_url': 'https://api.github.com/users/hyfjjjj/followers',
+      'following_url': 'https://api.github.com/users/hyfjjjj/following{/other_user}',
+      'gists_url': 'https://api.github.com/users/hyfjjjj/gists{/gist_id}',
+      'starred_url': 'https://api.github.com/users/hyfjjjj/starred{/owner}{/repo}',
+      'subscriptions_url': 'https://api.github.com/users/hyfjjjj/subscriptions',
+      'organizations_url': 'https://api.github.com/users/hyfjjjj/orgs',
+      'repos_url': 'https://api.github.com/users/hyfjjjj/repos',
+      'events_url': 'https://api.github.com/users/hyfjjjj/events{/privacy}',
+      'received_events_url': 'https://api.github.com/users/hyfjjjj/received_events',
+      'type': 'User',
+      'site_admin': False},
+     'labels': [],
+     'state': 'open',
+     'locked': False,
+     'assignee': None,
+     'assignees': [],
+     'milestone': None,
+     'comments': 0,
+     'created_at': '2019-11-05T09:52:21Z',
+     'updated_at': '2019-11-05T09:52:21Z',
+     'closed_at': None,
+     'author_association': 'NONE',
+     'body': '#### Code Sample, a copy-pastable example if possible\r\n\r\n```python\r\nimport numpy as np\r\nimport pandas as pd\r\nimport gc\r\nimport os\r\nimport psutil\r\n\r\ndef get_process_memory():\r\n  return round(psutil.Process(os.getpid()).memory_info().rss / float(2 ** 20), 2)\r\n\r\ntest_dict = {}\r\nfor i in range(0, 50):\r\n  test_dict[i] = np.empty(10)\r\n\r\ndfs = []\r\nfor i in range(0, 1000):\r\n  df = pd.DataFrame(test_dict)\r\n  dfs.append(df)\r\n\r\ngc.collect()\r\n# before\r\nprint(\'memory usage (before "memory_usage"):\\t{} MB\'.format(get_process_memory()))\r\n\r\nfor df in dfs:\r\n  df.memory_usage(index=True, deep=True)\r\n\r\ngc.collect()\r\n# after\r\nprint(\'memory usage (after "memory_usage"):\\t{} MB\'.format(get_process_memory()))\r\n\r\n```\r\n#### Problem description\r\n\r\nDataframe\'s memory_usage function has memory leak. Memory usage after executing \'memory_usage\' function  should be the same as before.\r\n\r\n<img width="399" alt="截屏2019-11-05下午5 44 25" src="https://user-images.githubusercontent.com/7194638/68196715-f390ce00-fff3-11e9-939a-e84d850673e8.png">\r\n\r\n#### Expected Output\r\n\r\nNone\r\n\r\n#### Output of ``pd.show_versions()``\r\n\r\n<details>\r\n\r\nINSTALLED VERSIONS\r\n------------------\r\ncommit: None\r\npython: 2.7.16.final.0\r\npython-bits: 64\r\nOS: Darwin\r\nOS-release: 19.0.0\r\nmachine: x86_64\r\nprocessor: i386\r\nbyteorder: little\r\nLC_ALL: None\r\nLANG: zh_CN.UTF-8\r\nLOCALE: None.None\r\n\r\npandas: 0.24.2\r\npytest: None\r\npip: 19.3.1\r\nsetuptools: 19.6.1\r\nCython: 0.29.13\r\nnumpy: 1.16.5\r\nscipy: None\r\npyarrow: None\r\nxarray: None\r\nIPython: None\r\nsphinx: None\r\npatsy: None\r\ndateutil: 2.8.1\r\npytz: 2019.3\r\nblosc: None\r\nbottleneck: None\r\ntables: None\r\nnumexpr: None\r\nfeather: None\r\nmatplotlib: None\r\nopenpyxl: None\r\nxlrd: None\r\nxlwt: None\r\nxlsxwriter: None\r\nlxml.etree: None\r\nbs4: None\r\nhtml5lib: None\r\nsqlalchemy: None\r\npymysql: None\r\npsycopg2: None\r\njinja2: None\r\ns3fs: None\r\nfastparquet: None\r\npandas_gbq: None\r\npandas_datareader: None\r\ngcsfs: None\r\n\r\n</details>\r\n'}
+
+
+
+Each element in `data` is a dictionary containing a single GitHub issue.
+This can be turned into a DataFrame.
+
+
+```python
+issues = pd.DataFrame(data, columns=['number', 'title', 'labels', 'state'])
+issues
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>number</th>
+      <th>title</th>
+      <th>labels</th>
+      <th>state</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>29411</td>
+      <td>Memory leak in Dataframe.memory_usage</td>
+      <td>[]</td>
+      <td>open</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>29410</td>
+      <td>Fixed SS03 errors</td>
+      <td>[]</td>
+      <td>open</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>29409</td>
+      <td>Formatting issues with column width truncation...</td>
+      <td>[{'id': 13101118, 'node_id': 'MDU6TGFiZWwxMzEw...</td>
+      <td>open</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>29408</td>
+      <td>DataFrame.equals incorrect `See Also` section ...</td>
+      <td>[{'id': 134699, 'node_id': 'MDU6TGFiZWwxMzQ2OT...</td>
+      <td>open</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>29406</td>
+      <td>CLN: assorted cleanups</td>
+      <td>[]</td>
+      <td>open</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>29364</td>
+      <td>26302 add typing to assert star equal funcs</td>
+      <td>[{'id': 1280988427, 'node_id': 'MDU6TGFiZWwxMj...</td>
+      <td>open</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>29361</td>
+      <td>TYPING: scalar type that matches lib.is_scalar</td>
+      <td>[{'id': 1280988427, 'node_id': 'MDU6TGFiZWwxMj...</td>
+      <td>open</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>29357</td>
+      <td>ensure consistent structure for groupby on ind...</td>
+      <td>[{'id': 233160, 'node_id': 'MDU6TGFiZWwyMzMxNj...</td>
+      <td>open</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>29356</td>
+      <td>TST: new test for subset of a MultiIndex dtype</td>
+      <td>[{'id': 127685, 'node_id': 'MDU6TGFiZWwxMjc2OD...</td>
+      <td>open</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>29355</td>
+      <td>TST: Test type issue fix in empty groupby from...</td>
+      <td>[{'id': 78527356, 'node_id': 'MDU6TGFiZWw3ODUy...</td>
+      <td>open</td>
+    </tr>
+  </tbody>
+</table>
+<p>30 rows × 4 columns</p>
+</div>
+
+
