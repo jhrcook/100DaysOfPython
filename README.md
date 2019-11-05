@@ -90,3 +90,7 @@ So far, I am still learning about the various ways to read in files from disk.
 
 **Day 15 - November 04, 2019**
 I learned about reading in HTML, XML, HDF5, and Excel data.
+
+**Day 16 - November 05, 2019**
+We breifly covered interacting with web APIs to finish up the data reading and writing chapter.
+I then began Chapter 7 on data cleaning and prepraration where we have gone over dropping and filling in missing values.
