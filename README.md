@@ -94,3 +94,8 @@ I learned about reading in HTML, XML, HDF5, and Excel data.
 **Day 16 - November 05, 2019**
 We breifly covered interacting with web APIs to finish up the data reading and writing chapter.
 I then began Chapter 7 on data cleaning and prepraration where we have gone over dropping and filling in missing values.
+
+**Day 17 - November 06, 2019**
+I worked through section 7.
+2 on data transformations, mainly centered around mapping on arrays.
+We did also cover binnning and making dummy matrices, too.
