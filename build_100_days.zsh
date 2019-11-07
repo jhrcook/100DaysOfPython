@@ -54,6 +54,7 @@ then
 	echo "Comitting to git repo..."
 	git add --all
 	git commit -m $commitMessage
+	git push
 else
 	echo "Nothing commited."
 fi

@@ -99,3 +99,9 @@ I then began Chapter 7 on data cleaning and prepraration where we have gone over
 I worked through section 7.
 2 on data transformations, mainly centered around mapping on arrays.
 We did also cover binnning and making dummy matrices, too.
+
+**Day 18 - November 07, 2019**
+I completed the section of regular expressions - annoyingly, they are faily different than those used in R.
+Also, the API for the re library in Python and the stringr package in R are flipped.
+I also began the next chapter on data wrangling.
+This one is focussed on manipulating the shapes of DataFrames.

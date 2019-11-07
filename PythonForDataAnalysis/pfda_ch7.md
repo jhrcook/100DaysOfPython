@@ -3456,8 +3456,446 @@ movies_windic.iloc[0]
 
 ## 7.3 String manipulation
 
+pandas builds on top of Python's rich assortment of string manipulations and object methods by applying them to arrays of strings.
+
+### String object methods
+
+Here are a few commonly used string methods built into Python.
 
 
 ```python
-
+val = 'a,b,  guido'
+val.split(',')
 ```
+
+
+
+
+    ['a', 'b', '  guido']
+
+
+
+
+```python
+pieces = [x.strip() for x in val.split(',')]
+pieces
+```
+
+
+
+
+    ['a', 'b', 'guido']
+
+
+
+
+```python
+first, second, third = pieces
+first + '::' + second + '::' + third
+```
+
+
+
+
+    'a::b::guido'
+
+
+
+
+```python
+'::'.join(pieces)
+```
+
+
+
+
+    'a::b::guido'
+
+
+
+
+```python
+'guido' in val
+```
+
+
+
+
+    True
+
+
+
+
+```python
+val.index(',')
+```
+
+
+
+
+    1
+
+
+
+
+```python
+val.find(':')
+```
+
+
+
+
+    -1
+
+
+
+
+```python
+val.rfind(',')
+```
+
+
+
+
+    3
+
+
+
+
+```python
+val.count(',')
+```
+
+
+
+
+    2
+
+
+
+
+```python
+val.replace(',', '::')
+```
+
+
+
+
+    'a::b::  guido'
+
+
+
+
+```python
+val.replace(',', '')
+```
+
+
+
+
+    'ab  guido'
+
+
+
+
+```python
+upper_val = val.upper()
+upper_val
+```
+
+
+
+
+    'A,B,  GUIDO'
+
+
+
+
+```python
+upper_val.lower()
+```
+
+
+
+
+    'a,b,  guido'
+
+
+
+### Regular expressions
+
+A *regex* provides a powerful way to identify patterns in strings.
+Python's built in *re* module is responsible for applying regular expressions to strings.
+The functions in *re* are in one of three categories: pattern matching, substitution, and splitting.
+
+Below are a bunch of expample os using regular expressions for various tasks.
+The first is to split a string with a variable number of white spaces.
+
+
+```python
+import re
+
+text = "foo   bat\t baz \tqux"
+re.split('\s+', text)
+```
+
+
+
+
+    ['foo', 'bat', 'baz', 'qux']
+
+
+
+When `re.split('\s+', text)` was called, the regular expression was first compiled.
+This can be done manually, creating a new object that can be used for further matching.
+
+
+```python
+regex = re.compile('\s+')
+regex.split(text)
+```
+
+
+
+
+    ['foo', 'bat', 'baz', 'qux']
+
+
+
+
+```python
+regex.findall(text)
+```
+
+
+
+
+    ['   ', '\t ', ' \t']
+
+
+
+Here is an example with a larger string and pattern.
+The `re.IGNORECASE` makes the regex case-insensitive.
+
+
+```python
+text = """Dave dave@google.com
+Steve steve@gmail.com
+Rob rob@gmail.com
+Ryan ryan@yahoo.com
+"""
+pattern = r'[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}'
+
+regex = re.compile(pattern, flags=re.IGNORECASE)
+
+regex.findall(text)
+```
+
+
+
+
+    ['dave@google.com', 'steve@gmail.com', 'rob@gmail.com', 'ryan@yahoo.com']
+
+
+
+
+```python
+m = regex.search(text)
+m
+```
+
+
+
+
+    <re.Match object; span=(5, 20), match='dave@google.com'>
+
+
+
+
+```python
+text[m.start():m.end()]
+```
+
+
+
+
+    'dave@google.com'
+
+
+
+`match()` only checks for the pattern at the begininng of the string.
+
+
+```python
+print(regex.match(text))
+```
+
+    None
+
+
+The `sub()` function substitutes another string at the points of pattern match.
+
+
+```python
+print(regex.sub('REDACTED', text))
+```
+
+    Dave REDACTED
+    Steve REDACTED
+    Rob REDACTED
+    Ryan REDACTED
+    
+
+
+It is possible to find and segment a regular expression into groups using parantheses.
+
+
+```python
+pattern = r'([A-Z0-9._%+-]+)@([A-Z0-9.-]+)\.([A-Z]{2,4})'
+regex = re.compile(pattern, flags=re.IGNORECASE)
+m = regex.match('wesm@bright.net')
+m.groups()
+```
+
+
+
+
+    ('wesm', 'bright', 'net')
+
+
+
+
+```python
+regex.findall(text)
+```
+
+
+
+
+    [('dave', 'google', 'com'),
+     ('steve', 'gmail', 'com'),
+     ('rob', 'gmail', 'com'),
+     ('ryan', 'yahoo', 'com')]
+
+
+
+
+```python
+print(regex.sub(r'Username: \1, Domain: \2, Suffix: \3', text))
+```
+
+    Dave Username: dave, Domain: google, Suffix: com
+    Steve Username: steve, Domain: gmail, Suffix: com
+    Rob Username: rob, Domain: gmail, Suffix: com
+    Ryan Username: ryan, Domain: yahoo, Suffix: com
+    
+
+
+### Vectorized string functions in pandas
+
+
+```python
+data = {
+    'Dave': 'dave@google.com', 'Steve': 'steve@gmail.com',
+    'Rob': 'rob@gmail.com', 'Wes': np.nan
+}
+data = pd.Series(data)
+data
+```
+
+
+
+
+    Dave     dave@google.com
+    Steve    steve@gmail.com
+    Rob        rob@gmail.com
+    Wes                  NaN
+    dtype: object
+
+
+
+
+```python
+data.isnull()
+```
+
+
+
+
+    Dave     False
+    Steve    False
+    Rob      False
+    Wes       True
+    dtype: bool
+
+
+
+Series has an `str` attribute for applying regular expressions over all values, skipping missing values (`NaN`).
+
+
+```python
+data.str.contains('gmail')
+```
+
+
+
+
+    Dave     False
+    Steve     True
+    Rob       True
+    Wes        NaN
+    dtype: object
+
+
+
+
+```python
+pattern = r'([A-Z0-9._%+-]+)@([A-Z0-9.-]+)\.([A-Z]{2,4})'
+data.str.findall(pattern, flags=re.IGNORECASE)
+```
+
+
+
+
+    Dave     [(dave, google, com)]
+    Steve    [(steve, gmail, com)]
+    Rob        [(rob, gmail, com)]
+    Wes                        NaN
+    dtype: object
+
+
+
+There are mutliple ways to do vectorized element retrieval.
+
+
+```python
+matches = data.str.match(pattern, flags=re.IGNORECASE)
+matches
+```
+
+
+
+
+    Dave     True
+    Steve    True
+    Rob      True
+    Wes       NaN
+    dtype: object
+
+
+
+
+```python
+data.str[:5]
+```
+
+
+
+
+    Dave     dave@
+    Steve    steve
+    Rob      rob@g
+    Wes        NaN
+    dtype: object
+
+
