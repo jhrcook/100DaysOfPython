@@ -2,6 +2,7 @@
 
 
 ## Get day number
+tail README.md
 echo "What number day is it?"
 read dayNumber
 
@@ -29,20 +30,22 @@ conda deactivate
 ## Add to README
 currentDate=$(date +"%B %d, %Y")
 
-echo "What did you learn today?"
-read todaysMessage
+MESSAGE_FILE_NAME=".tmp_dialy_message_file.txt"
+rm $MESSAGE_FILE_NAME
+vim $MESSAGE_FILE_NAME
 
 readmeMessage="
 **Day $dayNumber - $currentDate**
-$(echo $todaysMessage | sed 's/\. */.\
+$(cat $MESSAGE_FILE_NAME | sed 's/\. */.\
 /g')"
-echo $readmeMessage >> README.md
+echo $readmeMessage
+# echo $readmeMessage >> README.md
 
 
 
 ## Git Commit
 commitMessage="$dayNumber of 100 Days of Python
-$(echo $todaysMessage | fold -w 80 -s)"
+$(cat $MESSAGE_FILE_NAME | fold -w 80 -s)"
 
 echo "\n---\nHere is todays commit message:"
 echo $commitMessage
@@ -60,5 +63,6 @@ else
 fi
 
 
+rm $MESSAGE_FILE_NAME
 
 exit
