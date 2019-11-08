@@ -105,3 +105,7 @@ I completed the section of regular expressions - annoyingly, they are faily diff
 Also, the API for the re library in Python and the stringr package in R are flipped.
 I also began the next chapter on data wrangling.
 This one is focussed on manipulating the shapes of DataFrames.
+
+**Day 19 - November 08, 2019**
+We covered merging and concatenating Series and DataFrames.
+Thankfully, the logic is simmillar to that used in R byby dplyr.
