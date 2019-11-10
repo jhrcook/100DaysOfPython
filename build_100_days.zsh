@@ -35,11 +35,11 @@ rm $MESSAGE_FILE_NAME
 vim $MESSAGE_FILE_NAME
 
 readmeMessage="
-**Day $dayNumber - $currentDate**
+**Day $dayNumber - $currentDate:**
 $(cat $MESSAGE_FILE_NAME | sed 's/\. */.\
 /g')"
 echo $readmeMessage
-# echo $readmeMessage >> README.md
+echo $readmeMessage >> README.md
 
 
 

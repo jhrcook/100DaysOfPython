@@ -88,24 +88,33 @@ We finished up by learning about computing descriptive and summary statistics on
 I began chapter 6 on reading and writing data.
 So far, I am still learning about the various ways to read in files from disk.
 
-**Day 15 - November 04, 2019**
+**Day 15 - November 04, 2019:**
 I learned about reading in HTML, XML, HDF5, and Excel data.
 
-**Day 16 - November 05, 2019**
+**Day 16 - November 05, 2019:**
 We breifly covered interacting with web APIs to finish up the data reading and writing chapter.
 I then began Chapter 7 on data cleaning and prepraration where we have gone over dropping and filling in missing values.
 
-**Day 17 - November 06, 2019**
+**Day 17 - November 06, 2019:**
 I worked through section 7.
 2 on data transformations, mainly centered around mapping on arrays.
 We did also cover binnning and making dummy matrices, too.
 
-**Day 18 - November 07, 2019**
+**Day 18 - November 07, 2019:**
 I completed the section of regular expressions - annoyingly, they are faily different than those used in R.
 Also, the API for the re library in Python and the stringr package in R are flipped.
 I also began the next chapter on data wrangling.
 This one is focussed on manipulating the shapes of DataFrames.
 
-**Day 19 - November 08, 2019**
+**Day 19 - November 08, 2019:**
 We covered merging and concatenating Series and DataFrames.
 Thankfully, the logic is simmillar to that used in R byby dplyr.
+
+**Day 20 - November 09, 2019:**
+I finished chapter on reshaping and pivoting data.
+There is a lot of overlap with the functionality available in the dplyr and tidyr packages in R - they also share a lot of the same API.
+I then began the chapter on matplotlib and visualization.
+I am very excited for this section.
+
+**Day 21 - November 10, 2019:**
+I made good progress through the chapter on plotting, finishing the primer to matplotlib.

@@ -1,1 +1,0 @@
-I finished chapter on reshaping and pivoting data. There is a lot of overlap with the functionality available in the dplyr and tidyr packages in R - they also share a lot of the same API. I then began the chapter on matplotlib and visualization. I am very excited for this section.
