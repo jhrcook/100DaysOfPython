@@ -3753,9 +3753,1662 @@ df1.combine_first(df2)
 
 ## 8.3 Reshaping and pivoting
 
+### Reshaping with hierarchical indexing
+
+Hierarchical indexing provides a consistent way to rearrange data in a DataFrame.
+The two primary actions are:
+
+- `stack`: pivots the columns to the rows
+- `unstack`: pivots from the rows into the columns
+
+
+```python
+data = pd.DataFrame(np.arange(6).reshape((2, 3)),
+                    index=pd.Index(['Ohio', 'Colorado'], name='state'),
+                    columns=pd.Index(['one', 'two', 'three'], name='number'))
+data
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>number</th>
+      <th>one</th>
+      <th>two</th>
+      <th>three</th>
+    </tr>
+    <tr>
+      <th>state</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Ohio</th>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>Colorado</th>
+      <td>3</td>
+      <td>4</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
 
 
 
 ```python
-
+result = data.stack()
+result
 ```
+
+
+
+
+    state     number
+    Ohio      one       0
+              two       1
+              three     2
+    Colorado  one       3
+              two       4
+              three     5
+    dtype: int64
+
+
+
+
+```python
+result.unstack()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>number</th>
+      <th>one</th>
+      <th>two</th>
+      <th>three</th>
+    </tr>
+    <tr>
+      <th>state</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Ohio</th>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>Colorado</th>
+      <td>3</td>
+      <td>4</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+By default, the innermost level is unstacked or stacked.
+Different levels can be used by passing the level number or name.
+
+
+```python
+result.unstack(0)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>state</th>
+      <th>Ohio</th>
+      <th>Colorado</th>
+    </tr>
+    <tr>
+      <th>number</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>one</th>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>two</th>
+      <td>1</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>three</th>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+result.unstack('state')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>state</th>
+      <th>Ohio</th>
+      <th>Colorado</th>
+    </tr>
+    <tr>
+      <th>number</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>one</th>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>two</th>
+      <td>1</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>three</th>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+If not all of the values exist for a level, missing data will be introduced.
+
+
+```python
+s1 = pd.Series([0, 1, 2, 3], index=['a', 'b', 'c', 'd'])
+s2 = pd.Series([4, 5, 6], index=['c', 'd', 'e'])
+data2 = pd.concat([s1, s2], keys=['one', 'two'])
+data2
+```
+
+
+
+
+    one  a    0
+         b    1
+         c    2
+         d    3
+    two  c    4
+         d    5
+         e    6
+    dtype: int64
+
+
+
+
+```python
+data2.unstack()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+      <th>c</th>
+      <th>d</th>
+      <th>e</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>one</th>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>two</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+Stacking filters out the missing values by default, though this can be prevented by setting `dropna=False`.
+
+
+```python
+data2.unstack().stack()
+```
+
+
+
+
+    one  a    0.0
+         b    1.0
+         c    2.0
+         d    3.0
+    two  c    4.0
+         d    5.0
+         e    6.0
+    dtype: float64
+
+
+
+
+```python
+data2.unstack().stack(dropna=False)
+```
+
+
+
+
+    one  a    0.0
+         b    1.0
+         c    2.0
+         d    3.0
+         e    NaN
+    two  a    NaN
+         b    NaN
+         c    4.0
+         d    5.0
+         e    6.0
+    dtype: float64
+
+
+
+When unstacking a DataFrame, the unstacked level becomes the lowest level in the result.
+
+
+```python
+df = pd.DataFrame({
+    'left': result,
+    'right': result + 5},
+    columns=pd.Index(['left', 'right'], name='side'))
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>side</th>
+      <th>left</th>
+      <th>right</th>
+    </tr>
+    <tr>
+      <th>state</th>
+      <th>number</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="3" valign="top">Ohio</th>
+      <th>one</th>
+      <td>0</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>two</th>
+      <td>1</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>three</th>
+      <td>2</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th rowspan="3" valign="top">Colorado</th>
+      <th>one</th>
+      <td>3</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>two</th>
+      <td>4</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>three</th>
+      <td>5</td>
+      <td>10</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.unstack('state')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th>side</th>
+      <th colspan="2" halign="left">left</th>
+      <th colspan="2" halign="left">right</th>
+    </tr>
+    <tr>
+      <th>state</th>
+      <th>Ohio</th>
+      <th>Colorado</th>
+      <th>Ohio</th>
+      <th>Colorado</th>
+    </tr>
+    <tr>
+      <th>number</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>one</th>
+      <td>0</td>
+      <td>3</td>
+      <td>5</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>two</th>
+      <td>1</td>
+      <td>4</td>
+      <td>6</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>three</th>
+      <td>2</td>
+      <td>5</td>
+      <td>7</td>
+      <td>10</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+Just like with unstack, the axis for stacking can be specified.
+
+
+```python
+df.unstack('state').stack('side')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>state</th>
+      <th>Colorado</th>
+      <th>Ohio</th>
+    </tr>
+    <tr>
+      <th>number</th>
+      <th>side</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2" valign="top">one</th>
+      <th>left</th>
+      <td>3</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>right</th>
+      <td>8</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">two</th>
+      <th>left</th>
+      <td>4</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>right</th>
+      <td>9</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">three</th>
+      <th>left</th>
+      <td>5</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>right</th>
+      <td>10</td>
+      <td>7</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### Pivoting "long" to "wide" format
+
+The author uses a *long* format read in from a CSV as an example of wrangling and cleaning.
+
+
+```python
+data = pd.read_csv("assets/examples/macrodata.csv")
+data.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>year</th>
+      <th>quarter</th>
+      <th>realgdp</th>
+      <th>realcons</th>
+      <th>realinv</th>
+      <th>realgovt</th>
+      <th>realdpi</th>
+      <th>cpi</th>
+      <th>m1</th>
+      <th>tbilrate</th>
+      <th>unemp</th>
+      <th>pop</th>
+      <th>infl</th>
+      <th>realint</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1959.0</td>
+      <td>1.0</td>
+      <td>2710.349</td>
+      <td>1707.4</td>
+      <td>286.898</td>
+      <td>470.045</td>
+      <td>1886.9</td>
+      <td>28.98</td>
+      <td>139.7</td>
+      <td>2.82</td>
+      <td>5.8</td>
+      <td>177.146</td>
+      <td>0.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1959.0</td>
+      <td>2.0</td>
+      <td>2778.801</td>
+      <td>1733.7</td>
+      <td>310.859</td>
+      <td>481.301</td>
+      <td>1919.7</td>
+      <td>29.15</td>
+      <td>141.7</td>
+      <td>3.08</td>
+      <td>5.1</td>
+      <td>177.830</td>
+      <td>2.34</td>
+      <td>0.74</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1959.0</td>
+      <td>3.0</td>
+      <td>2775.488</td>
+      <td>1751.8</td>
+      <td>289.226</td>
+      <td>491.260</td>
+      <td>1916.4</td>
+      <td>29.35</td>
+      <td>140.5</td>
+      <td>3.82</td>
+      <td>5.3</td>
+      <td>178.657</td>
+      <td>2.74</td>
+      <td>1.09</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1959.0</td>
+      <td>4.0</td>
+      <td>2785.204</td>
+      <td>1753.7</td>
+      <td>299.356</td>
+      <td>484.052</td>
+      <td>1931.3</td>
+      <td>29.37</td>
+      <td>140.0</td>
+      <td>4.33</td>
+      <td>5.6</td>
+      <td>179.386</td>
+      <td>0.27</td>
+      <td>4.06</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1960.0</td>
+      <td>1.0</td>
+      <td>2847.699</td>
+      <td>1770.5</td>
+      <td>331.722</td>
+      <td>462.199</td>
+      <td>1955.5</td>
+      <td>29.54</td>
+      <td>139.6</td>
+      <td>3.50</td>
+      <td>5.2</td>
+      <td>180.007</td>
+      <td>2.31</td>
+      <td>1.19</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+periods = pd.PeriodIndex(year=data.year, quarter=data.quarter, name='date')
+columns = pd.Index(['realgdp', 'infl', 'unemp'], name='item')
+data = data.reindex(columns=columns)
+data.index = periods.to_timestamp('D', 'end')
+ldata = data.stack().reset_index().rename(columns={0: 'value'})
+ldata
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>item</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1959-03-31 23:59:59.999999999</td>
+      <td>realgdp</td>
+      <td>2710.349</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1959-03-31 23:59:59.999999999</td>
+      <td>infl</td>
+      <td>0.000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1959-03-31 23:59:59.999999999</td>
+      <td>unemp</td>
+      <td>5.800</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1959-06-30 23:59:59.999999999</td>
+      <td>realgdp</td>
+      <td>2778.801</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1959-06-30 23:59:59.999999999</td>
+      <td>infl</td>
+      <td>2.340</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>604</th>
+      <td>2009-06-30 23:59:59.999999999</td>
+      <td>infl</td>
+      <td>3.370</td>
+    </tr>
+    <tr>
+      <th>605</th>
+      <td>2009-06-30 23:59:59.999999999</td>
+      <td>unemp</td>
+      <td>9.200</td>
+    </tr>
+    <tr>
+      <th>606</th>
+      <td>2009-09-30 23:59:59.999999999</td>
+      <td>realgdp</td>
+      <td>12990.341</td>
+    </tr>
+    <tr>
+      <th>607</th>
+      <td>2009-09-30 23:59:59.999999999</td>
+      <td>infl</td>
+      <td>3.560</td>
+    </tr>
+    <tr>
+      <th>608</th>
+      <td>2009-09-30 23:59:59.999999999</td>
+      <td>unemp</td>
+      <td>9.600</td>
+    </tr>
+  </tbody>
+</table>
+<p>609 rows × 3 columns</p>
+</div>
+
+
+
+The `pivot()` method of a DataFrame spreads out the information into a *wide* format.
+
+
+```python
+pivoted = ldata.pivot(index='date', columns='item', values='value')
+pivoted
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>item</th>
+      <th>infl</th>
+      <th>realgdp</th>
+      <th>unemp</th>
+    </tr>
+    <tr>
+      <th>date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1959-03-31 23:59:59.999999999</th>
+      <td>0.00</td>
+      <td>2710.349</td>
+      <td>5.8</td>
+    </tr>
+    <tr>
+      <th>1959-06-30 23:59:59.999999999</th>
+      <td>2.34</td>
+      <td>2778.801</td>
+      <td>5.1</td>
+    </tr>
+    <tr>
+      <th>1959-09-30 23:59:59.999999999</th>
+      <td>2.74</td>
+      <td>2775.488</td>
+      <td>5.3</td>
+    </tr>
+    <tr>
+      <th>1959-12-31 23:59:59.999999999</th>
+      <td>0.27</td>
+      <td>2785.204</td>
+      <td>5.6</td>
+    </tr>
+    <tr>
+      <th>1960-03-31 23:59:59.999999999</th>
+      <td>2.31</td>
+      <td>2847.699</td>
+      <td>5.2</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2008-09-30 23:59:59.999999999</th>
+      <td>-3.16</td>
+      <td>13324.600</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>2008-12-31 23:59:59.999999999</th>
+      <td>-8.79</td>
+      <td>13141.920</td>
+      <td>6.9</td>
+    </tr>
+    <tr>
+      <th>2009-03-31 23:59:59.999999999</th>
+      <td>0.94</td>
+      <td>12925.410</td>
+      <td>8.1</td>
+    </tr>
+    <tr>
+      <th>2009-06-30 23:59:59.999999999</th>
+      <td>3.37</td>
+      <td>12901.504</td>
+      <td>9.2</td>
+    </tr>
+    <tr>
+      <th>2009-09-30 23:59:59.999999999</th>
+      <td>3.56</td>
+      <td>12990.341</td>
+      <td>9.6</td>
+    </tr>
+  </tbody>
+</table>
+<p>203 rows × 3 columns</p>
+</div>
+
+
+
+Here is an example of reshaping two columns simultaneously.
+It results in hierarchically indexed columns.
+
+
+```python
+ldata['value2'] = np.random.randn(len(ldata))
+ldata.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>item</th>
+      <th>value</th>
+      <th>value2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1959-03-31 23:59:59.999999999</td>
+      <td>realgdp</td>
+      <td>2710.349</td>
+      <td>-0.187184</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1959-03-31 23:59:59.999999999</td>
+      <td>infl</td>
+      <td>0.000</td>
+      <td>1.532779</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1959-03-31 23:59:59.999999999</td>
+      <td>unemp</td>
+      <td>5.800</td>
+      <td>1.469359</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1959-06-30 23:59:59.999999999</td>
+      <td>realgdp</td>
+      <td>2778.801</td>
+      <td>0.154947</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1959-06-30 23:59:59.999999999</td>
+      <td>infl</td>
+      <td>2.340</td>
+      <td>0.378163</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+pivoted = ldata.pivot('date', 'item')
+pivoted.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="3" halign="left">value</th>
+      <th colspan="3" halign="left">value2</th>
+    </tr>
+    <tr>
+      <th>item</th>
+      <th>infl</th>
+      <th>realgdp</th>
+      <th>unemp</th>
+      <th>infl</th>
+      <th>realgdp</th>
+      <th>unemp</th>
+    </tr>
+    <tr>
+      <th>date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1959-03-31 23:59:59.999999999</th>
+      <td>0.00</td>
+      <td>2710.349</td>
+      <td>5.8</td>
+      <td>1.532779</td>
+      <td>-0.187184</td>
+      <td>1.469359</td>
+    </tr>
+    <tr>
+      <th>1959-06-30 23:59:59.999999999</th>
+      <td>2.34</td>
+      <td>2778.801</td>
+      <td>5.1</td>
+      <td>0.378163</td>
+      <td>0.154947</td>
+      <td>-0.887786</td>
+    </tr>
+    <tr>
+      <th>1959-09-30 23:59:59.999999999</th>
+      <td>2.74</td>
+      <td>2775.488</td>
+      <td>5.3</td>
+      <td>-0.347912</td>
+      <td>-1.980796</td>
+      <td>0.156349</td>
+    </tr>
+    <tr>
+      <th>1959-12-31 23:59:59.999999999</th>
+      <td>0.27</td>
+      <td>2785.204</td>
+      <td>5.6</td>
+      <td>1.202380</td>
+      <td>1.230291</td>
+      <td>-0.387327</td>
+    </tr>
+    <tr>
+      <th>1960-03-31 23:59:59.999999999</th>
+      <td>2.31</td>
+      <td>2847.699</td>
+      <td>5.2</td>
+      <td>-1.048553</td>
+      <td>-0.302303</td>
+      <td>-1.420018</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+pivoted['value'][:5]
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>item</th>
+      <th>infl</th>
+      <th>realgdp</th>
+      <th>unemp</th>
+    </tr>
+    <tr>
+      <th>date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1959-03-31 23:59:59.999999999</th>
+      <td>0.00</td>
+      <td>2710.349</td>
+      <td>5.8</td>
+    </tr>
+    <tr>
+      <th>1959-06-30 23:59:59.999999999</th>
+      <td>2.34</td>
+      <td>2778.801</td>
+      <td>5.1</td>
+    </tr>
+    <tr>
+      <th>1959-09-30 23:59:59.999999999</th>
+      <td>2.74</td>
+      <td>2775.488</td>
+      <td>5.3</td>
+    </tr>
+    <tr>
+      <th>1959-12-31 23:59:59.999999999</th>
+      <td>0.27</td>
+      <td>2785.204</td>
+      <td>5.6</td>
+    </tr>
+    <tr>
+      <th>1960-03-31 23:59:59.999999999</th>
+      <td>2.31</td>
+      <td>2847.699</td>
+      <td>5.2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### Pivoting "wide" to "long" format
+
+The inverse for the `pivot()` method is `melt()`.
+
+
+```python
+df = pd.DataFrame(
+    {'key': ['foo', 'bar', 'baz'],
+    'A': [1, 2, 3],
+    'B': [4, 5, 6],
+    'C': [7, 8, 9]
+})
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key</th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>foo</td>
+      <td>1</td>
+      <td>4</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>bar</td>
+      <td>2</td>
+      <td>5</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>baz</td>
+      <td>3</td>
+      <td>6</td>
+      <td>9</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+melted = pd.melt(df, id_vars = ['key'])
+melted
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key</th>
+      <th>variable</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>foo</td>
+      <td>A</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>bar</td>
+      <td>A</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>baz</td>
+      <td>A</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>foo</td>
+      <td>B</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>bar</td>
+      <td>B</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>baz</td>
+      <td>B</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>foo</td>
+      <td>C</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>bar</td>
+      <td>C</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>baz</td>
+      <td>C</td>
+      <td>9</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+A subset of volumns to use for values can be specified.
+
+
+```python
+pd.melt(df, id_vars=['key'], value_vars=['A', 'B'])
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key</th>
+      <th>variable</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>foo</td>
+      <td>A</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>bar</td>
+      <td>A</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>baz</td>
+      <td>A</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>foo</td>
+      <td>B</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>bar</td>
+      <td>B</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>baz</td>
+      <td>B</td>
+      <td>6</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+Also, they can be no group identifiers.
+
+
+```python
+pd.melt(df)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>variable</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>key</td>
+      <td>foo</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>key</td>
+      <td>bar</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>key</td>
+      <td>baz</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>A</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>A</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>A</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>B</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>B</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>B</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>C</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>C</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>C</td>
+      <td>9</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+pd.melt(df, value_vars=['A', 'B', 'C'])
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>variable</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>A</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>A</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>A</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>B</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>B</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>B</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>C</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>C</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>C</td>
+      <td>9</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
