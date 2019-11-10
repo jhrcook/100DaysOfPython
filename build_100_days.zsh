@@ -47,6 +47,8 @@ echo $readmeMessage
 commitMessage="$dayNumber of 100 Days of Python
 $(cat $MESSAGE_FILE_NAME | fold -w 80 -s)"
 
+rm $MESSAGE_FILE_NAME
+
 echo "\n---\nHere is todays commit message:"
 echo $commitMessage
 echo "\n"
@@ -63,6 +65,6 @@ else
 fi
 
 
-rm $MESSAGE_FILE_NAME
+
 
 exit
