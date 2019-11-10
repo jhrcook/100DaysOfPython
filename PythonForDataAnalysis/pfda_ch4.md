@@ -27,8 +27,8 @@ my_list = list(range(1000000))
 %time for _ in range(10): my_array = my_array * 2
 ```
 
-    CPU times: user 21.7 ms, sys: 16 ms, total: 37.7 ms
-    Wall time: 44.4 ms
+    CPU times: user 18.5 ms, sys: 12.9 ms, total: 31.4 ms
+    Wall time: 32.7 ms
 
 
 
@@ -36,8 +36,8 @@ my_list = list(range(1000000))
 %time for _ in range(10): my_list = [x * 2 for x in my_list]
 ```
 
-    CPU times: user 1.21 s, sys: 373 ms, total: 1.58 s
-    Wall time: 2.16 s
+    CPU times: user 1.35 s, sys: 529 ms, total: 1.88 s
+    Wall time: 2.95 s
 
 
 ## 4.1 The NumPy ndarray: a multidimensional array object
@@ -1824,13 +1824,17 @@ for i in range(steps):
 
 ```python
 import matplotlib.pyplot as plt
+
+plt.style.use('seaborn-whitegrid')
+plt.rc('figure', figsize=(8, 5), facecolor='white')
+
 plt.plot(walk)
 ```
 
 
 
 
-    [<matplotlib.lines.Line2D at 0x1317ebb10>]
+    [<matplotlib.lines.Line2D at 0x114b71350>]
 
 
 
@@ -1856,7 +1860,7 @@ plt.plot(walk)
 
 
 
-    [<matplotlib.lines.Line2D at 0x138bb4590>]
+    [<matplotlib.lines.Line2D at 0x118369610>]
 
 
 

@@ -64,7 +64,4 @@ else
 	echo "Nothing commited."
 fi
 
-
-
-
 exit
