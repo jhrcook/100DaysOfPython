@@ -12,6 +12,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 
 np.random.seed(0)
 
@@ -40,7 +41,7 @@ plt.plot(data)
 
 
 
-    [<matplotlib.lines.Line2D at 0x13a79f150>]
+    [<matplotlib.lines.Line2D at 0x1a385c7610>]
 
 
 
@@ -83,7 +84,7 @@ plt.plot(np.random.randn(50).cumsum(), 'k--')
 
 
 
-    [<matplotlib.lines.Line2D at 0x13ae05410>]
+    [<matplotlib.lines.Line2D at 0x1a389bf610>]
 
 
 
@@ -109,7 +110,7 @@ plt.plot(np.random.randn(50).cumsum(), 'k--')
 
 
 
-    [<matplotlib.lines.Line2D at 0x13afef290>]
+    [<matplotlib.lines.Line2D at 0x1a38bb8f90>]
 
 
 
@@ -130,12 +131,12 @@ axes
 
 
 
-    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x13b050c10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x13b069b10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x13b14b350>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x13b17fb50>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x13b1be390>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x13b1f1b90>]],
+    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x1a38a17d10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38cff790>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38d30450>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a38d6e7d0>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38da4490>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38de1810>]],
           dtype=object)
 
 
@@ -182,7 +183,7 @@ plt.plot(np.random.randn(30).cumsum(), 'ko--')
 
 
 
-    [<matplotlib.lines.Line2D at 0x13b6d8b90>]
+    [<matplotlib.lines.Line2D at 0x1a39358c90>]
 
 
 
@@ -200,7 +201,7 @@ plt.plot(np.random.randn(30).cumsum(), color='k', linestyle='dashed', marker='o'
 
 
 
-    [<matplotlib.lines.Line2D at 0x13b8f2a10>]
+    [<matplotlib.lines.Line2D at 0x135df4e90>]
 
 
 
@@ -221,7 +222,7 @@ plt.legend(loc='best')
 
 
 
-    <matplotlib.legend.Legend at 0x13b94efd0>
+    <matplotlib.legend.Legend at 0x135e5d390>
 
 
 
@@ -282,7 +283,7 @@ ax.legend(loc='best')
 
 
 
-    <matplotlib.legend.Legend at 0x13ba3aa50>
+    <matplotlib.legend.Legend at 0x1a395c9990>
 
 
 
@@ -427,3 +428,886 @@ plt.rc('font', **font_options)
 ```
 
 ## 9.2 Plotting with pandas and seaborn
+
+Seaborn is a statistical graphics library aimed at simplifying many common visualization types.
+
+### Line plots
+
+Both Series and DataFrame have `plot` attributes to create some basic plot types.
+By default, `plot()` creates a line plot.
+
+
+```python
+s = pd.Series(np.random.randn(10).cumsum(), index=np.arange(0, 100, 10))
+s.plot()
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x1a38653290>
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_33_1.svg)
+
+
+Most of the pandas plotting methods accept a matplotlib subplot object through an optional `ax` parameter.
+The `plot()` method for DataFrame makes line plot out of each column.
+
+
+```python
+df = pd.DataFrame(np.random.randn(10, 4).cumsum(0),
+                  columns=['A', 'B', 'C', 'D'],
+                  index=np.arange(0, 100, 10))
+df.plot()
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x1a39b22050>
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_35_1.svg)
+
+
+### Bar plots
+
+The `plot.bar()` and `plot.barh()` make vertical and horizontal bar plots.
+
+
+```python
+fig, axes = plt.subplots(2, 1)
+data = pd.Series(np.random.rand(16), index=list('abcdefghijklmnop'))
+data.plot.bar(ax=axes[0], color='k', alpha=0.7)
+data.plot.barh(ax=axes[1], color='k', alpha=0.7)
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x1a39d13350>
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_37_1.svg)
+
+
+A DataFrame bar plot groups the values of rows together.
+
+
+```python
+df = pd.DataFrame(np.random.rand(6, 4),
+                  index=['one', 'two', 'three', 'four', 'five', 'six'],
+                  columns=pd.Index(['A', 'B', 'C', 'D'], name='Genus'))
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Genus</th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>one</th>
+      <td>0.424886</td>
+      <td>0.224244</td>
+      <td>0.762922</td>
+      <td>0.744435</td>
+    </tr>
+    <tr>
+      <th>two</th>
+      <td>0.647056</td>
+      <td>0.455640</td>
+      <td>0.464806</td>
+      <td>0.298444</td>
+    </tr>
+    <tr>
+      <th>three</th>
+      <td>0.265725</td>
+      <td>0.848971</td>
+      <td>0.859374</td>
+      <td>0.015345</td>
+    </tr>
+    <tr>
+      <th>four</th>
+      <td>0.719606</td>
+      <td>0.329922</td>
+      <td>0.919347</td>
+      <td>0.242120</td>
+    </tr>
+    <tr>
+      <th>five</th>
+      <td>0.335403</td>
+      <td>0.747336</td>
+      <td>0.074099</td>
+      <td>0.708039</td>
+    </tr>
+    <tr>
+      <th>six</th>
+      <td>0.674679</td>
+      <td>0.304022</td>
+      <td>0.712769</td>
+      <td>0.902925</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.plot.bar()
+plt.legend(loc='best')
+```
+
+
+
+
+    <matplotlib.legend.Legend at 0x1a39db68d0>
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_40_1.svg)
+
+
+
+```python
+df.plot.barh(stacked=True, alpha=0.7)
+plt.legend(loc='best')
+```
+
+
+
+
+    <matplotlib.legend.Legend at 0x1a3a239050>
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_41_1.svg)
+
+
+The author uses the tipping data as an example of plotting.
+
+
+```python
+tips = pd.read_csv('assets/examples/tips.csv')
+tips.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>total_bill</th>
+      <th>tip</th>
+      <th>smoker</th>
+      <th>day</th>
+      <th>time</th>
+      <th>size</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>16.99</td>
+      <td>1.01</td>
+      <td>No</td>
+      <td>Sun</td>
+      <td>Dinner</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>10.34</td>
+      <td>1.66</td>
+      <td>No</td>
+      <td>Sun</td>
+      <td>Dinner</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>21.01</td>
+      <td>3.50</td>
+      <td>No</td>
+      <td>Sun</td>
+      <td>Dinner</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>23.68</td>
+      <td>3.31</td>
+      <td>No</td>
+      <td>Sun</td>
+      <td>Dinner</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>24.59</td>
+      <td>3.61</td>
+      <td>No</td>
+      <td>Sun</td>
+      <td>Dinner</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# Number of group-size per day.
+party_counts = pd.crosstab(tips['day'], tips['size'])
+party_counts
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>size</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+    </tr>
+    <tr>
+      <th>day</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Fri</th>
+      <td>1</td>
+      <td>16</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>Sat</th>
+      <td>2</td>
+      <td>53</td>
+      <td>18</td>
+      <td>13</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>Sun</th>
+      <td>0</td>
+      <td>39</td>
+      <td>15</td>
+      <td>18</td>
+      <td>3</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>Thur</th>
+      <td>1</td>
+      <td>48</td>
+      <td>4</td>
+      <td>5</td>
+      <td>1</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# Normalize to sum to 1.
+party_pcts = party_counts.div(party_counts.sum(1), axis=0)
+party_pcts
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>size</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+    </tr>
+    <tr>
+      <th>day</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Fri</th>
+      <td>0.052632</td>
+      <td>0.842105</td>
+      <td>0.052632</td>
+      <td>0.052632</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>Sat</th>
+      <td>0.022989</td>
+      <td>0.609195</td>
+      <td>0.206897</td>
+      <td>0.149425</td>
+      <td>0.011494</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>Sun</th>
+      <td>0.000000</td>
+      <td>0.513158</td>
+      <td>0.197368</td>
+      <td>0.236842</td>
+      <td>0.039474</td>
+      <td>0.013158</td>
+    </tr>
+    <tr>
+      <th>Thur</th>
+      <td>0.016129</td>
+      <td>0.774194</td>
+      <td>0.064516</td>
+      <td>0.080645</td>
+      <td>0.016129</td>
+      <td>0.048387</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+party_pcts.plot.bar()
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x1a3a45e990>
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_46_1.svg)
+
+
+The seaborn library can be useful for making comparisons.
+The following is an example looking at the average percent of the bill used for the tip per day of the week.
+
+
+```python
+tips['tip_pct'] = tips['tip'] / (tips['total_bill'] - tips['tip'])
+tips.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>total_bill</th>
+      <th>tip</th>
+      <th>smoker</th>
+      <th>day</th>
+      <th>time</th>
+      <th>size</th>
+      <th>tip_pct</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>16.99</td>
+      <td>1.01</td>
+      <td>No</td>
+      <td>Sun</td>
+      <td>Dinner</td>
+      <td>2</td>
+      <td>0.063204</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>10.34</td>
+      <td>1.66</td>
+      <td>No</td>
+      <td>Sun</td>
+      <td>Dinner</td>
+      <td>3</td>
+      <td>0.191244</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>21.01</td>
+      <td>3.50</td>
+      <td>No</td>
+      <td>Sun</td>
+      <td>Dinner</td>
+      <td>3</td>
+      <td>0.199886</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>23.68</td>
+      <td>3.31</td>
+      <td>No</td>
+      <td>Sun</td>
+      <td>Dinner</td>
+      <td>2</td>
+      <td>0.162494</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>24.59</td>
+      <td>3.61</td>
+      <td>No</td>
+      <td>Sun</td>
+      <td>Dinner</td>
+      <td>4</td>
+      <td>0.172069</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+sns.barplot(x='tip_pct', y='day', data=tips, orient='h')
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x1354dbc10>
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_49_1.svg)
+
+
+
+```python
+sns.barplot(x='tip_pct', y='day', hue='time', data=tips, orient='h')
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x1353b34d0>
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_50_1.svg)
+
+
+### Histograms and density plots
+
+
+```python
+tips['tip_pct'].plot.hist(bins=50)
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x123d10390>
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_52_1.svg)
+
+
+
+```python
+tips['tip_pct'].plot.density()
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x1a3a7ddc10>
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_53_1.svg)
+
+
+
+```python
+comp1 = np.random.normal(0, 1, size=200)
+comp2 = np.random.normal(10, 2, size=200)
+values = pd.Series(np.concatenate([comp1, comp2]))
+sns.distplot(values, bins=100, color='k')
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x1a3c033050>
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_54_1.svg)
+
+
+### Scatter or point plots
+
+
+```python
+macro = pd.read_csv('assets/examples/macrodata.csv')
+data = macro[['cpi', 'm1', 'tbilrate', 'unemp']]
+data.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>cpi</th>
+      <th>m1</th>
+      <th>tbilrate</th>
+      <th>unemp</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>28.98</td>
+      <td>139.7</td>
+      <td>2.82</td>
+      <td>5.8</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>29.15</td>
+      <td>141.7</td>
+      <td>3.08</td>
+      <td>5.1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>29.35</td>
+      <td>140.5</td>
+      <td>3.82</td>
+      <td>5.3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>29.37</td>
+      <td>140.0</td>
+      <td>4.33</td>
+      <td>5.6</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>29.54</td>
+      <td>139.6</td>
+      <td>3.50</td>
+      <td>5.2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+trans_data = np.log(data).diff().dropna()
+trans_data.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>cpi</th>
+      <th>m1</th>
+      <th>tbilrate</th>
+      <th>unemp</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.005849</td>
+      <td>0.014215</td>
+      <td>0.088193</td>
+      <td>-0.128617</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.006838</td>
+      <td>-0.008505</td>
+      <td>0.215321</td>
+      <td>0.038466</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.000681</td>
+      <td>-0.003565</td>
+      <td>0.125317</td>
+      <td>0.055060</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.005772</td>
+      <td>-0.002861</td>
+      <td>-0.212805</td>
+      <td>-0.074108</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.000338</td>
+      <td>0.004289</td>
+      <td>-0.266946</td>
+      <td>0.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+sns.regplot('m1', 'unemp', data=trans_data)
+plt.title(f'Changes in log m1 versus log unemp')
+```
+
+
+
+
+    Text(0.5, 1.0, 'Changes in log m1 versus log unemp')
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_58_1.svg)
+
+
+
+```python
+sns.pairplot(trans_data, diag_kind='kde', plot_kws={'alpha': 0.2})
+```
+
+
+
+
+    <seaborn.axisgrid.PairGrid at 0x1a3d8d91d0>
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_59_1.svg)
+
+
+### Facet grids and categorical data
+
+The seaborn library has `factorplot()` for faceting plots.
+
+
+```python
+sns.catplot(x='day', y='tip_pct',
+            row='time', col='smoker',
+            kind='bar',
+            data=tips[tips.tip_pct < 1])
+```
+
+
+
+
+    <seaborn.axisgrid.FacetGrid at 0x1a3e2b0f10>
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_61_1.svg)
+
+
+
+```python
+sns.catplot(x='tip_pct', y='day',
+            kind='box',
+            data=tips[tips.tip_pct < 0.5])
+```
+
+
+
+
+    <seaborn.axisgrid.FacetGrid at 0x1a3d8b8250>
+
+
+
+
+![svg](pfda_ch9_files/pfda_ch9_62_1.svg)
+
+
+
+```python
+
+```

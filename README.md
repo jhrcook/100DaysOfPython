@@ -108,7 +108,7 @@ This one is focussed on manipulating the shapes of DataFrames.
 
 **Day 19 - November 08, 2019:**
 We covered merging and concatenating Series and DataFrames.
-Thankfully, the logic is simmillar to that used in R byby dplyr.
+Thankfully, the logic is simmillar to that used in R by dplyr.
 
 **Day 20 - November 09, 2019:**
 I finished chapter on reshaping and pivoting data.
@@ -118,3 +118,5 @@ I am very excited for this section.
 
 **Day 21 - November 10, 2019:**
 I made good progress through the chapter on plotting, finishing the primer to matplotlib.
+I decided to continue working through this chapter for a second hour today.
+I got introduced to a few features of the seaborn library and the built-in plotting of pandas Series and DataFrame objects.
