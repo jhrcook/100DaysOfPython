@@ -120,3 +120,7 @@ I am very excited for this section.
 I made good progress through the chapter on plotting, finishing the primer to matplotlib.
 I decided to continue working through this chapter for a second hour today.
 I got introduced to a few features of the seaborn library and the built-in plotting of pandas Series and DataFrame objects.
+
+**Day 22 - November 11, 2019:**
+Today, I learned how to group a pandas DataFrame or Series by the data in a column or subset of columns or group the columns by their data type.
+It works generally the same as in 'dplyr' in R, but the API is a bit different.
