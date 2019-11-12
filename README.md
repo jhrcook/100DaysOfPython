@@ -124,3 +124,7 @@ I got introduced to a few features of the seaborn library and the built-in plott
 **Day 22 - November 11, 2019:**
 Today, I learned how to group a pandas DataFrame or Series by the data in a column or subset of columns or group the columns by their data type.
 It works generally the same as in 'dplyr' in R, but the API is a bit different.
+
+**Day 23 - November 12, 2019:**
+I finished the chapter on the split-apply-combine data aggregation pattern in pandas.
+It fits well with the analogous operations in R and the tidyverse.
