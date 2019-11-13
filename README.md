@@ -128,3 +128,8 @@ It works generally the same as in 'dplyr' in R, but the API is a bit different.
 **Day 23 - November 12, 2019:**
 I finished the chapter on the split-apply-combine data aggregation pattern in pandas.
 It fits well with the analogous operations in R and the tidyverse.
+
+**Day 24 - November 13, 2019:**
+I skipped over the chapter on Time Series and went to Advanced pandas as it is more relevant to my current work.
+The chapter begins by teaching about the Categorical type in pandas.
+It is analogous to the factor type in R and comes with performance enhancement for many pandas operations and functions.
