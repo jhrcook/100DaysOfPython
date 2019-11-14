@@ -133,3 +133,7 @@ It fits well with the analogous operations in R and the tidyverse.
 I skipped over the chapter on Time Series and went to Advanced pandas as it is more relevant to my current work.
 The chapter begins by teaching about the Categorical type in pandas.
 It is analogous to the factor type in R and comes with performance enhancement for many pandas operations and functions.
+
+**Day 25 - November 14, 2019:**
+I finished up the (suprizingly short) chapter on advanced pandas by learning about tools for method chaining including the assign() method, the pipe() method, and callables.
+I then began the chapter on statistical modeling in Python.

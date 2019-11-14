@@ -242,7 +242,7 @@ df
 
 ```python
 # Turn the fruit data into a Categorical
-ruit_cat = df['fruit'].astype('category')
+fruit_cat = df['fruit'].astype('category')
 fruit_cat
 ```
 
@@ -492,7 +492,7 @@ draws[:5]
 
 
 
-    array([ 0.3356357 ,  0.04034169,  1.67106186, -1.00292551,  1.40244569])
+    array([ 0.48431215,  0.57914048, -0.18158257,  1.41020463, -0.37447169])
 
 
 
@@ -505,9 +505,9 @@ bins
 
 
 
-    [(0.036, 0.668], (0.036, 0.668], (0.668, 2.912], (-3.4419999999999997, -0.629], (0.668, 2.912], ..., (0.036, 0.668], (-3.4419999999999997, -0.629], (-0.629, 0.036], (0.036, 0.668], (-0.629, 0.036]]
+    [(-0.0301, 0.599], (-0.0301, 0.599], (-0.741, -0.0301], (0.599, 3.102], (-0.741, -0.0301], ..., (-0.0301, 0.599], (0.599, 3.102], (-0.741, -0.0301], (-0.741, -0.0301], (-0.0301, 0.599]]
     Length: 1000
-    Categories (4, interval[float64]): [(-3.4419999999999997, -0.629] < (-0.629, 0.036] < (0.036, 0.668] < (0.668, 2.912]]
+    Categories (4, interval[float64]): [(-3.516, -0.741] < (-0.741, -0.0301] < (-0.0301, 0.599] < (0.599, 3.102]]
 
 
 
@@ -521,7 +521,7 @@ bins
 
 
 
-    [Q3, Q3, Q4, Q1, Q4, ..., Q3, Q1, Q2, Q3, Q2]
+    [Q3, Q3, Q2, Q4, Q2, ..., Q3, Q4, Q2, Q2, Q3]
     Length: 1000
     Categories (4, object): [Q1 < Q2 < Q3 < Q4]
 
@@ -529,7 +529,7 @@ bins
 
 
 ```python
-bins = pd.Series(binds, name='quartile')
+bins = pd.Series(bins, name='quartile')
 results = (
     pd.Series(draws)
         .groupby(bins)
@@ -572,29 +572,29 @@ results
       <th>0</th>
       <td>Q1</td>
       <td>250</td>
-      <td>-3.440574</td>
-      <td>-0.629541</td>
+      <td>-3.514768</td>
+      <td>-0.742269</td>
     </tr>
     <tr>
       <th>1</th>
       <td>Q2</td>
       <td>250</td>
-      <td>-0.629398</td>
-      <td>0.035599</td>
+      <td>-0.740747</td>
+      <td>-0.031245</td>
     </tr>
     <tr>
       <th>2</th>
       <td>Q3</td>
       <td>250</td>
-      <td>0.036325</td>
-      <td>0.666579</td>
+      <td>-0.028946</td>
+      <td>0.596688</td>
     </tr>
     <tr>
       <th>3</th>
       <td>Q4</td>
       <td>250</td>
-      <td>0.673752</td>
-      <td>2.911616</td>
+      <td>0.604160</td>
+      <td>3.101531</td>
     </tr>
   </tbody>
 </table>
@@ -911,8 +911,331 @@ pd.get_dummies(cat_s)
 
 ## 12.2 Advanced groupby use
 
+### Group transformations and "unwrapped" groupbys
+
+As discussed earlier, the `apply()` method in grouped operations perform a transformation on the group, one at a time.
+There is a similar method called `transform()` that has the following constraints on the function it can use:
+
+- it can produce a scalar value
+- it can produce an object of the same shape as the input
+- it must *not* mutate the input
 
 
 ```python
+df = pd.DataFrame({'key': ['a', 'b', 'c'] * 4,
+                   'value': np.arange(12.0)})
+df
+```
 
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>a</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>b</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>c</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>a</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>b</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>c</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>a</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>b</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>c</td>
+      <td>8.0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>a</td>
+      <td>9.0</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>b</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>c</td>
+      <td>11.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+g = df.groupby('key').value
+g.mean()
+```
+
+
+
+
+    key
+    a    4.5
+    b    5.5
+    c    6.5
+    Name: value, dtype: float64
+
+
+
+The following transformation returns a Series of the same length as the input with the means of each group.
+
+
+```python
+g.transform(lambda x: x.mean())
+```
+
+
+
+
+    0     4.5
+    1     5.5
+    2     6.5
+    3     4.5
+    4     5.5
+    5     6.5
+    6     4.5
+    7     5.5
+    8     6.5
+    9     4.5
+    10    5.5
+    11    6.5
+    Name: value, dtype: float64
+
+
+
+
+```python
+# We can call `mean` by name because it is a built-in aggregation method.
+g.transform('mean')
+```
+
+
+
+
+    0     4.5
+    1     5.5
+    2     6.5
+    3     4.5
+    4     5.5
+    5     6.5
+    6     4.5
+    7     5.5
+    8     6.5
+    9     4.5
+    10    5.5
+    11    6.5
+    Name: value, dtype: float64
+
+
+
+## 12.3 Techniques for method chaining
+
+The `assign()` method is useful for adding columns in method chains.
+It does *not* modify in-place, but instead returns a new DataFrame.
+The following two statements are equivalent:
+
+```python
+df2 = df.copy()
+df2['k'] = v
+
+df2 = df.assign(k=v)
+```
+
+Another useful tool for functional programming in Python is the *callable*.
+Essentially, the entire DataFrame can be passed as a parameter to the supplied function; here is an example.
+
+
+```python
+pd.read_csv("assets/examples/ex1.csv")
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+      <th>c</th>
+      <th>d</th>
+      <th>message</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>hello</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+      <td>world</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+      <td>12</td>
+      <td>foo</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+(pd.read_csv("assets/examples/ex1.csv")
+    [lambda x: x.b < 7])
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+      <th>c</th>
+      <th>d</th>
+      <th>message</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>hello</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+      <td>world</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### The pipe method
+
+The `pipe()` method is useful for chaining functions that can pass arguments to each other sequentially.
+
+```python
+a = function1(df, arg1=v1)
+b = function2(a, arg3=v3)
+c = function3(b, arg4=v4)
+```
+
+```python
+c = (df.pipe(function1, arg1=v1)
+    .pipe(function2, arg3=v3)
+    .pipe(function3, arg4=v4))
 ```
