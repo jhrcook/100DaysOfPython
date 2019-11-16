@@ -137,3 +137,7 @@ It is analogous to the factor type in R and comes with performance enhancement f
 **Day 25 - November 14, 2019:**
 I finished up the (suprizingly short) chapter on advanced pandas by learning about tools for method chaining including the assign() method, the pipe() method, and callables.
 I then began the chapter on statistical modeling in Python.
+
+**Day 26 - November 15, 2019:**
+I worked through the introduction the ML chapter where the author gave a brief introduction to patsy, statsmodels, and sklearn.
+I think that is the end of my journey through Python for Data Analysis and I will move on to another educational source.
