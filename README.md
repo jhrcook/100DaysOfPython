@@ -141,3 +141,7 @@ I then began the chapter on statistical modeling in Python.
 **Day 26 - November 15, 2019:**
 I worked through the introduction the ML chapter where the author gave a brief introduction to patsy, statsmodels, and sklearn.
 I think that is the end of my journey through Python for Data Analysis and I will move on to another educational source.
+
+**Day 27 - November 16, 2019:**
+I began working on Stanford's CS 20 Tensorflow course.
+I get the environment set up and completed the introductory lecture.
