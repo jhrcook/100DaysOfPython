@@ -14,15 +14,29 @@ then
 fi
 
 
+source activate daysOfCode-env
 
 ## Build Python for Data Analysis notebooks
-source activate daysOfCode-env
-zsh pfda_to_md.zsh
+echo "Build the Python for Data Analysis notebooks? (y/n)"
+read buildPFDA
+if [[ $buildPFDA == "y" ]];
+then
+	zsh pfda_to_md.zsh
+fi
 
+## Build CS 20 notebooks
+echo "Build the notebooks for CS 20? (y/n)"
+read buildCSTwenty
+if [[ buildCSTwenty == "y" ]];
+then
+	zsh cs20_to_md.zsh
+fi
 
 
 ## Write virtual environment to requirements.txt
 conda list -e > requirements.txt
+
+
 conda deactivate
 
 

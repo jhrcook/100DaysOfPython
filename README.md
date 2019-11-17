@@ -145,3 +145,6 @@ I think that is the end of my journey through Python for Data Analysis and I wil
 **Day 27 - November 16, 2019:**
 I began working on Stanford's CS 20 Tensorflow course.
 I get the environment set up and completed the introductory lecture.
+
+**Day 28 - November 17, 2019:**
+I learned about various TF data structures and how to create Variables.
