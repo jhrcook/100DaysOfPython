@@ -148,3 +148,8 @@ I get the environment set up and completed the introductory lecture.
 
 **Day 28 - November 17, 2019:**
 I learned about various TF data structures and how to create Variables.
+
+**Day 29 - November 18, 2019:**
+Because of all of the hiccups with TF 2.
+0 in CS 20, I decided to first work through *Hands-On ML with Scikit-Learn and TF* to get the fundamentals of ML in Python.
+I can then return to the CS 20 course to perhaps get a better theoretical understanding of TF and ML/DL.
