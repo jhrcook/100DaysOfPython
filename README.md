@@ -153,3 +153,9 @@ I learned about various TF data structures and how to create Variables.
 Because of all of the hiccups with TF 2.
 0 in CS 20, I decided to first work through *Hands-On ML with Scikit-Learn and TF* to get the fundamentals of ML in Python.
 I can then return to the CS 20 course to perhaps get a better theoretical understanding of TF and ML/DL.
+
+**Day 30 - November 19, 2019:**
+I lost a lot of time struggling with VSCode.
+Eventually I switched over to just using jupyter in the browser and everything was much better.
+I continued preparing the data for running the model.
+We looked at correlations and visualized the data to help get an understanding of what features may be worth maintaining.

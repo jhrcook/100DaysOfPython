@@ -390,21 +390,21 @@ housing.hist(bins=50)
 
 
 
-    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x1a24779050>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24c6f490>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24dbdb90>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a23d2ff10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a23d58bd0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24f42f50>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a24fb9c10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24ffbf90>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a250080d0>]],
+    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x121520b50>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1224b9bd0>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1224fbed0>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x12252fb90>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x12256ff10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1225a3bd0>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1225e3410>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x122618c10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x122623790>]],
           dtype=object)
 
 
 
 
-![svg](homl_ch02_files/homl_ch02_6_1.svg)
+![png](homl_ch02_files/homl_ch02_6_1.png)
 
 
 A few things to note about the data:
@@ -617,6 +617,332 @@ strat_train_set.drop(['income_cat'], axis=1, inplace=True)
 ```
 
 ## Discover and visualize the data to gain insights
+
+
+```python
+# A copy of the training data to play around with.
+housing = strat_train_set.copy()
+```
+
+
+```python
+housing.plot(kind='scatter', x='longitude', y='latitude', alpha=0.1)
+
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x1a2544e210>
+
+
+
+
+![png](homl_ch02_files/homl_ch02_18_1.png)
+
+
+
+```python
+housing.plot(kind='scatter',
+             x = 'longitude',
+             y = 'latitude',
+             alpha = 0.4,
+             s=housing.population/100,
+             label='population',
+             c='median_house_value',
+             cmap=plt.get_cmap('jet'), colorbar=True)
+plt.legend()
+```
+
+
+
+
+    <matplotlib.legend.Legend at 0x122b53190>
+
+
+
+
+![png](homl_ch02_files/homl_ch02_19_1.png)
+
+
+
+```python
+corr_matrix = housing.corr()
+corr_matrix
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>longitude</th>
+      <th>latitude</th>
+      <th>housing_median_age</th>
+      <th>total_rooms</th>
+      <th>total_bedrooms</th>
+      <th>population</th>
+      <th>households</th>
+      <th>median_income</th>
+      <th>median_house_value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>longitude</th>
+      <td>1.000000</td>
+      <td>-0.924903</td>
+      <td>-0.108097</td>
+      <td>0.041547</td>
+      <td>0.065183</td>
+      <td>0.096933</td>
+      <td>0.051827</td>
+      <td>-0.013645</td>
+      <td>-0.043236</td>
+    </tr>
+    <tr>
+      <th>latitude</th>
+      <td>-0.924903</td>
+      <td>1.000000</td>
+      <td>0.010784</td>
+      <td>-0.034359</td>
+      <td>-0.064436</td>
+      <td>-0.106834</td>
+      <td>-0.069613</td>
+      <td>-0.081262</td>
+      <td>-0.145570</td>
+    </tr>
+    <tr>
+      <th>housing_median_age</th>
+      <td>-0.108097</td>
+      <td>0.010784</td>
+      <td>1.000000</td>
+      <td>-0.359036</td>
+      <td>-0.317509</td>
+      <td>-0.293215</td>
+      <td>-0.300756</td>
+      <td>-0.113458</td>
+      <td>0.107144</td>
+    </tr>
+    <tr>
+      <th>total_rooms</th>
+      <td>0.041547</td>
+      <td>-0.034359</td>
+      <td>-0.359036</td>
+      <td>1.000000</td>
+      <td>0.929552</td>
+      <td>0.853612</td>
+      <td>0.918026</td>
+      <td>0.196382</td>
+      <td>0.137469</td>
+    </tr>
+    <tr>
+      <th>total_bedrooms</th>
+      <td>0.065183</td>
+      <td>-0.064436</td>
+      <td>-0.317509</td>
+      <td>0.929552</td>
+      <td>1.000000</td>
+      <td>0.874315</td>
+      <td>0.980162</td>
+      <td>-0.009282</td>
+      <td>0.053544</td>
+    </tr>
+    <tr>
+      <th>population</th>
+      <td>0.096933</td>
+      <td>-0.106834</td>
+      <td>-0.293215</td>
+      <td>0.853612</td>
+      <td>0.874315</td>
+      <td>1.000000</td>
+      <td>0.903795</td>
+      <td>0.003431</td>
+      <td>-0.023797</td>
+    </tr>
+    <tr>
+      <th>households</th>
+      <td>0.051827</td>
+      <td>-0.069613</td>
+      <td>-0.300756</td>
+      <td>0.918026</td>
+      <td>0.980162</td>
+      <td>0.903795</td>
+      <td>1.000000</td>
+      <td>0.011840</td>
+      <td>0.069177</td>
+    </tr>
+    <tr>
+      <th>median_income</th>
+      <td>-0.013645</td>
+      <td>-0.081262</td>
+      <td>-0.113458</td>
+      <td>0.196382</td>
+      <td>-0.009282</td>
+      <td>0.003431</td>
+      <td>0.011840</td>
+      <td>1.000000</td>
+      <td>0.688883</td>
+    </tr>
+    <tr>
+      <th>median_house_value</th>
+      <td>-0.043236</td>
+      <td>-0.145570</td>
+      <td>0.107144</td>
+      <td>0.137469</td>
+      <td>0.053544</td>
+      <td>-0.023797</td>
+      <td>0.069177</td>
+      <td>0.688883</td>
+      <td>1.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+corr_matrix.median_house_value.sort_values(ascending=False)
+```
+
+
+
+
+    median_house_value    1.000000
+    median_income         0.688883
+    total_rooms           0.137469
+    housing_median_age    0.107144
+    households            0.069177
+    total_bedrooms        0.053544
+    population           -0.023797
+    longitude            -0.043236
+    latitude             -0.145570
+    Name: median_house_value, dtype: float64
+
+
+
+
+```python
+from pandas.plotting import scatter_matrix
+attributes = ["median_house_value", "median_income", "total_rooms", "housing_median_age"]
+scatter_matrix(housing[attributes])
+```
+
+
+
+
+    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x1a262aa190>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a262c9510>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a262f9d10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a26334550>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a263e5d50>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a2625f590>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a25db5d90>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a261545d0>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a2615d150>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a25d07ad0>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a25d72e10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a25f39650>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a25f6ee50>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a25fb0690>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a2641ee90>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a2645e6d0>]],
+          dtype=object)
+
+
+
+
+![png](homl_ch02_files/homl_ch02_22_1.png)
+
+
+From the above scatter matrix, the most promizing attribute seems to be median income.
+The following plot is a closer look.
+
+
+```python
+housing.plot(kind='scatter',
+             x='median_income',
+             y='median_house_value',
+             alpha=0.05)
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x1a27091650>
+
+
+
+
+![png](homl_ch02_files/homl_ch02_24_1.png)
+
+
+The actual numbers of rooms and bedrooms are not very useful.
+Instead, we want the average number of rooms and bedrooms per house.
+
+
+```python
+housing['rooms_per_household'] = housing.total_rooms / housing.households
+housing['bedrooms_per_room'] = housing.total_bedrooms / housing.households
+housing['population_per_household'] = housing.population / housing.households
+
+# Check the correlations again.
+corr_matrix = housing.corr()
+corr_matrix.median_house_value.sort_values(ascending=False)
+```
+
+
+
+
+    median_house_value          1.000000
+    median_income               0.688883
+    rooms_per_household         0.157620
+    total_rooms                 0.137469
+    housing_median_age          0.107144
+    households                  0.069177
+    total_bedrooms              0.053544
+    population                 -0.023797
+    population_per_household   -0.026888
+    longitude                  -0.043236
+    bedrooms_per_room          -0.048998
+    latitude                   -0.145570
+    Name: median_house_value, dtype: float64
+
+
+
+## Prepare the data for machine learning algorithms
+
+It is important to have a functional flow for this preparation such the transofrmations are easily reproducible and extendible.
+Also, the same transformations will need to be done on the input data when the model is in use.
+Finally, it allows for faster prototyping.
+
+To begin, we reset the training data and separated the labels.
+
+
+```python
+housing = strat_train_set.drop('median_house_value', axis=1)
+housing_labels = strat_train_set['median_house_value'].copy()
+```
+
+### Data cleaning
 
 
 ```python
