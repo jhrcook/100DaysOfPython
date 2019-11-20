@@ -34,6 +34,18 @@ After that, I could activate the virtual environment.
 conda activate daysOfCode-env
 ```
 
+I also added [Jupyter notebook extensions](https://github.com/ipython-contrib/jupyter_contrib_nbextensions) and the [Jupyter Nbextensions Configurator](https://github.com/Jupyter-contrib/jupyter_nbextensions_configurator).
+
+```bash
+# Jupyter notebook extensions
+conda install -c conda-forge jupyter_contrib_nbextensions
+jupyter contrib nbextension install --user
+
+# Jupyter Nbextensions Configurator
+conda install -c conda-forge jupyter_nbextensions_configurator
+```
+
+
 ## Log
 
 **Day 1 - October 21, 2019:**
@@ -159,3 +171,6 @@ I lost a lot of time struggling with VSCode.
 Eventually I switched over to just using jupyter in the browser and everything was much better.
 I continued preparing the data for running the model.
 We looked at correlations and visualized the data to help get an understanding of what features may be worth maintaining.
+
+**Day 31 - November 20, 2019:**
+I finsihed the data preparation for the housing data where I learned about using and creating Scikit-Learn transformers and pipelines.

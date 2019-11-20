@@ -60,7 +60,7 @@ def load_housing_data(housing_path=HOUSING_PATH):
     return pd.read_csv(csv_path)
 
 # Download the data.
-fetch_housing_data()
+# fetch_housing_data()
 
 # Loading the data as a pandas DataFrame.
 housing = load_housing_data()
@@ -390,15 +390,15 @@ housing.hist(bins=50)
 
 
 
-    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x121520b50>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1224b9bd0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1224fbed0>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x12252fb90>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x12256ff10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1225a3bd0>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1225e3410>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x122618c10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x122623790>]],
+    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x10f689e50>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x120d346d0>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x121082e50>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1210b8b10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1210f8e90>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x12112ab50>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x12116cfd0>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1211a2b90>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1211ac710>]],
           dtype=object)
 
 
@@ -633,7 +633,7 @@ housing.plot(kind='scatter', x='longitude', y='latitude', alpha=0.1)
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x1a2544e210>
+    <matplotlib.axes._subplots.AxesSubplot at 0x121a8bc10>
 
 
 
@@ -657,7 +657,7 @@ plt.legend()
 
 
 
-    <matplotlib.legend.Legend at 0x122b53190>
+    <matplotlib.legend.Legend at 0x1a241b1f90>
 
 
 
@@ -849,22 +849,22 @@ scatter_matrix(housing[attributes])
 
 
 
-    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x1a262aa190>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a262c9510>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a262f9d10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a26334550>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a263e5d50>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a2625f590>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a25db5d90>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a261545d0>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a2615d150>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a25d07ad0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a25d72e10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a25f39650>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a25f6ee50>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a25fb0690>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a2641ee90>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a2645e6d0>]],
+    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x1a2401e050>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24ecc710>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24f039d0>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24df8cd0>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a24e2efd0>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24e71d90>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24eab610>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24da1990>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a24dad510>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24f21e90>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a245abd50>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a245dea10>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a24989d90>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a249bfa50>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24f83dd0>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24fb9a90>]],
           dtype=object)
 
 
@@ -887,7 +887,7 @@ housing.plot(kind='scatter',
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x1a27091650>
+    <matplotlib.axes._subplots.AxesSubplot at 0x10ec11310>
 
 
 
@@ -943,6 +943,379 @@ housing_labels = strat_train_set['median_house_value'].copy()
 ```
 
 ### Data cleaning
+
+We need to address the missing data in the `'total_bedrooms'` column; the following are the three options:
+
+1. Remove the data points.
+2. Do not use the feature, atl all.
+3. Set the missing points to some other value (0, the average)
+
+If option 3 is taken, make sure to save the value for filling in the test data, too.
+
+Scikit-learn inlcudes the [`SimpleImputer`](https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html) class to impute missing values.
+Here, it is used to fill in missing values with the median value.
+
+
+```python
+from sklearn.impute import SimpleImputer
+
+imputer = SimpleImputer(strategy='median')
+imputer.fit(housing.drop('ocean_proximity', axis=1))
+imputer
+```
+
+
+
+
+    SimpleImputer(add_indicator=False, copy=True, fill_value=None,
+                  missing_values=nan, strategy='median', verbose=0)
+
+
+
+
+```python
+imputer.statistics_ == housing.drop('ocean_proximity', axis=1).median().values
+```
+
+
+
+
+    array([ True,  True,  True,  True,  True,  True,  True,  True])
+
+
+
+
+```python
+X = imputer.transform(housing.drop('ocean_proximity', axis=1))
+X
+```
+
+
+
+
+    array([[-1.1787e+02,  3.3860e+01,  2.8000e+01, ...,  2.1970e+03,
+             5.0900e+02,  3.4856e+00],
+           [-1.2157e+02,  3.9130e+01,  3.0000e+01, ...,  4.1300e+02,
+             8.8000e+01,  1.5694e+00],
+           [-1.1905e+02,  3.4400e+01,  5.0000e+01, ...,  1.0790e+03,
+             2.5700e+02,  2.6991e+00],
+           ...,
+           [-1.1830e+02,  3.4250e+01,  4.4000e+01, ...,  8.5900e+02,
+             2.9200e+02,  4.5833e+00],
+           [-1.2191e+02,  3.7310e+01,  4.6000e+01, ...,  1.3730e+03,
+             5.9000e+02,  4.7287e+00],
+           [-1.1830e+02,  3.4090e+01,  2.9000e+01, ...,  3.9060e+03,
+             1.1020e+03,  2.1927e+00]])
+
+
+
+### Handling text and categorical attributes
+
+The ocean proximity feature must be turned into a numerical "dummy" variable.
+This can be accomplished using the [LabelEncoder]() (**NEED TO INSERT LINK**) transformer from Scikit-Learn.
+
+
+```python
+from sklearn.preprocessing import LabelEncoder
+
+encoder = LabelEncoder()
+housing_cat = housing.ocean_proximity
+housing_cat_encoded = encoder.fit_transform(housing_cat)
+housing_cat_encoded
+```
+
+
+
+
+    array([0, 1, 0, ..., 0, 0, 0])
+
+
+
+
+```python
+encoder.classes_
+```
+
+
+
+
+    array(['<1H OCEAN', 'INLAND', 'ISLAND', 'NEAR BAY', 'NEAR OCEAN'],
+          dtype=object)
+
+
+
+The problem with this implementation of dummy variables is that there is no intrinsic order in ocean proximity to maintain.
+Therefore, we should use the [OneHotEncoder]() transformer (or the pandas `pd.get_dummies(s)` function), instead.
+
+
+```python
+from sklearn.preprocessing import OneHotEncoder
+
+encoder = OneHotEncoder(categories='auto')
+housing_cat_1hot = encoder.fit_transform(housing_cat_encoded.reshape(-1, 1))
+housing_cat_1hot
+```
+
+
+
+
+    <16512x5 sparse matrix of type '<class 'numpy.float64'>'
+    	with 16512 stored elements in Compressed Sparse Row format>
+
+
+
+
+```python
+housing_cat_1hot.toarray()
+```
+
+
+
+
+    array([[1., 0., 0., 0., 0.],
+           [0., 1., 0., 0., 0.],
+           [1., 0., 0., 0., 0.],
+           ...,
+           [1., 0., 0., 0., 0.],
+           [1., 0., 0., 0., 0.],
+           [1., 0., 0., 0., 0.]])
+
+
+
+
+```python
+# Using the pandas method.
+pd.get_dummies(housing.ocean_proximity)
+```
+
+
+
+
+    array([[1, 0, 0, 0, 0],
+           [0, 1, 0, 0, 0],
+           [1, 0, 0, 0, 0],
+           ...,
+           [1, 0, 0, 0, 0],
+           [1, 0, 0, 0, 0],
+           [1, 0, 0, 0, 0]], dtype=uint8)
+
+
+
+Finally, we can encode a categorical feature into a dummy matrix directly using the [LabelBinarizer]() **NEED LINK** transformer.
+
+
+```python
+from sklearn.preprocessing import LabelBinarizer
+
+encoder = LabelBinarizer()
+housing_cat_1hot = encoder.fit_transform(housing.ocean_proximity)
+housing_cat_1hot
+```
+
+
+
+
+    array([[1, 0, 0, 0, 0],
+           [0, 1, 0, 0, 0],
+           [1, 0, 0, 0, 0],
+           ...,
+           [1, 0, 0, 0, 0],
+           [1, 0, 0, 0, 0],
+           [1, 0, 0, 0, 0]])
+
+
+
+### Custom transformers
+
+Custom tranformers can be made for Scikit-Learn in order to seamlessly fit in standard functionalities and pipelines.
+All that a class needs are three methods: `fit()`, `transform()` and `fit_transform()`.
+(Subclassing from TransformerMixin will bring in the last method in for free.)
+Here is an example transformer that adds some features we did earlier.
+
+
+```python
+from sklearn.base import BaseEstimator, TransformerMixin
+
+# Indices of columns for `CombinedAttributesAdder`.
+rooms_ix, bedrooms_ix, population_ix, household_ix = 3, 4, 5, 6
+
+
+class CombinedAttributesAdder(BaseEstimator, TransformerMixin):
+    '''Add some useful features to housing data.'''
+
+    def __init__(self, add_bedrooms_per_room=True):
+        self.add_bedrooms_per_room = add_bedrooms_per_room
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X, y=None):
+        rooms_per_household = X[:, rooms_ix] / X[:, household_ix]
+        population_per_household = X[:, population_ix] / X[:, household_ix]
+        if self.add_bedrooms_per_room:
+            bedrooms_per_room = X[:, bedrooms_ix] / X[:, rooms_ix]
+            return np.c_[X, rooms_per_household, population_per_household, bedrooms_per_room]
+        else:
+            return np.c_[X, rooms_per_household, population_per_household]
+```
+
+
+```python
+attr_adder = CombinedAttributesAdder(add_bedrooms_per_room=False)
+housing_extra_attributes = attr_adder.transform(housing.values)
+housing_extra_attributes
+```
+
+
+
+
+    array([[-117.87, 33.86, 28.0, ..., '<1H OCEAN', 4.50294695481336,
+            4.31630648330059],
+           [-121.57, 39.13, 30.0, ..., 'INLAND', 5.0227272727272725,
+            4.693181818181818],
+           [-119.05, 34.4, 50.0, ..., '<1H OCEAN', 4.809338521400778,
+            4.198443579766537],
+           ...,
+           [-118.3, 34.25, 44.0, ..., '<1H OCEAN', 4.938356164383562,
+            2.941780821917808],
+           [-121.91, 37.31, 46.0, ..., '<1H OCEAN', 5.172881355932203,
+            2.3271186440677964],
+           [-118.3, 34.09, 29.0, ..., '<1H OCEAN', 2.9446460980036298,
+            3.544464609800363]], dtype=object)
+
+
+
+### Feature scaling
+
+The two most common scaling tactics are *minmax scaling* (or *normalization*) and *standardization*.
+The first is linearly scaling the data to exist within the range of 0 to 1 and the Scikit-Learn transformer for this is [MinMaxScaler]() **NEED LINK**.
+The latter is transforming the data to have mean 0 and standard deviation 1 and the appropriate Scikit-Learn transformer is [StandardScaler]() **NEED LINK**.
+
+### Tansformation pipelines
+
+The [Pipeline]() **NEED LINK** class can perform a sequence of transformations.
+Below is a small example.
+
+
+```python
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+
+num_pipline = Pipeline([
+    ('imputer', SimpleImputer(strategy='median')),
+    ('attribs_adder', CombinedAttributesAdder()),
+    ('std_scalar', StandardScaler())
+])
+
+housing_num_tr = num_pipline.fit_transform(
+    housing.drop('ocean_proximity', axis=1))
+```
+
+We also have the ocean proximity unordered categorical data that needs a separate pipeline.
+Scikit-Learn has a [FeatureUnion]() **LINK NEEDED** class that can take multiple pipelines, run them in parallel, and re-combine the output into a single data structure.
+First, we need to make a wrapper for selecting pandas DataFrame columns as a transformer class for Scikit-Learn.
+
+
+```python
+class DataFrameSelector(BaseEstimator, TransformerMixin):
+    '''
+    A Scikit-Learn transformer for selecting columns of
+    a pandas DataFrame.
+    '''
+    
+    def __init__(self, attribute_names):
+        self.attribute_names = attribute_names
+    
+    def fit(self, X, y=None):
+        return self
+    
+    def transform(self, X):
+        return X[self.attribute_names].values
+```
+
+
+```python
+class MyLabelBinarizer(BaseEstimator, TransformerMixin):
+    '''
+    An alternative to Scikit-Learn's LabelBinarizer because it is not 
+    working in my pipe line.
+    '''
+    
+    def fit(self, X, y=None):
+        return self
+    
+    def transform(self, X):
+        return pd.get_dummies(X[:, 0]).values
+```
+
+
+```python
+# Column names for numerical and categorical features of housing data.
+numerical_attr = list(housing.drop('ocean_proximity', axis=1))
+categorical_attr = ['ocean_proximity']
+
+# A pipline for the numerical features of housing data.
+num_pipeline = Pipeline([
+    ('selector', DataFrameSelector(numerical_attr)),
+    ('imputer', SimpleImputer(strategy='median')),
+    ('attribs_adder', CombinedAttributesAdder()),
+    ('std_scaler', StandardScaler()),
+])
+
+# A pipeline for the categorical 'ocean_proximity'.
+cat_pipeline = Pipeline([
+    ('selector', DataFrameSelector(categorical_attr)),
+    ('label_binarizer', MyLabelBinarizer()),
+])
+
+# A full pipeline for preparing the housing data.
+from sklearn.pipeline import FeatureUnion
+
+full_pipeline = FeatureUnion(transformer_list=[
+    ('num_pipeline', num_pipeline),
+    ('cat_pipeline', cat_pipeline),
+])
+```
+
+
+```python
+# Run the pipeline.
+housing_prepared = full_pipeline.fit_transform(housing)
+housing_prepared
+```
+
+
+
+
+    array([[ 0.84450121, -0.82473693, -0.04853356, ...,  0.        ,
+             0.        ,  0.        ],
+           [-1.00168564,  1.64070891,  0.11081943, ...,  0.        ,
+             0.        ,  0.        ],
+           [ 0.25571729, -0.5721106 ,  1.70434932, ...,  0.        ,
+             0.        ,  0.        ],
+           ...,
+           [ 0.62994436, -0.64228458,  1.22629035, ...,  0.        ,
+             0.        ,  0.        ],
+           [-1.17133524,  0.78926462,  1.38564334, ...,  0.        ,
+             0.        ,  0.        ],
+           [ 0.62994436, -0.71713683,  0.03114293, ...,  0.        ,
+             0.        ,  0.        ]])
+
+
+
+
+```python
+housing_prepared.shape
+```
+
+
+
+
+    (16512, 16)
+
+
+
+## Select and train a model
 
 
 ```python

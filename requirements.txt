@@ -3,12 +3,15 @@
 # platform: osx-64
 _tflow_select=2.3.0=mkl
 absl-py=0.8.1=py37_0
+appdirs=1.4.3=py37h28b3542_0
 appnope=0.1.0=py37_0
 asn1crypto=1.2.0=py37_0
 astor=0.8.0=py37_0
 attrs=19.3.0=py_0
+autopep8=1.4.4=py_0
 backcall=0.1.0=py37_0
 beautifulsoup4=4.8.1=py37_0
+black=19.3b0=py_0
 blas=1.0=mkl
 bleach=3.1.0=py37_0
 c-ares=1.15.0=h1de35cc_1001
@@ -16,6 +19,7 @@ ca-certificates=2019.10.16=0
 certifi=2019.9.11=py37_0
 cffi=1.13.2=py37hb5b8e2f_0
 chardet=3.0.4=py37_1003
+click=7.0=py37_0
 cryptography=2.8=py37ha12b0ac_0
 cycler=0.10.0=py37_0
 dbus=1.13.12=h90a0687_0
@@ -51,7 +55,12 @@ jsonschema=3.1.1=py37_0
 jupyter=1.0.0=py37_7
 jupyter_client=5.3.4=py37_0
 jupyter_console=6.0.0=py37_0
+jupyter_contrib_core=0.3.3=py_2
+jupyter_contrib_nbextensions=0.5.1=py37_0
 jupyter_core=4.6.1=py37_0
+jupyter_highlight_selected_word=0.2.0=py37_1000
+jupyter_latex_envs=1.4.4=py37_1000
+jupyter_nbextensions_configurator=0.4.1=py37_0
 keras-applications=1.0.8=py_0
 keras-preprocessing=1.1.0=py_1
 kiwisolver=1.1.0=py37h0a44026_0
@@ -104,6 +113,7 @@ prometheus_client=0.7.1=py_0
 prompt_toolkit=2.0.10=py_0
 protobuf=3.9.2=py37h0a44026_0
 ptyprocess=0.6.0=py37_0
+pycodestyle=2.5.0=py_0
 pycparser=2.19=py37_0
 pygments=2.4.2=py_0
 pyopenssl=19.0.0=py37_0
@@ -114,6 +124,7 @@ pysocks=1.7.1=py37_0
 python=3.7.4=h359304d_1
 python-dateutil=2.8.1=py_0
 pytz=2019.3=py_0
+pyyaml=5.1.2=py37h0b31af3_0
 pyzmq=18.1.0=py37h0a44026_0
 qt=5.9.7=h468cd18_1
 qtconsole=4.5.5=py_0
@@ -138,6 +149,7 @@ termcolor=1.1.0=py37_1
 terminado=0.8.2=py37_0
 testpath=0.4.2=py37_0
 tk=8.6.8=ha441bb4_0
+toml=0.10.0=py37h28b3542_0
 tornado=6.0.3=py37h1de35cc_0
 traitlets=4.3.3=py37_0
 urllib3=1.25.6=pypi_0
@@ -149,6 +161,7 @@ widgetsnbextension=3.5.1=py37_0
 wrapt=1.11.2=py37h1de35cc_0
 xlrd=1.2.0=py37_0
 xz=5.2.4=h1de35cc_4
+yaml=0.1.7=h1de35cc_1001
 zeromq=4.3.1=h0a44026_3
 zipp=0.6.0=py_0
 zlib=1.2.11=h1de35cc_3
