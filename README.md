@@ -174,3 +174,8 @@ We looked at correlations and visualized the data to help get an understanding o
 
 **Day 31 - November 20, 2019:**
 I finsihed the data preparation for the housing data where I learned about using and creating Scikit-Learn transformers and pipelines.
+
+**Day 32 - November 21, 2019:**
+I finally trained a model using Scikit-Learn.
+We tried using linear regression, a decision tree regressor, and a random forest regressor.
+We also calculated the RMSE of the model on the training data via CV to access how well the model performed.

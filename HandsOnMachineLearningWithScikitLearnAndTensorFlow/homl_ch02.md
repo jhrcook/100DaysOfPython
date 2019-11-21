@@ -390,15 +390,15 @@ housing.hist(bins=50)
 
 
 
-    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x10f689e50>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x120d346d0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x121082e50>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1210b8b10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1210f8e90>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x12112ab50>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x12116cfd0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1211a2b90>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1211ac710>]],
+    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x1a28bded10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a28786750>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a28708950>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a28b9ee90>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a28ba6f90>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a28c0d2d0>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a28c41e50>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a28c5cb10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a28c3fdd0>]],
           dtype=object)
 
 
@@ -633,7 +633,7 @@ housing.plot(kind='scatter', x='longitude', y='latitude', alpha=0.1)
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x121a8bc10>
+    <matplotlib.axes._subplots.AxesSubplot at 0x1a28bd0850>
 
 
 
@@ -657,7 +657,7 @@ plt.legend()
 
 
 
-    <matplotlib.legend.Legend at 0x1a241b1f90>
+    <matplotlib.legend.Legend at 0x1a29272c10>
 
 
 
@@ -849,22 +849,22 @@ scatter_matrix(housing[attributes])
 
 
 
-    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x1a2401e050>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24ecc710>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24f039d0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24df8cd0>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a24e2efd0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24e71d90>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24eab610>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24da1990>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a24dad510>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24f21e90>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a245abd50>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a245dea10>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a24989d90>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a249bfa50>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24f83dd0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a24fb9a90>]],
+    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x1a292fc0d0>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38914dd0>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a39126b90>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a3915fe90>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a39199710>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38e1aa10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a3841dd10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38728f90>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a38734ad0>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a3876af10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38bfa950>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38c31c50>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a38c69f50>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38cadd10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a390e1590>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a391d8b10>]],
           dtype=object)
 
 
@@ -887,7 +887,7 @@ housing.plot(kind='scatter',
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x10ec11310>
+    <matplotlib.axes._subplots.AxesSubplot at 0x1a397f2b10>
 
 
 
@@ -1091,13 +1091,124 @@ pd.get_dummies(housing.ocean_proximity)
 
 
 
-    array([[1, 0, 0, 0, 0],
-           [0, 1, 0, 0, 0],
-           [1, 0, 0, 0, 0],
-           ...,
-           [1, 0, 0, 0, 0],
-           [1, 0, 0, 0, 0],
-           [1, 0, 0, 0, 0]], dtype=uint8)
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>&lt;1H OCEAN</th>
+      <th>INLAND</th>
+      <th>ISLAND</th>
+      <th>NEAR BAY</th>
+      <th>NEAR OCEAN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>10275</th>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>20601</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>20138</th>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>18028</th>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>16289</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>6358</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>618</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3407</th>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>17590</th>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4303</th>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>16512 rows × 5 columns</p>
+</div>
 
 
 
@@ -1235,17 +1346,22 @@ class DataFrameSelector(BaseEstimator, TransformerMixin):
 
 
 ```python
-class MyLabelBinarizer(BaseEstimator, TransformerMixin):
+# This implementation was taken from this PR on sklearn.
+# https://github.com/scikit-learn/scikit-learn/pull/7375/files#diff-1e175ddb0d84aad0a578d34553f6f9c6
+class MyLabelBinarizer(LabelBinarizer):
     '''
     An alternative to Scikit-Learn's LabelBinarizer because it is not 
     working in my pipe line.
     '''
     
     def fit(self, X, y=None):
-        return self
+         super(MyLabelBinarizer, self).fit(X)
     
-    def transform(self, X):
-        return pd.get_dummies(X[:, 0]).values
+    def transform(self, X, y=None):
+         return super(MyLabelBinarizer, self).transform(X)
+    
+    def fit_transform(self, X, y=None):
+         return super(MyLabelBinarizer, self).fit(X).transform(X)
 ```
 
 
@@ -1316,6 +1432,287 @@ housing_prepared.shape
 
 
 ## Select and train a model
+
+### Training and evaluating on the training set
+
+The first model tried was a linear regression.
+
+
+```python
+from sklearn.linear_model import LinearRegression
+
+lin_reg = LinearRegression()
+lin_reg.fit(housing_prepared, housing_labels)
+```
+
+
+
+
+    LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None, normalize=False)
+
+
+
+That is all that is required to get a linear regression model.
+Below, it is manually tested on a few data points.
+
+
+```python
+# Get the first 5 values to play with.
+some_data = housing.iloc[:5]
+some_labels = housing_labels.iloc[:5]
+
+# Transform the selected data for input into the model.
+some_data_prepared = full_pipeline.transform(some_data)
+
+# What would be predicted by the linear regression model.
+lin_reg.predict(some_data_prepared)
+```
+
+
+
+
+    array([172713.58885788,  43130.16935351, 195014.22158132, 268919.62476372,
+            44875.4698183 ])
+
+
+
+
+```python
+# Actual values.
+some_labels.values
+```
+
+
+
+
+    array([142800.,  57900., 181300., 245300.,  73900.])
+
+
+
+
+```python
+# Difference between actual and predicted divided by the actual value.
+(some_labels.values - lin_reg.predict(some_data_prepared)) / some_labels.values
+```
+
+
+
+
+    array([-0.20947891,  0.25509207, -0.0756438 , -0.09628873,  0.39275413])
+
+
+
+We can compare the predicted values to the real values of the training data by calculating the root mean squared error (RMSE).
+
+
+```python
+from sklearn.metrics import mean_squared_error
+
+def root_mean_squared_error(actual_val, predicted_val):
+    """Calculate the RMSE of actual and predicted values."""
+    return np.sqrt(mean_squared_error(actual_val, predicted_val))
+
+housing_predictions = lin_reg.predict(housing_prepared)
+lin_rmse = root_mean_squared_error(housing_labels, housing_predictions)
+lin_rmse
+```
+
+
+
+
+    68284.24083518104
+
+
+
+To attain a better prediction, we will use a more complicated model, a decision tree regression model.
+
+
+```python
+from sklearn.tree import DecisionTreeRegressor
+
+tree_reg = DecisionTreeRegressor()
+tree_reg.fit(housing_prepared, housing_labels)
+```
+
+
+
+
+    DecisionTreeRegressor(criterion='mse', max_depth=None, max_features=None,
+                          max_leaf_nodes=None, min_impurity_decrease=0.0,
+                          min_impurity_split=None, min_samples_leaf=1,
+                          min_samples_split=2, min_weight_fraction_leaf=0.0,
+                          presort=False, random_state=None, splitter='best')
+
+
+
+
+```python
+housing_predictions = tree_reg.predict(housing_prepared)
+tree_rmse = root_mean_squared_error(housing_labels, housing_predictions)
+tree_rmse
+```
+
+
+
+
+    0.0
+
+
+
+With a RMSE of 0, it is likely that the decision tree is overfitting.
+We can fix this by using cross-validation.
+
+### Betting evaluation using CV
+
+It is a fairly straightforward process for running CV in Scikit-Learn.
+
+
+```python
+from sklearn.model_selection import cross_val_score
+
+scores = cross_val_score(tree_reg,
+                         housing_prepared,
+                         housing_labels,
+                         scoring="neg_mean_squared_error",
+                         cv=10)
+scores
+```
+
+
+
+
+    array([-5.09225911e+09, -5.15375088e+09, -4.98208947e+09, -4.95614622e+09,
+           -4.97668140e+09, -4.79071660e+09, -5.22910147e+09, -5.34359896e+09,
+           -4.50367302e+09, -4.96588182e+09])
+
+
+
+
+```python
+rmse_scores = np.sqrt(-scores)
+rmse_scores
+```
+
+
+
+
+    array([71360.06664306, 71789.62931735, 70583.91789879, 70399.90212568,
+           70545.59803748, 69215.00270135, 72312.52637449, 73099.92448992,
+           67109.41078134, 70469.01320245])
+
+
+
+
+```python
+rmse_scores.mean()
+```
+
+
+
+
+    70688.49915719285
+
+
+
+
+```python
+rmse_scores.std()
+```
+
+
+
+
+    1589.3335950525825
+
+
+
+The decision tree did not perform very well.
+We could see improvements by using an ensemble of them: a random forest regression model.
+
+
+```python
+from sklearn.ensemble import RandomForestRegressor
+
+forest_reg = RandomForestRegressor(n_estimators=100)
+forest_reg.fit(housing_prepared, housing_labels)
+```
+
+
+
+
+    RandomForestRegressor(bootstrap=True, criterion='mse', max_depth=None,
+                          max_features='auto', max_leaf_nodes=None,
+                          min_impurity_decrease=0.0, min_impurity_split=None,
+                          min_samples_leaf=1, min_samples_split=2,
+                          min_weight_fraction_leaf=0.0, n_estimators=100,
+                          n_jobs=None, oob_score=False, random_state=None,
+                          verbose=0, warm_start=False)
+
+
+
+
+```python
+forest_scores = cross_val_score(forest_reg,
+                               housing_prepared,
+                               housing_labels,
+                               scoring='neg_mean_squared_error',
+                               cv=10)
+forest_scores
+```
+
+
+
+
+    array([-2.44544512e+09, -2.86294130e+09, -2.35392547e+09, -2.49363092e+09,
+           -2.64240278e+09, -2.34490264e+09, -2.43276184e+09, -2.60129380e+09,
+           -2.54586615e+09, -2.66949272e+09])
+
+
+
+
+```python
+forest_rmse = np.sqrt(-forest_scores)
+forest_rmse
+```
+
+
+
+
+    array([49451.4420742 , 53506.46034054, 48517.26981405, 49936.26855454,
+           51404.307023  , 48424.19479902, 49323.03558077, 51002.88029496,
+           50456.57685432, 51667.13386124])
+
+
+
+
+```python
+forest_rmse.mean()
+```
+
+
+
+
+    50368.956919664095
+
+
+
+
+```python
+forest_rmse.std()
+```
+
+
+
+
+    1494.808550480117
+
+
+
+The random forest seems to be a better option than the linear regression or the decision tree.
+
+The author suggests trying out a few other models to generate a short-list (2-5) types of models to dive deeper into.
+
+## Fine-tune your model
 
 
 ```python
