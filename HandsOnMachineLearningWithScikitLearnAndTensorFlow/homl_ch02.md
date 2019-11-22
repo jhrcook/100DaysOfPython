@@ -390,15 +390,15 @@ housing.hist(bins=50)
 
 
 
-    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x1a28bded10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a28786750>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a28708950>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a28b9ee90>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a28ba6f90>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a28c0d2d0>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a28c41e50>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a28c5cb10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a28c3fdd0>]],
+    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x103850890>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x116aa7510>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x116adccd0>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x116b1d510>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x116b53d10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x116b91550>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x116bc6d50>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x116c07590>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x116c12110>]],
           dtype=object)
 
 
@@ -633,7 +633,7 @@ housing.plot(kind='scatter', x='longitude', y='latitude', alpha=0.1)
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x1a28bd0850>
+    <matplotlib.axes._subplots.AxesSubplot at 0x1a19af5c50>
 
 
 
@@ -657,7 +657,7 @@ plt.legend()
 
 
 
-    <matplotlib.legend.Legend at 0x1a29272c10>
+    <matplotlib.legend.Legend at 0x1a1a00d290>
 
 
 
@@ -849,22 +849,22 @@ scatter_matrix(housing[attributes])
 
 
 
-    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x1a292fc0d0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38914dd0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a39126b90>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a3915fe90>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a39199710>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38e1aa10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a3841dd10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38728f90>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a38734ad0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a3876af10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38bfa950>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38c31c50>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a38c69f50>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a38cadd10>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a390e1590>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x1a391d8b10>]],
+    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x1a1a702890>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a1a839a50>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a1a867f90>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a1a8ab850>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a1a8e7bd0>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a1a91f890>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a1a81cd10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a1a7d18d0>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a1a7dc450>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a1a951dd0>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a19b51c90>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a1a27d950>],
+           [<matplotlib.axes._subplots.AxesSubplot object at 0x1a1a2bbcd0>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a1a36e990>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a1a3acd10>,
+            <matplotlib.axes._subplots.AxesSubplot object at 0x1a1a3e49d0>]],
           dtype=object)
 
 
@@ -887,7 +887,7 @@ housing.plot(kind='scatter',
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x1a397f2b10>
+    <matplotlib.axes._subplots.AxesSubplot at 0x1a1a7023d0>
 
 
 
@@ -1581,9 +1581,9 @@ scores
 
 
 
-    array([-5.09225911e+09, -5.15375088e+09, -4.98208947e+09, -4.95614622e+09,
-           -4.97668140e+09, -4.79071660e+09, -5.22910147e+09, -5.34359896e+09,
-           -4.50367302e+09, -4.96588182e+09])
+    array([-5.15937092e+09, -5.18073235e+09, -5.32058793e+09, -4.95028448e+09,
+           -4.89613998e+09, -4.81118781e+09, -5.17159820e+09, -5.43590409e+09,
+           -4.52700620e+09, -4.93849034e+09])
 
 
 
@@ -1596,9 +1596,9 @@ rmse_scores
 
 
 
-    array([71360.06664306, 71789.62931735, 70583.91789879, 70399.90212568,
-           70545.59803748, 69215.00270135, 72312.52637449, 73099.92448992,
-           67109.41078134, 70469.01320245])
+    array([71828.76109375, 71977.30444219, 72942.36035746, 70358.25806928,
+           69972.42302975, 69362.72636481, 71913.82478571, 73728.58391874,
+           67283.03054852, 70274.39320752])
 
 
 
@@ -1610,7 +1610,7 @@ rmse_scores.mean()
 
 
 
-    70688.49915719285
+    70964.1665817734
 
 
 
@@ -1622,7 +1622,7 @@ rmse_scores.std()
 
 
 
-    1589.3335950525825
+    1793.6810612782483
 
 
 
@@ -1633,7 +1633,7 @@ We could see improvements by using an ensemble of them: a random forest regressi
 ```python
 from sklearn.ensemble import RandomForestRegressor
 
-forest_reg = RandomForestRegressor(n_estimators=100)
+forest_reg = RandomForestRegressor(n_estimators=10)
 forest_reg.fit(housing_prepared, housing_labels)
 ```
 
@@ -1644,7 +1644,7 @@ forest_reg.fit(housing_prepared, housing_labels)
                           max_features='auto', max_leaf_nodes=None,
                           min_impurity_decrease=0.0, min_impurity_split=None,
                           min_samples_leaf=1, min_samples_split=2,
-                          min_weight_fraction_leaf=0.0, n_estimators=100,
+                          min_weight_fraction_leaf=0.0, n_estimators=10,
                           n_jobs=None, oob_score=False, random_state=None,
                           verbose=0, warm_start=False)
 
@@ -1663,9 +1663,9 @@ forest_scores
 
 
 
-    array([-2.44544512e+09, -2.86294130e+09, -2.35392547e+09, -2.49363092e+09,
-           -2.64240278e+09, -2.34490264e+09, -2.43276184e+09, -2.60129380e+09,
-           -2.54586615e+09, -2.66949272e+09])
+    array([-2.61417874e+09, -3.18995571e+09, -2.61593660e+09, -2.77357932e+09,
+           -3.01912691e+09, -2.48698284e+09, -2.60322322e+09, -2.97681114e+09,
+           -2.83410599e+09, -2.91489360e+09])
 
 
 
@@ -1678,9 +1678,9 @@ forest_rmse
 
 
 
-    array([49451.4420742 , 53506.46034054, 48517.26981405, 49936.26855454,
-           51404.307023  , 48424.19479902, 49323.03558077, 51002.88029496,
-           50456.57685432, 51667.13386124])
+    array([51129.04011066, 56479.69289041, 51146.22759761, 52664.78253091,
+           54946.58232333, 49869.65851849, 51021.79160182, 54560.16075797,
+           53236.3220899 , 53989.75459665])
 
 
 
@@ -1692,7 +1692,7 @@ forest_rmse.mean()
 
 
 
-    50368.956919664095
+    52904.401301774815
 
 
 
@@ -1704,7 +1704,7 @@ forest_rmse.std()
 
 
 
-    1494.808550480117
+    2000.9322367576474
 
 
 
@@ -1714,7 +1714,318 @@ The author suggests trying out a few other models to generate a short-list (2-5)
 
 ## Fine-tune your model
 
+Once a shot-list of models has been collected, the hyperparameters of the model can be adjusted to improve performance.
+Some of the common techniques are discussed below.
+
+### Grid search
+
+The Scikit-Learn GridSearchCV object can be given the values to try for each hyperparameter and it will use CV to try out every combination.
+Here is an example using the random forest regressor.
+
 
 ```python
+from sklearn.model_selection import GridSearchCV
 
+# Parameters to search through.
+# Each dictionary in the list will be used for a grid search.
+param_grid = [
+    {
+        'n_estimators': [3, 10, 30],
+        'max_features': [2, 4, 6, 8]
+    },
+    {
+        'bootstrap': [False],
+        'n_estimators': [3, 10],
+        'max_features': [2, 3, 4]
+    }
+]
+
+# Random forest regression model.
+forest_reg = RandomForestRegressor()
+
+# Grid search object.
+grid_search = GridSearchCV(forest_reg,
+                           param_grid,
+                           cv=5,
+                           scoring='neg_mean_squared_error')
+
+grid_search.fit(housing_prepared, housing_labels)
 ```
+
+
+
+
+    GridSearchCV(cv=5, error_score='raise-deprecating',
+                 estimator=RandomForestRegressor(bootstrap=True, criterion='mse',
+                                                 max_depth=None,
+                                                 max_features='auto',
+                                                 max_leaf_nodes=None,
+                                                 min_impurity_decrease=0.0,
+                                                 min_impurity_split=None,
+                                                 min_samples_leaf=1,
+                                                 min_samples_split=2,
+                                                 min_weight_fraction_leaf=0.0,
+                                                 n_estimators='warn', n_jobs=None,
+                                                 oob_score=False, random_state=None,
+                                                 verbose=0, warm_start=False),
+                 iid='warn', n_jobs=None,
+                 param_grid=[{'max_features': [2, 4, 6, 8],
+                              'n_estimators': [3, 10, 30]},
+                             {'bootstrap': [False], 'max_features': [2, 3, 4],
+                              'n_estimators': [3, 10]}],
+                 pre_dispatch='2*n_jobs', refit=True, return_train_score=False,
+                 scoring='neg_mean_squared_error', verbose=0)
+
+
+
+
+```python
+np.sqrt(-grid_search.best_score_)
+```
+
+
+
+
+    50108.238534885306
+
+
+
+
+```python
+grid_search.best_params_
+```
+
+
+
+
+    {'max_features': 6, 'n_estimators': 30}
+
+
+
+
+```python
+grid_search.best_estimator_
+```
+
+
+
+
+    RandomForestRegressor(bootstrap=True, criterion='mse', max_depth=None,
+                          max_features=6, max_leaf_nodes=None,
+                          min_impurity_decrease=0.0, min_impurity_split=None,
+                          min_samples_leaf=1, min_samples_split=2,
+                          min_weight_fraction_leaf=0.0, n_estimators=30,
+                          n_jobs=None, oob_score=False, random_state=None,
+                          verbose=0, warm_start=False)
+
+
+
+
+```python
+cv_res = grid_search.cv_results_
+for mean_score, params in zip(cv_res['mean_test_score'], cv_res['params']):
+    print(np.sqrt(-mean_score), params)
+```
+
+    62045.30806270319 {'max_features': 2, 'n_estimators': 3}
+    55850.92960637452 {'max_features': 2, 'n_estimators': 10}
+    52605.81798214284 {'max_features': 2, 'n_estimators': 30}
+    60701.71517249607 {'max_features': 4, 'n_estimators': 3}
+    52986.20555736508 {'max_features': 4, 'n_estimators': 10}
+    50531.534512995444 {'max_features': 4, 'n_estimators': 30}
+    59622.611239064994 {'max_features': 6, 'n_estimators': 3}
+    52489.50230674013 {'max_features': 6, 'n_estimators': 10}
+    50108.238534885306 {'max_features': 6, 'n_estimators': 30}
+    58501.64726723975 {'max_features': 8, 'n_estimators': 3}
+    52145.037645822325 {'max_features': 8, 'n_estimators': 10}
+    50172.81147175804 {'max_features': 8, 'n_estimators': 30}
+    62505.616743221246 {'bootstrap': False, 'max_features': 2, 'n_estimators': 3}
+    53775.884701655676 {'bootstrap': False, 'max_features': 2, 'n_estimators': 10}
+    59854.671653414734 {'bootstrap': False, 'max_features': 3, 'n_estimators': 3}
+    52522.55104011973 {'bootstrap': False, 'max_features': 3, 'n_estimators': 10}
+    59633.96778952786 {'bootstrap': False, 'max_features': 4, 'n_estimators': 3}
+    51639.703026640236 {'bootstrap': False, 'max_features': 4, 'n_estimators': 10}
+
+
+### Randomized search
+
+This method is preferred over grid search when the search space is very large.
+It evaluates a given number of random combinations by selecting a random value for each hyperparamter at every iteration.
+The Scikit-Learn class is RandomizedSearchCV.
+It is best to let the search go very several thousands of iterations.
+
+
+```python
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint as sp_randint
+
+# Search space for the random searcher.
+param_dist = {
+    'bootstrap': [True, False],
+    'n_estimators': sp_randint(3, 30),
+    'max_features': sp_randint(2, 8)
+}
+
+# Random forest regression model.
+forest_reg = RandomForestRegressor()
+
+# Grid search object.
+random_search = RandomizedSearchCV(forest_reg,
+                                   param_distributions=param_dist,
+                                   cv=5,
+                                   n_iter=100,
+                                   scoring='neg_mean_squared_error')
+
+random_search.fit(housing_prepared, housing_labels)
+```
+
+
+
+
+    RandomizedSearchCV(cv=5, error_score='raise-deprecating',
+                       estimator=RandomForestRegressor(bootstrap=True,
+                                                       criterion='mse',
+                                                       max_depth=None,
+                                                       max_features='auto',
+                                                       max_leaf_nodes=None,
+                                                       min_impurity_decrease=0.0,
+                                                       min_impurity_split=None,
+                                                       min_samples_leaf=1,
+                                                       min_samples_split=2,
+                                                       min_weight_fraction_leaf=0.0,
+                                                       n_estimators='warn',
+                                                       n_jobs=None, oob_score=False,
+                                                       random_sta...
+                       iid='warn', n_iter=100, n_jobs=None,
+                       param_distributions={'bootstrap': [True, False],
+                                            'max_features': <scipy.stats._distn_infrastructure.rv_frozen object at 0x1a1d0de350>,
+                                            'n_estimators': <scipy.stats._distn_infrastructure.rv_frozen object at 0x1a1d0de550>},
+                       pre_dispatch='2*n_jobs', random_state=None, refit=True,
+                       return_train_score=False, scoring='neg_mean_squared_error',
+                       verbose=0)
+
+
+
+
+```python
+random_search.best_estimator_
+```
+
+
+
+
+    RandomForestRegressor(bootstrap=False, criterion='mse', max_depth=None,
+                          max_features=5, max_leaf_nodes=None,
+                          min_impurity_decrease=0.0, min_impurity_split=None,
+                          min_samples_leaf=1, min_samples_split=2,
+                          min_weight_fraction_leaf=0.0, n_estimators=29,
+                          n_jobs=None, oob_score=False, random_state=None,
+                          verbose=0, warm_start=False)
+
+
+
+
+```python
+random_search.best_params_
+```
+
+
+
+
+    {'bootstrap': False, 'max_features': 5, 'n_estimators': 29}
+
+
+
+### Ensemble methods
+
+If good performance is found with an individual model, the ensemble form will likely perform better.
+We saw this above with the improvement from switching from a decision tree to a random forest.
+
+### Analyze the best models and their errors
+
+Many of the models can report the importance of each input feature.
+Here is an example of the most important features from the bet random forest regressor from the randomized search.
+
+
+```python
+feature_importances = random_search.best_estimator_.feature_importances_
+
+# Names of extra attributes added during input prepration.
+extra_attribs = ['rooms_per_hhold', 'pop_per_hhold', 'bedrooms_per_room']
+cat_one_hot_attribs = list(encoder.classes_)
+attribs = numerical_attr + extra_attribs + cat_one_hot_attribs
+sorted(zip(feature_importances, attribs), reverse=True)
+```
+
+
+
+
+    [(0.3021968413681202, 'median_income'),
+     (0.17172121501383844, 'INLAND'),
+     (0.10535643725446837, 'pop_per_hhold'),
+     (0.08252898351917255, 'bedrooms_per_room'),
+     (0.07600088314616228, 'longitude'),
+     (0.07164239936294078, 'latitude'),
+     (0.061136870763047135, 'rooms_per_hhold'),
+     (0.03979073180795825, 'housing_median_age'),
+     (0.02073645853704187, 'total_rooms'),
+     (0.019475112626333217, 'population'),
+     (0.017225888404773914, 'total_bedrooms'),
+     (0.01651339474021543, 'households'),
+     (0.008266057803458848, '<1H OCEAN'),
+     (0.004173937351643412, 'NEAR OCEAN'),
+     (0.002949952272525918, 'NEAR BAY'),
+     (0.0002848360282993544, 'ISLAND')]
+
+
+
+### Evaluate your system on the test set
+
+Once you have a well-built model, you can evaluate how well it performs on new data by passing it the test data set aside earlier.
+
+
+```python
+final_model = random_search.best_estimator_
+final_model
+```
+
+
+
+
+    RandomForestRegressor(bootstrap=False, criterion='mse', max_depth=None,
+                          max_features=5, max_leaf_nodes=None,
+                          min_impurity_decrease=0.0, min_impurity_split=None,
+                          min_samples_leaf=1, min_samples_split=2,
+                          min_weight_fraction_leaf=0.0, n_estimators=29,
+                          n_jobs=None, oob_score=False, random_state=None,
+                          verbose=0, warm_start=False)
+
+
+
+Note that the test input data (`X_test` below) is passed to through the pipeline using `transform()`, not `fit_transform()`.
+
+
+```python
+# Prepare the testing input and real values.
+X_test = strat_test_set.drop('median_house_value', axis=1)
+X_test_prepared = full_pipeline.transform(X_test)
+
+y_test = strat_test_set['median_house_value'].copy()
+```
+
+
+```python
+# Run the test data through the final model.
+final_predictions = final_model.predict(X_test_prepared)
+
+# Calculate the RMSE of the model on the test data.
+final_rmse = root_mean_squared_error(y_test, final_predictions)
+final_rmse
+```
+
+
+
+
+    47873.75645993217
+
+

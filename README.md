@@ -179,3 +179,7 @@ I finsihed the data preparation for the housing data where I learned about using
 I finally trained a model using Scikit-Learn.
 We tried using linear regression, a decision tree regressor, and a random forest regressor.
 We also calculated the RMSE of the model on the training data via CV to access how well the model performed.
+
+**Day 33 - November 22, 2019:**
+I finished chapter 2 which was the first foray into the process of creating an ML model.
+We used grid and randomized search to tune hyperparamters.
