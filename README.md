@@ -183,3 +183,6 @@ We also calculated the RMSE of the model on the training data via CV to access h
 **Day 33 - November 22, 2019:**
 I finished chapter 2 which was the first foray into the process of creating an ML model.
 We used grid and randomized search to tune hyperparamters.
+
+**Day 34 - November 24, 2019:**
+I began working on the Classification chapter, specifically focusing on learning the common assessment metrics used.
