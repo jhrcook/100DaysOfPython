@@ -186,3 +186,6 @@ We used grid and randomized search to tune hyperparamters.
 
 **Day 34 - November 24, 2019:**
 I began working on the Classification chapter, specifically focusing on learning the common assessment metrics used.
+
+**Day 35 - November 25, 2019:**
+I finished the binary classification section and have started learning about multiclass classification and the evaluation methods and metrics commonly used.
