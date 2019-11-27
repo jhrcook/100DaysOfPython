@@ -262,8 +262,8 @@ def plot_gradient_descent(theta, eta):
 
 
 ```python
-random_initial_theta = np.random.randn(2, 1)
-fig = plt.figure()
+random_initial_theta = np.array([[0.1], [0.1]])
+fig = plt.figure(figsize=(10, 4))
 plt.subplot(1, 3, 1)
 plot_gradient_descent(random_initial_theta, 0.01)
 plt.subplot(1, 3, 2)
