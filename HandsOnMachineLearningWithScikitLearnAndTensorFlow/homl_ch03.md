@@ -487,111 +487,15 @@ sgd_clf.fit(X_train, y_train)
 ```
 
 
-    ---------------------------------------------------------------------------
-
-    KeyboardInterrupt                         Traceback (most recent call last)
-
-    <ipython-input-29-618cbbb8cdf1> in <module>
-    ----> 1 sgd_clf.fit(X_train, y_train)
-    
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/stochastic_gradient.py in fit(self, X, y, coef_init, intercept_init, sample_weight)
-        711                          loss=self.loss, learning_rate=self.learning_rate,
-        712                          coef_init=coef_init, intercept_init=intercept_init,
-    --> 713                          sample_weight=sample_weight)
-        714 
-        715 
 
 
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/stochastic_gradient.py in _fit(self, X, y, alpha, C, loss, learning_rate, coef_init, intercept_init, sample_weight)
-        552 
-        553         self._partial_fit(X, y, alpha, C, loss, learning_rate, self.max_iter,
-    --> 554                           classes, sample_weight, coef_init, intercept_init)
-        555 
-        556         if (self.tol is not None and self.tol > -np.inf
+    SGDClassifier(alpha=0.0001, average=False, class_weight=None,
+                  early_stopping=False, epsilon=0.1, eta0=0.0, fit_intercept=True,
+                  l1_ratio=0.15, learning_rate='optimal', loss='hinge',
+                  max_iter=1000, n_iter_no_change=5, n_jobs=None, penalty='l2',
+                  power_t=0.5, random_state=0, shuffle=True, tol=0.001,
+                  validation_fraction=0.1, verbose=0, warm_start=False)
 
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/stochastic_gradient.py in _partial_fit(self, X, y, alpha, C, loss, learning_rate, max_iter, classes, sample_weight, coef_init, intercept_init)
-        507                                  learning_rate=learning_rate,
-        508                                  sample_weight=sample_weight,
-    --> 509                                  max_iter=max_iter)
-        510         elif n_classes == 2:
-        511             self._fit_binary(X, y, alpha=alpha, C=C,
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/stochastic_gradient.py in _fit_multiclass(self, X, y, alpha, C, learning_rate, sample_weight, max_iter)
-        613                                 validation_mask=validation_mask,
-        614                                 random_state=seed)
-    --> 615             for i, seed in enumerate(seeds))
-        616 
-        617         # take the maximum of n_iter_ over every binary fit
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/joblib/parallel.py in __call__(self, iterable)
-       1004                 self._iterating = self._original_iterator is not None
-       1005 
-    -> 1006             while self.dispatch_one_batch(iterator):
-       1007                 pass
-       1008 
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/joblib/parallel.py in dispatch_one_batch(self, iterator)
-        832                 return False
-        833             else:
-    --> 834                 self._dispatch(tasks)
-        835                 return True
-        836 
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/joblib/parallel.py in _dispatch(self, batch)
-        751         with self._lock:
-        752             job_idx = len(self._jobs)
-    --> 753             job = self._backend.apply_async(batch, callback=cb)
-        754             # A job can complete so quickly than its callback is
-        755             # called before we get here, causing self._jobs to
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/joblib/_parallel_backends.py in apply_async(self, func, callback)
-        199     def apply_async(self, func, callback=None):
-        200         """Schedule a func to be run"""
-    --> 201         result = ImmediateResult(func)
-        202         if callback:
-        203             callback(result)
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/joblib/_parallel_backends.py in __init__(self, batch)
-        580         # Don't delay the application, to avoid keeping the input
-        581         # arguments in memory
-    --> 582         self.results = batch()
-        583 
-        584     def get(self):
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/joblib/parallel.py in __call__(self)
-        254         with parallel_backend(self._backend, n_jobs=self._n_jobs):
-        255             return [func(*args, **kwargs)
-    --> 256                     for func, args, kwargs in self.items]
-        257 
-        258     def __len__(self):
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/joblib/parallel.py in <listcomp>(.0)
-        254         with parallel_backend(self._backend, n_jobs=self._n_jobs):
-        255             return [func(*args, **kwargs)
-    --> 256                     for func, args, kwargs in self.items]
-        257 
-        258     def __len__(self):
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/stochastic_gradient.py in fit_binary(est, i, X, y, alpha, C, learning_rate, max_iter, pos_weight, neg_weight, sample_weight, validation_mask, random_state)
-        411                            pos_weight, neg_weight,
-        412                            learning_rate_type, est.eta0,
-    --> 413                            est.power_t, est.t_, intercept_decay)
-        414 
-        415     else:
-
-
-    KeyboardInterrupt: 
 
 
 
@@ -601,9 +505,23 @@ sgd_clf.predict([some_digit])
 ```
 
 
+
+
+    array(['6'], dtype='<U1')
+
+
+
+
 ```python
 y_train[1]
 ```
+
+
+
+
+    '6'
+
+
 
 Under the hood, Scikit-Learn trained 10 SGD classifiers, one for each digit, then compared their scores for the predictions.
 We can see this directly by retrieving the decision function.
@@ -615,9 +533,26 @@ some_digit_scores
 ```
 
 
+
+
+    array([[-88731.40207822, -44288.57440539, -12195.31620434,
+            -16414.83657055, -19614.87502217, -14826.23091153,
+              2252.00046975, -52652.21976662, -15271.55559963,
+            -18216.68320121]])
+
+
+
+
 ```python
 sgd_clf.classes_[np.argmax(some_digit_scores)]
 ```
+
+
+
+
+    '6'
+
+
 
 Here is an example of using a random forest for multiclass classification.
 
@@ -628,10 +563,24 @@ forest_clf.predict([some_digit])
 ```
 
 
+
+
+    array(['6'], dtype=object)
+
+
+
+
 ```python
 # Manually extract the class with the highest prediction.
 forest_clf.classes_[np.argmax(forest_clf.predict_proba([some_digit]))]
 ```
+
+
+
+
+    '6'
+
+
 
 These classifiers can be evaluated using CV, too.
 
@@ -641,9 +590,23 @@ cross_val_score(sgd_clf, X_train, y_train, cv=3, scoring='accuracy')
 ```
 
 
+
+
+    array([0.88342332, 0.83469173, 0.87783167])
+
+
+
+
 ```python
 cross_val_score(forest_clf, X_train, y_train, cv=3, scoring='accuracy')
 ```
+
+
+
+
+    array([0.94026195, 0.94159708, 0.94244137])
+
+
 
 ### Error analysis
 
@@ -659,12 +622,32 @@ conf_mx
 ```
 
 
+
+
+    array([[5819,    1,   22,    7,    7,   10,   21,    3,   29,    4],
+           [   3, 6622,   40,   15,   14,    4,    6,   20,   14,    4],
+           [  60,   28, 5623,   50,   28,   14,   27,   53,   60,   15],
+           [  23,   21,  127, 5664,    7,  118,    9,   48,   79,   35],
+           [  18,   21,   37,    7, 5558,    9,   27,   18,   26,  121],
+           [  43,   18,   22,  196,   25, 4960,   60,   11,   55,   31],
+           [  43,   18,   33,    7,   23,   79, 5681,    0,   31,    3],
+           [  14,   43,   90,   25,   59,    8,    1, 5932,   13,   80],
+           [  27,   56,   88,  136,   47,   94,   52,   16, 5250,   85],
+           [  35,   20,   34,   79,  206,   42,    6,   90,   60, 5377]])
+
+
+
+
 ```python
 plt.matshow(conf_mx, cmap=plt.cm.gray)
 plt.xlabel('Predicted')
 plt.ylabel('Real')
 plt.show()
 ```
+
+
+![png](homl_ch03_files/homl_ch03_63_0.png)
+
 
 Since the diagonal is the lightest region, the confusion matrix looks good.
 Focusing on the error rates, instead though, can show which digits the classifier has the most trouble with.
@@ -682,6 +665,10 @@ plt.xlabel('Predicted')
 plt.ylabel('Real')
 plt.show()
 ```
+
+
+![png](homl_ch03_files/homl_ch03_65_0.png)
+
 
 From this visualization, it is clear that the random forest has assigned a lot of 5's as 3's and 9's as 4's.
 
@@ -703,6 +690,19 @@ y_multilabel
 ```
 
 
+
+
+    array([[False,  True],
+           [False, False],
+           [False, False],
+           ...,
+           [ True,  True],
+           [False,  True],
+           [False, False]])
+
+
+
+
 ```python
 # A KNN multilabel classifier.
 knn_clf = KNeighborsClassifier()
@@ -714,9 +714,23 @@ knn_clf.predict([some_digit])
 ```
 
 
+
+
+    array([[False, False]])
+
+
+
+
 ```python
 y_train[1]
 ```
+
+
+
+
+    '6'
+
+
 
 Evaluation of a multilabel classifier depends on the requirements and goals of the project.
 One method is to compute the $\text{F}_1$ score across all labels.
@@ -726,6 +740,13 @@ One method is to compute the $\text{F}_1$ score across all labels.
 y_train_knn_pred = cross_val_predict(knn_clf, X_train, y_multilabel, cv=3)
 f1_score(y_multilabel, y_train_knn_pred, average='macro')
 ```
+
+
+
+
+    0.9769382756860778
+
+
 
 ### Multioutput classification
 
@@ -761,14 +782,26 @@ plt.show()
 ```
 
 
+![png](homl_ch03_files/homl_ch03_75_0.png)
+
+
+
+![png](homl_ch03_files/homl_ch03_75_1.png)
+
+
+
 ```python
 # Train a KNN to denoise.
 knn_clf.fit(X_train_mod, y_train_mod)
 
 # Show the result of denoising the first image.
-example_clean_digit = forest_clf.predict([X_train_mod[0]])
+example_clean_digit = knn_clf.predict([X_train_mod[0]])
 plot_mnist_image(example_clean_digit)
 ```
+
+
+![png](homl_ch03_files/homl_ch03_76_0.png)
+
 
 
 ```python
