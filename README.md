@@ -6,7 +6,7 @@
 [![jhc website](https://img.shields.io/badge/Website-Joshua_Cook-5087B2.svg?style=flat&logo=telegram)](https://joshuacook.netlify.com)
 
 **Start Date: October 21, 2019  
-End Date: January 29, 2020**
+End Date: January 30, 2020**
 
 ## Sources
 
@@ -189,3 +189,7 @@ I began working on the Classification chapter, specifically focusing on learning
 
 **Day 35 - November 25, 2019:**
 I finished the binary classification section and have started learning about multiclass classification and the evaluation methods and metrics commonly used.
+
+**Day 36 - November 26, 2019:**
+I finished the chapter on Classification by learning about multilabel classification.
+The notebook has not been fully evaluated because it took too long and timed-out; I will try again tomorrow.
