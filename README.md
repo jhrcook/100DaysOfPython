@@ -197,3 +197,6 @@ The notebook has not been fully evaluated because it took too long and timed-out
 **Day 37 - November 27, 2019:**
 We began the chapter that takes a deeper dive into training.
 We are working on linear models at the moments, solving them using a closed formula for finding the minimal RMSE and using gradient descent.
+
+**Day 38 - November 29, 2019:**
+ I continued learning about different training methods, including stochastic gradient descent.

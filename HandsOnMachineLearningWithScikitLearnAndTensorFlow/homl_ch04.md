@@ -177,7 +177,7 @@ Also, there may be local minima that trap the optimization.
 
 It is generally good advice to have scaled features for gradient descent such that all dimensions are related in scale.
 
-#### Batch gradient descent
+### Batch gradient descent
 
 The find the best direction to move, the partial derivative must be found for each dimension.
 This is done manually below, but of course it can be done quickly using the appropriate Scikit-Learn solver.
@@ -198,7 +198,7 @@ $$
 ```python
 eta = 0.1  # learning rate
 n_iterations = 1000  # number of iterations of gradient descent
-m=X.shape[0]  # number of data points
+m = X.shape[0]  # number of data points
 
 theta = np.random.randn(2, 1) # randomly initialize theta
 
@@ -221,7 +221,6 @@ The see the effect of the learning rate, I built a function that plots the line 
 
 
 ```python
-
 def get_styling_details(current_iteration, max_iterations):
     """Get the styling details for the line plot depending on the iteration."""
     if current_iteration == 0:
@@ -276,7 +275,94 @@ plot_gradient_descent(random_initial_theta, 0.5)
 ![png](homl_ch04_files/homl_ch04_20_0.png)
 
 
+In practice, a good learning reate can be found with a grid search.
+A limit on the number of iterations will ensure that the optimization converges at an acceptable rate.
+The actual number of iterations for the model can be a relatively large number, but stop the optimization when a sufficiently good answer has been found.
+That is, interrupt the algorithm when the gradient vector is smaller than a provided tolerance $\epsilon$.
+
+### Stochastic gradient descent
+
+Batch gradient descent uses every piece of the training data to optimize the model parameters.
+On the other extreme, SGD uses a single, random data point in the training data at each step.
+Therefore, it bounces around, and only moves towards the solution on average.
+Due to this bouncing nature, it is unlikely that SGD will be as accurate as batch gradient descent.
+It will me much faster, though, especially with a large data set.
+This property of SGD also helps it bounce out of local minima.
+
+Gradually reducing the learning rate can help with the bouncing problem.
+This is called *simulated annealing*.
+The function that controls the learning rate is called the *learning schedule*.
+
+The code below implements a simple SGD algorithm.
+
 
 ```python
+n_epochs = 50
 
+# Hyperparamters for the learning schedule.
+t0 = 5
+t1 = 50
+
+m = X.shape[0]  # number of data points
+
+theta = np.array([[0.1], [0.1]])  # Randomly inital values for theta.
+
+def learning_schedule(t):
+    """A learncing schedule for SGD."""
+    return t0 / (t + t1)
+
+plt.plot(X, y, "b.")
+
+plot_current_line(theta, 0, n_epochs)
+
+for epoch  in range(1, n_epochs):
+    for i in range(m):
+        random_index = np.random.randint(m)
+        xi = X_b[random_index:random_index+1]
+        yi = y[random_index:random_index+1]
+        gradients = 2 * xi.T.dot(xi.dot(theta) - yi)
+        eta =  learning_schedule(epoch * m + 1)
+        theta = theta - eta * gradients
+    plot_current_line(theta, epoch, n_epochs)
+
+plt.xlabel('$X$', fontsize=18)
+plt.axis([0, 2, 0, 15])
+
+# The final optimized solution.
+theta
 ```
+
+
+
+
+    array([[4.22257213],
+           [3.04003422]])
+
+
+
+
+![png](homl_ch04_files/homl_ch04_22_1.png)
+
+
+The equivalent can be done using the Scikit-Learn `SGDRegressor` class.
+
+
+```python
+from sklearn.linear_model import SGDRegressor
+
+sgd_reg = SGDRegressor(max_iter=50, penalty=None, eta0=0.1)
+sgd_reg.fit(X, y.ravel())
+
+# Solutions.
+sgd_reg.intercept_, sgd_reg.coef_
+```
+
+
+
+
+    (array([4.30892312]), array([3.06061832]))
+
+
+
+### Mini-batch gradient descent
+
