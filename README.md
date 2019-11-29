@@ -200,3 +200,7 @@ We are working on linear models at the moments, solving them using a closed form
 
 **Day 38 - November 29, 2019:**
  I continued learning about different training methods, including stochastic gradient descent.
+
+**Day 39 - November 29, 2019:**
+I finished up the section on the different gradient descent algorithms by learning about mini-batch GD.
+I took some time to make plots of the paths taken by the various gradient descent algorithms, too.

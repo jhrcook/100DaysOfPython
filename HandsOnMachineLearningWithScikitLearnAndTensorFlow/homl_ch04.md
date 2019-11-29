@@ -305,7 +305,7 @@ t1 = 50
 
 m = X.shape[0]  # number of data points
 
-theta = np.array([[0.1], [0.1]])  # Randomly inital values for theta.
+theta = np.array([[0.1], [0.1]])  # Iinital values for theta.
 
 def learning_schedule(t):
     """A learncing schedule for SGD."""
@@ -335,8 +335,8 @@ theta
 
 
 
-    array([[4.22257213],
-           [3.04003422]])
+    array([[4.21493839],
+           [2.957017  ]])
 
 
 
@@ -360,9 +360,164 @@ sgd_reg.intercept_, sgd_reg.coef_
 
 
 
-    (array([4.30892312]), array([3.06061832]))
+    (array([4.21182999]), array([2.9989967]))
 
 
 
 ### Mini-batch gradient descent
 
+At each step, a random subsample of the data is used to compute the gradient.
+It is therefore more erratic than batch gradient descent and less so than SGD.
+
+Below, I plot the three gradient descent algorithms paths through parameter space to solve the sample linear regression in the chapter.
+
+
+```python
+def learning_schedule(t, t0=10, t1=50):
+    """A learncing schedule for SGD."""
+    return t0 / (t + t1)
+
+def my_batch_gd(theta_0, epoch_number, eta = 0.1):
+    """Calculate the next theta using batch gradient descent."""
+    gradients = 2/m * X_b.T.dot(X_b.dot(theta_0) - y)
+    theta = theta_0 - eta * gradients
+    return theta
+
+
+def my_stochastic_gd(theta_0, epoch_number):
+    """Calculate the next theta using stochastic gradient descent."""
+    theta = theta_0
+    for i in range(X.shape[0]):
+        random_index = np.random.randint(m)
+        xi = X_b[random_index:random_index+1]
+        yi = y[random_index:random_index+1]
+        gradients = 2 * xi.T.dot(xi.dot(theta) - yi)
+        eta = learning_schedule(epoch_number * m + 1)
+        theta = theta - eta * gradients
+    return theta
+
+
+def my_minibatch_gd(theta_0, epoch_number, batch_size=5):
+    """Calculate the next theta using minibatch gradient descent."""
+    theta = theta_0
+    m = X.shape[0]
+    n_iters = round(m / batch_size)
+    for i in range(n_iters):
+        random_index = np.random.randint(m, size=batch_size)
+        xi = X_b[random_index]
+        yi = y[random_index]
+        gradients = 2/m * X_b.T.dot(X_b.dot(theta) - y)
+        eta = learning_schedule(epoch_number * m + 1)
+        theta = theta - eta * gradients
+    return theta
+```
+
+
+```python
+# Initial values for theta.
+initial_theta = np.array([[2.0], [2.0]])
+
+
+def run_my_gradient_descent(descent_func, theta_i, n_iterations=100):
+    """
+    Return all of the intermediate theta values while running the
+    specified gradient descent algorithm
+    """
+    thetas = initial_theta.copy()
+    next_theta = initial_theta.copy()
+    for iteration in range(n_iterations):
+        next_theta = descent_func(next_theta, iteration)
+        thetas = np.hstack([thetas, next_theta])
+
+    thetas = thetas.T
+    return thetas
+
+
+# Batch GD
+batch_thetas = run_my_gradient_descent(my_batch_gd, initial_theta)
+
+# SGD
+sgd_thetas = run_my_gradient_descent(my_stochastic_gd, initial_theta)
+
+# Minibatch GD
+minibatch_thetas = run_my_gradient_descent(my_minibatch_gd, initial_theta)
+
+# Plot the results on the sample plot.
+fig = plt.figure(figsize = (10, 7))
+plt.plot(batch_thetas[:, 0], batch_thetas[:, 1],
+         label='batch',
+         linestyle='-', marker='o', color='blue', 
+         alpha=0.5)
+plt.plot(sgd_thetas[:, 0], sgd_thetas[:, 1],
+         label='SGD',
+         linestyle='-', marker='o', color='red', 
+         alpha=0.5)
+plt.plot(minibatch_thetas[:, 0], minibatch_thetas[:, 1],
+         label='minibatch',
+         linestyle='-', marker='o', color='green', 
+         alpha=0.5)
+plt.title('The paths of multiple gradient descent paths')
+plt.legend(loc='best')
+plt.xlabel(r'$\theta_0$')
+plt.ylabel(r'$\theta_1$')
+plt.show()
+```
+
+
+![png](homl_ch04_files/homl_ch04_27_0.png)
+
+
+
+```python
+fig = plt.figure(figsize = (8, 5))
+plt.plot(batch_thetas[:, 0], batch_thetas[:, 1],
+         label='batch',
+         linestyle='-', marker='o', color='blue', 
+         alpha=0.5)
+plt.plot(sgd_thetas[:, 0], sgd_thetas[:, 1],
+         label='SGD',
+         linestyle='-', marker='o', color='red', 
+         alpha=0.5)
+plt.plot(minibatch_thetas[:, 0], minibatch_thetas[:, 1],
+         label='minibatch',
+         linestyle='-', marker='o', color='green', 
+         alpha=0.5)
+plt.axis([2.5, 4.5, 2, 4])
+plt.title('Zoomed in on the gradient descent paths')
+plt.xlabel(r'$\theta_0$')
+plt.ylabel(r'$\theta_1$')
+plt.legend(loc='best')
+plt.show()
+```
+
+
+![png](homl_ch04_files/homl_ch04_28_0.png)
+
+
+
+```python
+colors = ['b', 'g', 'r', 'c', 'm']
+
+    
+fig = plt.figure(figsize=(8, 5))
+for i in range(5):
+    thetas = run_my_gradient_descent(my_stochastic_gd, initial_theta)
+    plt.plot(thetas[:, 0], thetas[:, 1], color=colors[i], alpha = 0.5)
+
+plt.title('The paths of multiple SGDs')
+plt.xlabel(r'$\theta_0$')
+plt.ylabel(r'$\theta_1$')
+plt.axis([2.5, 5.5, 2, 4])
+plt.show()
+```
+
+
+![png](homl_ch04_files/homl_ch04_29_0.png)
+
+
+## Polynomial regression
+
+
+```python
+
+```
