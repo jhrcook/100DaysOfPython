@@ -17,30 +17,10 @@ fi
 
 source activate daysOfCode-env
 
-## Build Python for Data Analysis notebooks
-echo "Build the Python for Data Analysis notebooks? (y/n)"
-read buildPFDA
-if [[ $buildPFDA == 'y' ]];
-then
-	zsh ipynb_to_md.zsh "pfda"
-fi
-
-## Build CS 20 notebooks
-echo "Build the notebooks for CS 20? (y/n)"
-read buildCSTwenty
-if [[ $buildCSTwenty == 'y' ]];
-then
-	zsh ipynb_to_md.zsh "cs20"
-fi
-
-
-## Build HOML notebooks
-echo "Build the notebooks for HOML? (y/n)"
-read buildCSTwenty
-if [[ $buildCSTwenty == 'y' ]];
-then
-	zsh ipynb_to_md.zsh "homl"
-fi
+# Build notebooks for various pedagogical sources.
+zsh ipynb_to_md.zsh "pfda"
+zsh ipynb_to_md.zsh "cs20"
+zsh ipynb_to_md.zsh "homl"
 
 
 ## Write virtual environment to requirements.txt
