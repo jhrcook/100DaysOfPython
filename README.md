@@ -209,3 +209,7 @@ I took some time to make plots of the paths taken by the various gradient descen
 I learned about fitting linear models and polynoial models to data.
 I also took some time to focus on my Python programming using sklearn, numpy, and pandas to produce some cool plots.
 We finished of today's hour by learning about the learning curve of a model.
+
+**Day 41 - December 01, 2019:**
+I finished the section on linear model regulatization and early stopping.
+I also made a lot of interesting plots and practised using sklearn pipelines.

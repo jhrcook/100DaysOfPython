@@ -651,25 +651,30 @@ Below are the results of continuously increasing the degree of the model.
 
 
 ```python
-def fit_polynomial_regression_to_X(deg=1):
-    # Prepare input data.
-    poly_transformer = PolynomialFeatures(degree=deg, include_bias=False)
-    X_input = poly_transformer.fit_transform(X)
-    
-    # Fit model.
-    lr = LinearRegression()
-    lr.fit(X_input, y)
-    
-    j = 1000
-    predicted_y = np.linspace(np.min(X), np.max(X), j).reshape((j, 1))
-    predicted_y = poly_transformer.transform(predicted_y)
-    y_predict = lr.predict(predicted_y)
+from sklearn.pipeline import Pipeline
 
+def plot_linear_model_line(lm):
+    j = 1000
+    x_input = np.linspace(np.min(X), np.max(X), j).reshape((j, 1))
+    predicted_y = lm.predict(x_input)
+    
     plt.plot(X, y, 'b.')
-    plt.plot(predicted_y[:, 0], y_predict, 'r-')
+    plt.plot(x_input, predicted_y, 'r-')
+
+    
+def fit_polynomial_regression_to_X(deg=1):
+    pipeline = Pipeline((
+        ('polynomial_features', PolynomialFeatures(degree=deg, include_bias=False)),
+        ('linear_model', LinearRegression())
+    ))
+    
+    pipeline.fit(X, y)
+    
+    plot_linear_model_line(pipeline)
     plt.title(f'degree {deg}')
 
     
+
 fig = plt.figure(figsize=(10, 10))
 for i in range(1, 10):
     plt.subplot(3, 3, i)
@@ -746,8 +751,6 @@ The next plot is when a polynomial model with a degree of 2 is used.
 
 
 ```python
-from sklearn.pipeline import Pipeline
-
 polynomial_reg_pipeline = Pipeline((
     ('poly_features', PolynomialFeatures(degree=2, include_bias=False)),
     ('sgd_reg', LinearRegression())
@@ -785,6 +788,311 @@ plt.show()
 
 
 ## Regularized linear models
+
+Models can be regularized (i.e. constrained) to fight over-fitting.
+For a linear model, the common regularization techniques are Ridge, LASSO, and Elastic Net Regression.
+
+### Ridge regression
+
+Ridge regression introduces a regularization term to the cost function:
+
+$$
+\alpha \sum^{n}_{i=1} \theta_i^2
+$$
+
+This keeps the weights as small as possible during training.
+The hyperparameter $\alpha$ controls how strongly the model is regularized.
+The cost function in full is below.
+
+$$
+J(\theta) = MSE(\theta) + \alpha \sum^{n}_{i=1} \theta_i^2
+$$
+
+Note that the bias term $\theta_0$ is not regularized.
+
+The plots below show the results of regularizing increasingly higher-dimensional models.
+
+
+```python
+from sklearn.linear_model import Ridge
+from sklearn.preprocessing import StandardScaler
+
+fig = plt.figure(figsize=(10, 10))
+
+for i in range(1, 10):
+
+    ridge_pipeline = Pipeline((
+        ('poly_features', PolynomialFeatures(degree=i*2, include_bias=False)),
+        ('scale_features', StandardScaler()),
+        ('ridge_regression', Ridge(alpha=1))
+    ))
+
+    ridge_pipeline.fit(X, y)
+    plt.subplot(3, 3, i)
+    plot_linear_model_line(ridge_pipeline)
+    plt.title(f'degree {i*2}')
+```
+
+
+![png](homl_ch04_files/homl_ch04_52_0.png)
+
+
+The plots below shows the effects of increasing the $\alpha$ parameter of the Ridge Regression.
+
+
+```python
+fig = plt.figure(figsize=(10, 10))
+
+for i in range(1, 10):
+
+    alpha = (i / 9) ** 2
+    
+    ridge_pipeline = Pipeline((
+        ('poly_features', PolynomialFeatures(degree=30, include_bias=False)),
+        ('scale_features', StandardScaler()),
+        ('ridge_regression', Ridge(alpha=alpha))
+    ))
+
+    ridge_pipeline.fit(X, y)
+    plt.subplot(3, 3, i)
+    plot_linear_model_line(ridge_pipeline)
+    plt.title(f'alpha {round(alpha, 2)}')
+```
+
+
+![png](homl_ch04_files/homl_ch04_54_0.png)
+
+
+### LASSO regression
+
+*Least Absolute Shrinkage and Selection Operator* (LASSO) regression is similar to Ridge regression just with a slightly different cost function.
+
+$$
+\alpha \sum^{n}_{i=1} |\theta_i|
+$$
+
+This tends to push all but the most important features to 0.
+
+
+```python
+from sklearn.linear_model import Lasso
+
+fig = plt.figure(figsize=(10, 10))
+
+for i in range(1, 10):
+
+    alpha = (i / 9) ** 2
+    
+    lasso_pipeline = Pipeline((
+        ('poly_features', PolynomialFeatures(degree=30, include_bias=False)),
+        ('scale_features', StandardScaler()),
+        ('ridge_regression', Lasso(alpha=alpha))
+    ))
+
+    lasso_pipeline.fit(X, y)
+    plt.subplot(3, 3, i)
+    plot_linear_model_line(lasso_pipeline)
+    plt.title(f'alpha {round(alpha, 2)}')
+```
+
+
+![png](homl_ch04_files/homl_ch04_56_0.png)
+
+
+Even with a small $\alpha=0.05$, most of the parameters are 0 when using LASSO.
+
+
+```python
+lasso_pipeline = Pipeline((
+        ('poly_features', PolynomialFeatures(degree=30, include_bias=False)),
+        ('scale_features', StandardScaler()),
+        ('lasso_regression', Lasso(alpha=0.05))
+    ))
+lasso_pipeline.fit(X, y)
+lasso_pipeline.named_steps['lasso_regression'].coef_
+```
+
+
+
+
+    array([1.4957944 , 0.60755075, 0.        , 0.54169388, 0.        ,
+           0.        , 0.        , 0.        , 0.        , 0.        ,
+           0.        , 0.        , 0.        , 0.        , 0.        ,
+           0.        , 0.        , 0.        , 0.        , 0.        ,
+           0.        , 0.        , 0.        , 0.        , 0.        ,
+           0.        , 0.        , 0.        , 0.03807433, 0.        ])
+
+
+
+### Elastic net regression
+
+Elastic net acts as a middle ground between Ridge and LASSO regression techniques - the cost function is just a mixture of the two.
+The contribution of each cost to the mixture is controlled by $r$.
+
+$$
+r \alpha \sum^{n}_{i=1} \theta_i^2 + \frac{1-r}{2} \alpha \sum^{n}_{i=1} |\theta_i|
+$$
+
+Below are some heuristics to use when choosing a regression technique:
+
+- Ridge regression is a good default or first try.
+- LASSO and Elastic Net regression should be used when only a few features are expected to be important.
+- Elastic Net is often preferred over LASSO because LASSO can behave erratically when there are more features than training data points or when features are highly correlated.
+
+
+```python
+from sklearn.linear_model import ElasticNet
+
+elastic_pipeline = Pipeline((
+        ('poly_features', PolynomialFeatures(degree=30, include_bias=False)),
+        ('scale_features', StandardScaler()),
+        ('elastic_net_regression', ElasticNet(alpha=0.05))
+    ))
+elastic_pipeline.fit(X, y)
+elastic_pipeline.named_steps['elastic_net_regression'].coef_
+```
+
+
+
+
+    array([ 1.38698336,  0.58539803,  0.11115826,  0.58128286,  0.        ,
+            0.        ,  0.        ,  0.        ,  0.        ,  0.        ,
+            0.        , -0.        ,  0.        , -0.        ,  0.        ,
+           -0.        ,  0.        , -0.        ,  0.        , -0.        ,
+            0.        , -0.        ,  0.        , -0.        ,  0.        ,
+            0.        ,  0.        ,  0.        ,  0.03825657,  0.        ])
+
+
+
+## Early stopping
+
+Early stopping is another way to avoid overfitting. 
+The goal is to stop the gradient descent algorithm at the minimum of the RMSE on the validation set.
+
+Below is an example of RMSE curves for the training and validation set using batch gradient descent to fit a high-dimensional model.
+
+
+```python
+from sklearn.base import clone
+import warnings
+from sklearn.exceptions import ConvergenceWarning
+
+warnings.filterwarnings(action='ignore', category=ConvergenceWarning)
+
+poly_features = PolynomialFeatures(degree=4, include_bias=False)
+standard_scalar = StandardScaler()
+X_poly = poly_features.fit_transform(X)
+X_poly = standard_scalar.fit_transform(X_poly)
+
+X_train, X_val, y_train, y_val = train_test_split(X_poly, y, test_size = 0.25)
+
+y_train = np.ravel(y_train)
+y_val = np.ravel(y_val)
+
+sgd_reg = SGDRegressor(max_iter=1, 
+                       warm_start=True, 
+                       penalty='elasticnet', 
+                       learning_rate='constant', 
+                       eta0=0.00005,
+                       random_state=0)
+
+minimum_val_error = float('inf')
+best_epoch, best_model = None, None
+
+train_rmse, val_rmse = [], []
+
+for epoch in range(1000):
+    sgd_reg.fit(X_train, y_train)
+    
+    y_val_predict = sgd_reg.predict(X_val)
+    
+    val_error = mean_squared_error(y_val_predict, y_val)
+    train_error = mean_squared_error(sgd_reg.predict(X_train), y_train)
+    
+    if val_error < minimum_val_error:
+        minimum_val_error = val_error
+        best_epoch = epoch
+        best_model = clone(sgd_reg)
+        
+    train_rmse.append(np.sqrt(train_error))
+    val_rmse.append(np.sqrt(val_error))
+
+    
+plt.plot(val_rmse, 'b-', label='validation set')
+plt.plot(train_rmse, 'r-', label='training set')
+plt.legend(loc='best')
+```
+
+
+
+
+    <matplotlib.legend.Legend at 0x1a253498d0>
+
+
+
+
+![png](homl_ch04_files/homl_ch04_62_1.png)
+
+
+**Note:** The `SGDRegressor` object has specific parameters to be used for early stopping including `early_stopping : bool, default=False`, `validation_fraction : float, default=0.1`, `n_iter_no_change : int, default=5`.
+An example is shown below of the difference in results.
+
+
+```python
+sgd_reg = SGDRegressor(penalty='elasticnet',
+                       random_state=0)
+sgd_reg.fit(X_train, y_train)
+sgd_reg.coef_
+```
+
+
+
+
+    array([1.01748795, 0.56388556, 0.51345671, 0.64477603])
+
+
+
+
+```python
+np.sqrt(mean_squared_error(sgd_reg.predict(X_val), y_val))
+```
+
+
+
+
+    1.0768388057416511
+
+
+
+
+```python
+sgd_reg_earlystop = SGDRegressor(penalty='elasticnet',
+                                 random_state=0,
+                                 early_stopping=True)
+sgd_reg_earlystop.fit(X_train, y_train)
+sgd_reg_earlystop.coef_
+```
+
+
+
+
+    array([1.05205577, 0.71688349, 0.59886601, 0.63099206])
+
+
+
+
+```python
+np.sqrt(mean_squared_error(sgd_reg_earlystop.predict(X_val), y_val))
+```
+
+
+
+
+    1.0531010189447443
+
+
+
+## Logistic regression
 
 
 ```python
