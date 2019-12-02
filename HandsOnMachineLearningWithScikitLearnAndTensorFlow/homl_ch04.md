@@ -1026,7 +1026,7 @@ plt.legend(loc='best')
 
 
 
-    <matplotlib.legend.Legend at 0x1a253498d0>
+    <matplotlib.legend.Legend at 0x1a2199a390>
 
 
 
@@ -1093,6 +1093,187 @@ np.sqrt(mean_squared_error(sgd_reg_earlystop.predict(X_val), y_val))
 
 
 ## Logistic regression
+
+Logistic regression is often used to estimate the probability that an instance belongs to a particular class.
+Often, 0.50 is used as the cut-off, making it a binary classifier.
+
+### Estimating probabilities
+
+Logistic regression computes a weighted sum of the input features, but returns the logistic (a.k.a *logit*, $\sigma(\cdot)$) of the result.
+This is a sigmoid function that returns a value between 0 and 1 (inclusive).
+It is defined as:
+
+$$
+\sigma(t) = \frac{1}{1 + e^{-t}}
+$$
+
+
+```python
+from math import exp
+
+a = np.linspace(-10, 10, 1000)
+logit_fxn = lambda t: 1/ (1 + exp(-t))
+b = [logit_fxn(i) for i in a]
+plt.plot(a, b, label=r'$\sigma(t) = \frac{1}{1 + e^{-t}}$')
+plt.plot()
+plt.legend(loc='best')
+plt.show()
+```
+
+
+![png](homl_ch04_files/homl_ch04_69_0.png)
+
+
+The model for the logistic regression is below:
+
+$$
+\hat{p} = h_{\theta}(x) = \sigma(\theta^T \cdot x)
+$$
+
+Note that the parameter vector $\theta$ is negative if the logistic model predicts 0 and positive if it predicts 1.
+
+### Training and cost function
+
+The objective of training is to set the parameter vector $\theta$ to estimate high probabilities for positive instances (1) and low probabilities for negative instances (0).
+Below is the cost function for a single training instance.
+
+$$
+c(\theta) = \begin{cases}
+    -log(\hat{p}) & \text{if } y = 1 \\
+    -log(1-\hat{p}) & \text{if } y = 0
+  \end{cases}
+$$
+
+The cost function over the whole training set is the average cost over all of the training instances.
+It can be expressed as an equation (not shown here) called the *log loss*.
+There is no known closed-form solution to compute $\theta$ to minimize the log loss.
+However, it is convex, thus gradient descent can find the minimum given sufficient time and learning rate.
+
+### Decision boundaries
+
+The following example builds a classifier to detect the *Virginica* species in the classic Iris dataset from just the petal width feature.
+
+
+```python
+from sklearn import datasets
+
+iris = datasets.load_iris()
+list(iris.keys())
+```
+
+
+
+
+    ['data', 'target', 'target_names', 'DESCR', 'feature_names', 'filename']
+
+
+
+
+```python
+X = iris.data[:, 3:]  # just the petal width
+y = (iris.target == 2).astype(np.int)  # 1 for Virginica
+```
+
+
+```python
+from sklearn.linear_model import LogisticRegression
+
+log_reg = LogisticRegression(solver='lbfgs')
+log_reg.fit(X, y)
+```
+
+
+
+
+    LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                       intercept_scaling=1, l1_ratio=None, max_iter=100,
+                       multi_class='warn', n_jobs=None, penalty='l2',
+                       random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
+                       warm_start=False)
+
+
+
+The following plot shows the estimated probabilities for flowers with widths between 0 and 3 cm.
+
+
+```python
+res = 1000
+
+fig = plt.figure(figsize=(8, 5))
+
+X_space = np.linspace(0, 3, res).reshape(-1, 1)
+y_space_prob = log_reg.predict_proba(X_space)
+
+plt.plot(X_space, y_space_prob[:, 1], 'g-', label='Virginica')
+plt.plot(X_space, y_space_prob[:, 0], 'b-', label='not Virginica')
+
+decision_boundary_idx = np.argmin(np.abs(y_space_prob[:, 1] - 0.5))
+decision_boundary_val = X_space[decision_boundary_idx]
+decision_boundary_x = np.ones(res) * decision_boundary_val
+decision_boundary_y = np.linspace(0, 1, res)
+plt.plot(decision_boundary_x, 
+         decision_boundary_y, 
+         'k--',
+         label='decision boundary')
+
+
+def get_y_with_noise(x, avg_y):
+    return np.ones(len(x)) * avg_y # + np.random.randn(len(x))/20
+
+virginica_pts_x = X[y == 1]
+virginica_pts_y = get_y_with_noise(virginica_pts_x, 0.95)
+not_virginica_pts_x = X[y != 1]
+not_virginica_pts_y = get_y_with_noise(not_virginica_pts_x, 0.05)
+plt.plot(virginica_pts_x, virginica_pts_y, 
+         'g', linestyle='None', marker='^', alpha=0.15,
+         label='Virginica values')
+plt.plot(not_virginica_pts_x, not_virginica_pts_y,
+         'b', linestyle='None', marker='v', alpha=0.15,
+         label='not Virginica values')
+
+
+plt.legend(loc='best')
+plt.xlabel('Petal width (cm)')
+plt.ylabel('Estimated probability')
+plt.axis([0, 3, 0, 1])
+plt.show()
+```
+
+
+![png](homl_ch04_files/homl_ch04_76_0.png)
+
+
+The `predict_proba()` method of the logistic regression object returns the estimated probability that the input is  not *Virginica* and that it is *Virginica*.
+The `predict()` method returns 0 or 1 if the probability is below or above 0.5.
+The point at which the probability switches from below 0.5 to above 0.5 is the decision boundary.
+In this case, the decision boundary is around 1.6 cm.
+
+
+```python
+log_reg.predict_proba([[1.5], [1.7]])
+```
+
+
+
+
+    array([[0.66709636, 0.33290364],
+           [0.45722097, 0.54277903]])
+
+
+
+
+```python
+log_reg.predict([[1.5], [1.7]])
+```
+
+
+
+
+    array([0, 1])
+
+
+
+TODO: train on Petal length and width and re-create plot in Figure 4.24
 
 
 ```python

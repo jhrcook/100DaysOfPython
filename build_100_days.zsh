@@ -18,8 +18,8 @@ fi
 source activate daysOfCode-env
 
 # Build notebooks for various pedagogical sources.
-zsh ipynb_to_md.zsh "pfda"
-zsh ipynb_to_md.zsh "cs20"
+# zsh ipynb_to_md.zsh "pfda"
+# zsh ipynb_to_md.zsh "cs20"
 zsh ipynb_to_md.zsh "homl"
 
 

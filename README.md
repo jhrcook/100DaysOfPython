@@ -213,3 +213,7 @@ We finished of today's hour by learning about the learning curve of a model.
 **Day 41 - December 01, 2019:**
 I finished the section on linear model regulatization and early stopping.
 I also made a lot of interesting plots and practised using sklearn pipelines.
+
+**Day 42 - December 02, 2019:**
+I began the section on logistic regression.
+I made a really cool plot where I got some good  practise using matplotlib and numpy.
