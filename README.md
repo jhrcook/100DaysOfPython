@@ -217,3 +217,7 @@ I also made a lot of interesting plots and practised using sklearn pipelines.
 **Day 42 - December 02, 2019:**
 I began the section on logistic regression.
 I made a really cool plot where I got some good  practise using matplotlib and numpy.
+
+**Day 43 - December 03, 2019:**
+I finished the Linear Regression chapter by learning about logistic regression and multinomial logistic regression.
+In the process, I got more practice with matplotlib.

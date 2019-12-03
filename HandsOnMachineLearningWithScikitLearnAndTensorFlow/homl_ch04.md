@@ -1026,7 +1026,7 @@ plt.legend(loc='best')
 
 
 
-    <matplotlib.legend.Legend at 0x1a2199a390>
+    <matplotlib.legend.Legend at 0x1a27d96650>
 
 
 
@@ -1170,6 +1170,21 @@ list(iris.keys())
 
 
 ```python
+iris.feature_names
+```
+
+
+
+
+    ['sepal length (cm)',
+     'sepal width (cm)',
+     'petal length (cm)',
+     'petal width (cm)']
+
+
+
+
+```python
 X = iris.data[:, 3:]  # just the petal width
 y = (iris.target == 2).astype(np.int)  # 1 for Virginica
 ```
@@ -1240,7 +1255,7 @@ plt.show()
 ```
 
 
-![png](homl_ch04_files/homl_ch04_76_0.png)
+![png](homl_ch04_files/homl_ch04_77_0.png)
 
 
 The `predict_proba()` method of the logistic regression object returns the estimated probability that the input is  not *Virginica* and that it is *Virginica*.
@@ -1273,9 +1288,188 @@ log_reg.predict([[1.5], [1.7]])
 
 
 
-TODO: train on Petal length and width and re-create plot in Figure 4.24
+Of course, logistic regression can take multiple feature inputs.
+Below is an example using the petal width and length.
 
 
 ```python
+X = iris.data[:, [2, 3]]
 
+log_reg = LogisticRegression(penalty='none', solver='lbfgs')
+log_reg.fit(X, y)
 ```
+
+
+
+
+    LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                       intercept_scaling=1, l1_ratio=None, max_iter=100,
+                       multi_class='warn', n_jobs=None, penalty='none',
+                       random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
+                       warm_start=False)
+
+
+
+
+```python
+x0, x1 = np.meshgrid(
+    np.linspace(2.9, 7, 500).reshape(-1, 1),
+    np.linspace(0.8, 2.7, 200).reshape(-1, 1),
+)
+X_new = np.c_[x0.ravel(), x1.ravel()]
+
+y_proba = log_reg.predict_proba(X_new)
+
+plt.figure(figsize=(8, 5))
+plt.plot(X[y == 0, 0], X[y == 0, 1], "bv")
+plt.plot(X[y == 1, 0], X[y == 1, 1], "g^")
+
+zz = y_proba[:, 1].reshape(x0.shape)
+contour = plt.contour(x0, x1, zz, cmap=plt.cm.brg)
+
+
+left_right = np.array([2.9, 7])
+boundary = -(log_reg.coef_[0][0] * left_right + log_reg.intercept_[0]) / log_reg.coef_[0][1]
+
+plt.clabel(contour, inline=1, fontsize=12)
+plt.plot(left_right, boundary, "k--", linewidth=3)
+plt.text(3.5, 1.5, "Not Virginica", fontsize=14, color="b", ha="center")
+plt.text(6.5, 2.3, "Virginica", fontsize=14, color="g", ha="center")
+plt.xlabel("Petal length", fontsize=14)
+plt.ylabel("Petal width", fontsize=14)
+plt.axis([2.9, 7, 0.8, 2.7])
+plt.show()
+```
+
+
+![png](homl_ch04_files/homl_ch04_83_0.png)
+
+
+## Softmax regression
+
+The logistic regression model can be generalized to support multiple classes without having to train and combine multiple binary classifiers.
+This is call *Softmax Regression* or *Multinomial Logistic Regression*.
+Given an instance $\mathbf{x}$, the model computes a score $s_k(\mathbf{x})$ for each class $k$.
+
+$$
+s_k(x) = \theta_k^T \cdot \mathbf{x}
+$$
+
+The the model estimates the probability of each class by applying the *softmax function* (a.k.a the normalized exponential) to the scores.
+The probability $\hat{p}_k$ that the instance belongs to class $k$ (of $K$ classes total) is calculated using the following equation.
+
+$$
+\hat{p}_k = \sigma(\mathbf{s}(\mathbf{x}))_k = \frac{e^{s_k(\mathbf{x})}}{\sum_{j=1}^{K}{e^{s_j(\mathbf{x})}}}
+$$
+
+This model can be trained by minimizing the *cross entropy* cost function (below) which penalizes the  model when it estimates a low probability for a target class.
+
+$$
+J(\Theta) = -\frac{1}{m} \sum_{i=1}^{m} \sum_{k=1}^{K} y_k^{(i)} \; \text{log}(\hat{p}_k^{(i)})
+$$
+
+For the equation above, $y_k^{(i)}$ is equal to 1 if the target class for the $i^{\text{th}}$ instance is $k$ and 0 otherwise.
+Note that when there are only two classes, $K=2$, this cost function is equivalent to the logistic regression's cost function.
+
+The gradient for the cost function is below.
+
+$$
+\nabla_{\theta_k} J(\Theta) = \frac{1}{m} \sum_{i=1}^{m} (\hat{p}_k^{(i)} - y_k^{(i)}) \mathbf{x}^{(i)}
+$$
+
+With this equation, the gradient vector for each class can be computed and Gradient Descent can be used to find the paramter matrix $\Theta$ that minimizes the cost function.
+
+The following code uses Softmax Regression to classify the iris flowers into all three classes.
+The `LogisticRegression` class using one-versus-all (OvA) by default, though the `multi_class` parameter can be assigned `'multinomial'` to use softmax.
+
+
+```python
+X = iris.data[:, [2, 3]]
+y = iris.target
+
+softmax_reg = LogisticRegression(multi_class='multinomial',
+                                 solver='lbfgs',
+                                random_state=0)
+softmax_reg.fit(X, y)
+```
+
+
+
+
+    LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                       intercept_scaling=1, l1_ratio=None, max_iter=100,
+                       multi_class='multinomial', n_jobs=None, penalty='l2',
+                       random_state=0, solver='lbfgs', tol=0.0001, verbose=0,
+                       warm_start=False)
+
+
+
+
+```python
+softmax_reg.predict([[5, 2]])
+```
+
+
+
+
+    array([2])
+
+
+
+
+```python
+softmax_reg.predict_proba([[5, 2]])
+```
+
+
+
+
+    array([[2.43559894e-04, 2.14859516e-01, 7.84896924e-01]])
+
+
+
+The following plot shows each data point plotted on the feature space and colored by its known label.
+The contour plot indicates the division of the feature space by the Softmax Logistic Regression model.
+
+
+```python
+fig = plt.figure(figsize=(8, 5))
+
+axes = [0.8, 7, 0, 3.5]
+
+def get_iris_X(feat_int, x=0):
+    idx = (y == feat_int)
+    return X[:, x][idx]
+
+iris_pal = ['y', 'b', 'g']
+iris_markers = ['o', 's', '^']
+
+for i in range(3):
+    plt.plot(get_iris_X(i, 0), 
+             get_iris_X(i, 1),
+             color=iris_pal[i],
+             linestyle='none',
+             marker=iris_markers[i],
+             label=iris.target_names[i])
+
+x0, x1 = np.meshgrid(np.linspace(axes[0], axes[1], 500).reshape(-1, 1),
+                     np.linspace(axes[2], axes[3], 500).reshape(-1, 1))
+X_new = np.c_[x0.ravel(), x1.ravel()]
+
+zz = softmax_reg.predict(X_new).reshape(x0.shape)
+
+from matplotlib.colors import ListedColormap
+custom_cmap = ListedColormap(['#fafab0','#9898ff','#a0faa0'])
+
+plt.contourf(x0, x1, zz, cmap=custom_cmap)
+
+plt.xlabel('Petal length')
+plt.ylabel('Petal width')
+plt.legend(loc='upper left')
+plt.axis(axes)
+plt.show()
+```
+
+
+![png](homl_ch04_files/homl_ch04_89_0.png)
+
