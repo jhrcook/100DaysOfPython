@@ -221,3 +221,8 @@ I made a really cool plot where I got some good  practise using matplotlib and n
 **Day 43 - December 03, 2019:**
 I finished the Linear Regression chapter by learning about logistic regression and multinomial logistic regression.
 In the process, I got more practice with matplotlib.
+
+**Day 44 - December 04, 2019:**
+I began Chapter 5 on SVM.
+This chapter may take me awhile to get through because there are some complex plots that I want to be able to make.
+I'm looking forward to it!
