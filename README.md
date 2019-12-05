@@ -226,3 +226,6 @@ In the process, I got more practice with matplotlib.
 I began Chapter 5 on SVM.
 This chapter may take me awhile to get through because there are some complex plots that I want to be able to make.
 I'm looking forward to it!
+
+**Day 45 - December 05, 2019:**
+We continued with the chapter on SVM by learning about kernel models instead of increasing the feature space with polynomials.
