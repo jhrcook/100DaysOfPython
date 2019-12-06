@@ -229,3 +229,6 @@ I'm looking forward to it!
 
 **Day 45 - December 05, 2019:**
 We continued with the chapter on SVM by learning about kernel models instead of increasing the feature space with polynomials.
+
+**Day 46 - December 06, 2019:**
+We continued on with SVM models and learned how to use the Guassian Radial Basis Function to compute measures of similarity as new features.

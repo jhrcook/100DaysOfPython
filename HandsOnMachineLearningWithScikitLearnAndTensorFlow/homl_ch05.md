@@ -284,7 +284,7 @@ plt.plot(X[:, 0][y == 1], X[:, 1][y == 1], 'go')
 
 
 
-    [<matplotlib.lines.Line2D at 0x1a21289d90>]
+    [<matplotlib.lines.Line2D at 0x1a2a3f0f10>]
 
 
 
@@ -434,20 +434,174 @@ plt.plot(X[:, 0][y == 1], X[:, 1][y == 1], 'go')
 d = grid_search.best_params_['svm_clf__degree']
 r = grid_search.best_params_['svm_clf__coef0']
 plt.title(f'Grid search results: $d={d}, r={r}, C=5$')
+
+plt.show()
+```
+
+
+![png](homl_ch05_files/homl_ch05_21_0.png)
+
+
+## Similarity features
+
+Another approach to creating a linearly separable feature space is to use a *similarity function* that measures how much each instance resembles a "landmark."
+For example, the following equation is the *Guassian Radial Basis Function* (RBF).
+
+$$
+\phi(\mathbf{x}, \ell) = e^{-\gamma |\mathbf{x} - \ell|^2}
+$$
+
+Below is an example of the new feature space when then transformation is applied with the landmark $x_1 = -2, x_2 = 1$.
+
+
+```python
+def calculate_rbf(x, l, gamma=0.3):
+    return np.exp(-gamma * (np.abs(x - l)**2))
+
+x2 = calculate_rbf(X_ex, l=-2)
+x3 = calculate_rbf(X_ex, l=1)
+
+
+plt.plot(x2[y_ex==0], x3[y_ex==0], 'bo')
+plt.plot(x2[y_ex==1], x3[y_ex==1], 'go')
+
+x_line = np.linspace(-1, 2, 500)
+y_line = [0.5 - 0.5 * a for a in x_line]
+plt.plot(x_line, y_line, 'k--')
+
+plt.xlabel('$x_2$')
+plt.ylabel('$x_3$')
+plt.title('Linear data set in similarity feature space')
+
+plt.axis([-0.1, 1.1, -0.1, 1.1])
+plt.show()
+```
+
+
+![png](homl_ch05_files/homl_ch05_23_0.png)
+
+
+The trick, however, is choosing approriate landmarks.
+It is often simplest to set each data point as an individual landmark, but this leads to very high-dimensional data.
+
+### Guassian RBF kernel
+
+The Guassian RBF can be computationally prohibitive if employed on large data sets and using each instance as a landmark.
+Therefore, a kernel is often a good substitute.
+
+
+```python
+rbf_kernel_svm_clf = Pipeline([
+    ('scaler', StandardScaler()),
+    ('svm_clf', SVC(kernel='rbf', gamma=5, C=0.0001))
+])
+rbf_kernel_svm_clf.fit(X, y)
 ```
 
 
 
 
-    Text(0.5, 1.0, 'Grid search results: $d=3, r=55, C=5$')
+    Pipeline(memory=None,
+             steps=[('scaler',
+                     StandardScaler(copy=True, with_mean=True, with_std=True)),
+                    ('svm_clf',
+                     SVC(C=0.0001, cache_size=200, class_weight=None, coef0=0.0,
+                         decision_function_shape='ovr', degree=3, gamma=5,
+                         kernel='rbf', max_iter=-1, probability=False,
+                         random_state=None, shrinking=True, tol=0.001,
+                         verbose=False))],
+             verbose=False)
 
 
 
+The $\gamma$ hyperparameter controls the width of the Guassian: a larger value makes the curve narrower, reducing the influence of each landmark.
+Thus, it behaves like a regularization parameter.
 
-![png](homl_ch05_files/homl_ch05_21_1.png)
+
+```python
+fig = plt.figure(figsize=(8, 5))
+axes = [-1.5, 2.5, -1, 1.5]
+plt.axis(axes)
+
+def plot_rbf_svm(svc, axes):
+    plot_predictions(svc, axes)
+    plt.plot(X[:, 0][y == 0], X[:, 1][y == 0], 'bo')
+    plt.plot(X[:, 0][y == 1], X[:, 1][y == 1], 'go')
+
+    gamma = svc.named_steps['svm_clf'].gamma
+    C = svc.named_steps['svm_clf'].C
+    plt.title(f'$\gamma={gamma}, C={C}$')
+
+    
+plot_rbf_svm(rbf_kernel_svm_clf, axes)
+plt.show()
+```
 
 
-## Similarity features
+![png](homl_ch05_files/homl_ch05_27_0.png)
+
+
+
+```python
+param_grid = [
+    {'gamma': 0.1, 'C': 0.0001},
+    {'gamma': 0.1, 'C': 1},
+    {'gamma': 0.1, 'C': 1000},
+    {'gamma': 5, 'C': 0.0001},
+    {'gamma': 5, 'C': 1},
+    {'gamma': 5, 'C': 1000},
+    {'gamma': 20, 'C': 0.0001},
+    {'gamma': 20, 'C': 1},
+    {'gamma': 20, 'C': 1000},
+]
+
+fig = plt.figure(figsize=(12, 10))
+axes = [-1.5, 2.5, -1, 1.5]
+
+for i in range(len(param_grid)):
+    rbf_clf = Pipeline([
+        ('scaler', StandardScaler()),
+        ('svm_clf', SVC(kernel='rbf', **param_grid[i]))
+    ])
+    rbf_clf.fit(X, y)
+    
+    plt.subplot(3, 3, i+1)
+    plot_rbf_svm(rbf_clf, axes)
+    plt.axis(axes)
+
+    
+plt.show()
+```
+
+
+![png](homl_ch05_files/homl_ch05_28_0.png)
+
+
+As $\gamma$ and C increase, the model fits the data tighter and tighter, presenting the possibility of overfitting.
+Grid search should be used to determine the optimal hyperparameters.
+Below is the result of using extreme values for `gamma` and `C`.
+
+
+```python
+axes = [-1.5, 2.5, -1, 1.5]
+
+rbf_clf = Pipeline([
+    ('scaler', StandardScaler()),
+    ('svm_clf', SVC(kernel='rbf', gamma=100, C=100))
+])
+rbf_clf.fit(X, y)
+
+plot_rbf_svm(rbf_clf, axes)
+plt.axis(axes)
+    
+plt.show()
+```
+
+
+![png](homl_ch05_files/homl_ch05_30_0.png)
+
+
+## SVM regression
 
 
 ```python
