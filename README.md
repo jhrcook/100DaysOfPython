@@ -232,3 +232,6 @@ We continued with the chapter on SVM by learning about kernel models instead of 
 
 **Day 46 - December 06, 2019:**
 We continued on with SVM models and learned how to use the Guassian Radial Basis Function to compute measures of similarity as new features.
+
+**Day 47 - December 07, 2019:**
+I finished the section on SVMs by playing around with linear, polynomial, and kernelized methods.

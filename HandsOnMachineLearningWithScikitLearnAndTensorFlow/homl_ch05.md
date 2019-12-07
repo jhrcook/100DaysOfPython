@@ -284,7 +284,7 @@ plt.plot(X[:, 0][y == 1], X[:, 1][y == 1], 'go')
 
 
 
-    [<matplotlib.lines.Line2D at 0x1a2a3f0f10>]
+    [<matplotlib.lines.Line2D at 0x1a197689d0>]
 
 
 
@@ -603,7 +603,122 @@ plt.show()
 
 ## SVM regression
 
+The goal of the SVM for regression is to fit as many instances *within* the street as possible.
+Thus, "violations" are now considered to be the points on the outside of the "street."
+
+The width of the street is controlled by $\epsilon$; a larger value results in a wider street.
+
 
 ```python
+from sklearn.svm import LinearSVR    
 
+def plot_svm_linear_regression(model, x, y):
+    # The regression line and margins for SVM model.
+    svm_y = model.predict(x.reshape(-1, 1))
+    svm_y_lower = svm_y - model.epsilon
+    svm_y_upper = svm_y + model.epsilon
+
+    # Highlight the violations.
+    idx = np.abs(y - svm_y) > model.epsilon
+
+    # Plot
+    plt.scatter(x[idx], y[idx], color='green', alpha=0.5, s=150)
+    plt.scatter(x, y, color='blue')
+    plt.plot(x, svm_y, 'k-')
+    plt.plot(x, svm_y_lower, 'k--')
+    plt.plot(x, svm_y_upper, 'k--')
+
+    plt.xlabel('$x$')
+    plt.ylabel('$y$')
+
+
+# Toy data from a linear model.
+n = 30
+x = np.linspace(0.0, 2.0, n)
+y = np.array((2.0 * x) + 1.0 + np.random.randn(n))
+
+fig = plt.figure(figsize=(5, 15))
+
+for i, ep in zip([1, 2, 3], [0.1, 0.5, 1.5]):    
+    # Linear SVM regression.
+    svm_reg = LinearSVR(epsilon=ep)
+    svm_reg.fit(x.reshape(-1, 1), y)
+    
+    plt.subplot(3, 1, i)
+    plot_svm_linear_regression(svm_reg, x, y)
+    
+    m = np.round(svm_reg.coef_, 1)[0]
+    b = np.round(svm_reg.intercept_, 1)[0]
+    plt.title(f'real model: $y = 2x + 1$; regression: $y = {m}x + {b}$')
+
+plt.show()
 ```
+
+
+![png](homl_ch05_files/homl_ch05_32_0.png)
+
+
+Polynomials can also be fit using a polynomial kernel.
+
+
+```python
+from sklearn.svm import SVR
+
+# Toy polynomial data
+n = 30
+x = np.linspace(-2.0, 2.0, n)
+
+# Model paramters
+a, b, c = 2, -1, 1
+y = (a * x**2) + (b * x) + c + np.random.randn(n)
+
+fig = plt.figure(figsize=(15, 5))
+
+for i, ep in zip([1, 2, 3], [0.1, 0.5, 1.5]):
+    svr = SVR(kernel='poly', degree=2, C=100, epsilon=ep, gamma='scale')
+    svr.fit(x.reshape(-1, 1), y)
+    
+    plt.subplot(1, 3, i)
+    plot_svm_linear_regression(svr, x, y)
+    
+    plt.title(f'Polynomial SVR ($\epsilon = {ep}$)')
+
+plt.show()
+```
+
+
+![png](homl_ch05_files/homl_ch05_34_0.png)
+
+
+Of course, CV can be used to find the degree of the polynomial and best `C` and `epsilon` values.
+Using the wrong degree will still result in a solution, though it is obviously a poor fit.
+
+
+```python
+svr = SVR(kernel='poly', degree=3, C=100, epsilon=1.5, gamma='scale')
+svr.fit(x.reshape(-1, 1), y)
+
+plot_svm_linear_regression(svr, x, y)
+plt.title(f'Polynomial SVR ($\epsilon = {ep}$, degree = 3)')
+plt.show()
+```
+
+
+![png](homl_ch05_files/homl_ch05_36_0.png)
+
+
+The Guassian RBF kernel is also available.
+
+
+```python
+svr = SVR(kernel='rbf', C=100, epsilon=1.5, gamma='scale')
+svr.fit(x.reshape(-1, 1), y)
+
+plot_svm_linear_regression(svr, x, y)
+plt.title(f'SVR (Guassian RBF kernel)')
+plt.show()
+```
+
+
+![png](homl_ch05_files/homl_ch05_38_0.png)
+
