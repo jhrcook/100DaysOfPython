@@ -237,3 +237,6 @@ We continued on with SVM models and learned how to use the Guassian Radial Basis
 I finished the section on SVMs by playing around with linear, polynomial, and kernelized methods.
 I continued on to the next chapter covering decision trees in the evening.
 There, I learned how to train and visualize a simple decision tree classifier.
+
+**Day 48 - December 08, 2019:**
+I learned and played around with the regularization parameters for a decision tree classifier.
