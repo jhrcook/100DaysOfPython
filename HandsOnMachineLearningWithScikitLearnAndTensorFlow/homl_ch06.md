@@ -21,10 +21,8 @@ plt.style.use('seaborn-whitegrid')
 %load_ext ipycache
 ```
 
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/IPython/config.py:13: ShimWarning: The `IPython.config` package has been deprecated since IPython 4.0. You should import from traitlets.config instead.
-      "You should import from traitlets.config instead.", ShimWarning)
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/ipycache.py:17: UserWarning: IPython.utils.traitlets has moved to a top-level traitlets package.
-      from IPython.utils.traitlets import Unicode
+    The ipycache extension is already loaded. To reload it, use:
+      %reload_ext ipycache
 
 
 Decision trees can perform both classification and regression.
@@ -517,7 +515,7 @@ clf.best_score_
 
 
 ```python
-%%cache -d caches coarse_grid_search.pkl tree_clf, clf, fine_grid
+%%cache -d caches fine_grid_search.pkl tree_clf, clf, fine_grid
 
 # A finer-grained parameter grid.
 fine_grid = {
@@ -538,7 +536,7 @@ clf = GridSearchCV(estimator=tree_clf,
 clf.fit(X_train, y_train)
 ```
 
-    [Saved variables 'clf, fine_grid, tree_clf' to file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/coarse_grid_search.pkl'.]
+    [Skipped the cell's code and loaded variables clf, fine_grid, tree_clf from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/fine_grid_search.pkl'.]
 
 
 
@@ -625,6 +623,196 @@ sum(y_test_predict == y_test) / len(y_test)
 
 
 ## Regression
+
+A decision tree can also be used for regression.
+The main difference is that instead of each leaf having a class, they instead have a value.
+The predicted value is the average of the values at the leaf.
+
+The CART algorithm works similarly to that for classification, just this time it is minimizing the MSE to decide where to split the data.
+
+As an example, the following builds a decision tree regressor for a noisy quadratic data set.
+
+
+```python
+from sklearn.tree import DecisionTreeRegressor
+
+# Mock data of a quadratic formula: y = 2x^2 - 3x + 5 + N()
+n = 300
+X = np.linspace(-4, 4, n) + np.random.randn(n)
+y = 2.0 * X**2 + (-3.0) * X + 5 + (np.random.randn(n) * 10.0)
+
+# Fit decision tree regressor with max_depth=2.
+tree_reg = DecisionTreeRegressor(max_depth=2)
+tree_reg.fit(X.reshape(-1, 1), y)
+
+# Export the graph of the tree.
+export_graphviz(
+    tree_reg,
+    out_file='assets/ch06/tree_reg_quadratic.dot',
+    feature_names='x',
+    class_names='y',
+    rounded=True,
+    filled=True
+)
+```
+
+
+```bash
+%%bash
+dot -Tsvg assets/ch06/tree_reg_quadratic.dot -o assets/ch06/tree_reg_quadratic.svg
+```
+
+![](assets/ch06/tree_reg_quadratic.svg)
+
+Below, I have included a demonstration of the shape of the regressions with varying values for `max_depth` of the tree.
+The models can overfit data very easily.
+
+
+```python
+def plot_regression_tree(tree_mdl, X, y):
+    """Plot the predictions for a decision tree regressor model."""
+    # Plot the data points.
+    plt.scatter(X, y, color='blue', label='data', s=15, alpha=0.5)
+
+    # Plot the predictions.
+    X_new = np.linspace(-6, 6, 500)
+    y_new = tree_mdl.predict(X_new.reshape(-1, 1))
+    plt.plot(X_new, y_new, 'r-', label='regression tree')
+
+    # Details
+    plt.xlabel('$X$')
+    plt.ylabel('$y$')
+    plt.axis([-5, 5, -25, 65])
+
+
+# Plot 4 regressors with varying depth.
+fig = plt.figure(figsize=(12, 10))
+
+for i, d in enumerate([2, 3, 5, 8]):
+    tree_mdl = DecisionTreeRegressor(max_depth=d)
+    tree_mdl.fit(X.reshape(-1, 1), y)
+    plt.subplot(2, 2, i+1)
+    plot_regression_tree(tree_mdl, X, y)
+    plt.title(f'Tree depth: {d}')
+
+plt.show()
+```
+
+
+![png](homl_ch06_files/homl_ch06_51_0.png)
+
+
+A grid search over the regularization parameters of the decision tree can help combat overfitting.
+
+
+```python
+from sklearn.model_selection import GridSearchCV
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+param_grid = {
+    'max_depth': np.arange(2, 21, 1, dtype=int),
+    'min_samples_split': np.arange(2, 20, 1, dtype=int),
+}
+
+tree_reg = DecisionTreeRegressor()
+
+clf = GridSearchCV(estimator=tree_reg,
+                  param_grid=param_grid,
+                  cv=5)
+clf.fit(X_train.reshape(-1, 1), y_train)
+```
+
+
+
+
+    GridSearchCV(cv=5, error_score=nan,
+                 estimator=DecisionTreeRegressor(ccp_alpha=0.0, criterion='mse',
+                                                 max_depth=None, max_features=None,
+                                                 max_leaf_nodes=None,
+                                                 min_impurity_decrease=0.0,
+                                                 min_impurity_split=None,
+                                                 min_samples_leaf=1,
+                                                 min_samples_split=2,
+                                                 min_weight_fraction_leaf=0.0,
+                                                 presort='deprecated',
+                                                 random_state=None,
+                                                 splitter='best'),
+                 iid='deprecated', n_jobs=None,
+                 param_grid={'max_depth': array([ 2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+           19, 20]),
+                             'min_samples_split': array([ 2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+           19])},
+                 pre_dispatch='2*n_jobs', refit=True, return_train_score=False,
+                 scoring=None, verbose=0)
+
+
+
+
+```python
+clf.best_params_
+```
+
+
+
+
+    {'max_depth': 4, 'min_samples_split': 14}
+
+
+
+
+```python
+clf.best_score_
+```
+
+
+
+
+    0.6602906718789499
+
+
+
+
+```python
+y_predicted = clf.best_estimator_.predict(X_train.reshape(-1, 1))
+plot_regression_tree(clf.best_estimator_, X_train, y_train)
+```
+
+
+![png](homl_ch06_files/homl_ch06_56_0.png)
+
+
+
+```python
+from sklearn.metrics import mean_squared_error
+
+# Training MSE.
+mean_squared_error(y_train, clf.best_estimator_.predict(X_train.reshape(-1, 1)))
+```
+
+
+
+
+    91.61548953612372
+
+
+
+
+```python
+# Testing MSE.
+mean_squared_error(y_test, clf.best_estimator_.predict(X_test.reshape(-1, 1)))
+```
+
+
+
+
+    118.30788384376102
+
+
+
+## Instability
+
+
 
 
 ```python

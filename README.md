@@ -240,3 +240,6 @@ There, I learned how to train and visualize a simple decision tree classifier.
 
 **Day 48 - December 08, 2019:**
 I learned and played around with the regularization parameters for a decision tree classifier.
+
+**Day 49 - December 09, 2019:**
+I learned about and experimented with decision tree regressors.
