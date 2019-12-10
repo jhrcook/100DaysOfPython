@@ -120,7 +120,7 @@ The plot below shows the decision boundaries of the decision tree model.
 ```python
 from matplotlib.colors import ListedColormap
 
-def plot_decision_boundary(clf, X, y, axes=[0, 7.5, 0, 3], iris=True, legend=False, plot_training=True):
+def plot_decision_boundary(clf, X, y, axes=[0, 7.5, 0, 3]):
     # Create a mesh to predict over.
     x1s = np.linspace(axes[0], axes[1], 100)
     x2s = np.linspace(axes[2], axes[3], 100)
@@ -669,37 +669,38 @@ The models can overfit data very easily.
 
 
 ```python
-def plot_regression_tree(tree_mdl, X, y):
+def plot_regression_tree(tree_mdl, X, y, axes):
     """Plot the predictions for a decision tree regressor model."""
     # Plot the data points.
     plt.scatter(X, y, color='blue', label='data', s=15, alpha=0.5)
 
     # Plot the predictions.
-    X_new = np.linspace(-6, 6, 500)
+    X_new = np.linspace(axes[0]-2, axes[1]+2, 500)
     y_new = tree_mdl.predict(X_new.reshape(-1, 1))
     plt.plot(X_new, y_new, 'r-', label='regression tree')
 
     # Details
     plt.xlabel('$X$')
     plt.ylabel('$y$')
-    plt.axis([-5, 5, -25, 65])
+    plt.axis(axes)
 
 
 # Plot 4 regressors with varying depth.
 fig = plt.figure(figsize=(12, 10))
+fig_axes = [-5, 5, -25, 65]
 
 for i, d in enumerate([2, 3, 5, 8]):
     tree_mdl = DecisionTreeRegressor(max_depth=d)
     tree_mdl.fit(X.reshape(-1, 1), y)
     plt.subplot(2, 2, i+1)
-    plot_regression_tree(tree_mdl, X, y)
+    plot_regression_tree(tree_mdl, X, y, fig_axes)
     plt.title(f'Tree depth: {d}')
 
 plt.show()
 ```
 
 
-![png](homl_ch06_files/homl_ch06_51_0.png)
+![png](homl_ch06_files/homl_ch06_50_0.png)
 
 
 A grid search over the regularization parameters of the decision tree can help combat overfitting.
@@ -775,11 +776,11 @@ clf.best_score_
 
 ```python
 y_predicted = clf.best_estimator_.predict(X_train.reshape(-1, 1))
-plot_regression_tree(clf.best_estimator_, X_train, y_train)
+plot_regression_tree(clf.best_estimator_, X_train, y_train, fig_axes)
 ```
 
 
-![png](homl_ch06_files/homl_ch06_56_0.png)
+![png](homl_ch06_files/homl_ch06_55_0.png)
 
 
 
@@ -812,7 +813,200 @@ mean_squared_error(y_test, clf.best_estimator_.predict(X_test.reshape(-1, 1)))
 
 ## Instability
 
+### Rotation
 
+The first main limitation of decision trees is that they make cuts orthogonal to the features.
+Therefore, they are very sensitive to the rotation of the training data.
+This is demonstrated below.
+
+
+```python
+# Flat data
+n = 500
+x1 = np.random.rand(n)
+x2 = np.random.rand(n)
+
+# Rotated by 30 degrees
+rot = np.pi * 45 / 180
+x1_rot = x1 * np.cos(rot) + x2 * np.sin(rot)
+x2_rot = x2 * np.cos(rot) - x1 * np.sin(rot)
+
+y = np.array([0 if x < 0.5 else 1 for x in x1])
+
+pal = ['orange', 'blue']
+
+fig = plt.figure(figsize=(8, 4))
+plt.subplot(1, 2, 1)
+plt.scatter(x1[y == 0], x2[y == 0], color=pal[0], s=10)
+plt.scatter(x1[y == 1], x2[y == 1], color=pal[1], s=10)
+plt.title("Flat data set")
+plt.xlabel('$x_1$')
+plt.ylabel('$x_2$')
+
+plt.subplot(1, 2, 2)
+plt.scatter(x1_rot[y == 0], x2_rot[y == 0], color=pal[0], s=10)
+plt.scatter(x1_rot[y == 1], x2_rot[y == 1], color=pal[1], s=10)
+plt.title("Rotated data set")
+plt.xlabel('$x_1$')
+plt.ylabel('$x_2$')
+
+plt.show()
+```
+
+
+![png](homl_ch06_files/homl_ch06_59_0.png)
+
+
+
+```python
+X = np.c_[x1, x2]
+X_rot = np.c_[x1_rot, x2_rot]
+
+# Fit decision tree regressor on flat data.
+tree_reg_flat = DecisionTreeClassifier(max_depth=2)
+tree_reg_flat.fit(X, y)
+
+# Decision tree for the rotated data.
+tree_reg_rot = DecisionTreeRegressor(max_depth=2)
+tree_reg_rot.fit(X_rot, y)
+
+fig = plt.figure(figsize=(10, 5))
+
+def plot_2d_classification_tree(tree_mdl, X, y, axes):
+    x1_new = np.linspace(axes[0], axes[1], 100)
+    x2_new = np.linspace(axes[2], axes[3], 100)
+    x1_new, x2_new = np.meshgrid(x1_new, x2_new)
+    X_new = np.c_[x1_new.ravel(), x2_new.ravel()]
+    y_pred = tree_mdl.predict(X_new).reshape(x1_new.shape)
+    
+    # Plot the contour of the predictions.
+    custom_cmap = ListedColormap(['#ffe7a6', '#bad6ff'])
+    plt.contourf(x1_new, x2_new, y_pred, alpha=0.5, cmap=custom_cmap)
+    
+    plt.scatter(X[:, 0][y == 0], X[:, 1][y == 0], color=pal[0], alpha=1, s=10)
+    plt.scatter(X[:, 0][y == 1], X[:, 1][y == 1], color=pal[1], alpha=1, s=10)
+    plt.axis(axes)
+
+
+plt.subplot(1, 2, 1)
+plot_2d_classification_tree(tree_reg_flat, X, y, [0, 1, 0, 1])
+plt.title("Flat data set")
+plt.xlabel('$x_1$')
+plt.ylabel('$x_2$')
+
+plt.subplot(1, 2, 2)
+plot_2d_classification_tree(tree_reg_rot, X_rot, y, [0, 1.4, -0.7, 0.7])
+plt.title("Rotated data set")
+plt.xlabel('$x_1$')
+plt.ylabel('$x_2$')
+
+plt.show()
+```
+
+
+![png](homl_ch06_files/homl_ch06_60_0.png)
+
+
+This can be fought using PCA.
+
+
+```python
+from sklearn.decomposition import PCA
+
+# PCA on rotated data set.
+pca = PCA(2)
+pca.fit(X)
+X_pca = pca.fit_transform(X_rot)
+
+
+tree_reg_pca = DecisionTreeClassifier(max_depth=2)
+tree_reg_pca.fit(X_pca, y)
+
+pca_axes = [
+    min(X_pca[:, 0]), max(X_pca[:, 0]),
+    min(X_pca[:, 1]), max(X_pca[:, 1]),
+]
+
+
+plot_2d_classification_tree(tree_reg_pca, X_pca, y, pca_axes)
+plt.title("PCA of rotated data set")
+plt.xlabel('$x_1$')
+plt.ylabel('$x_2$')
+
+plt.show()
+```
+
+
+![png](homl_ch06_files/homl_ch06_62_0.png)
+
+
+### Sensitive to variation
+
+A decision tree model can be quite different based on the removal of individual or small subsets of training data.
+Further, the Scikit-Learn implementation of the fitting algorithm is stochastic.
+Thus, multiple models can be received from the same training data.
+This is shown below where multiple models are run on different subsets of the `iris` data set.
+The subsets are drawn by taking each row with 95% chance (a biased coin flip).
+
+
+```python
+def plot_decision_boundary(clf, X, y, axes=[0, 7.5, 0, 3]):
+    # Create a mesh to predict over.
+    x1s = np.linspace(axes[0], axes[1], 100)
+    x2s = np.linspace(axes[2], axes[3], 100)
+    x1, x2 = np.meshgrid(x1s, x2s)
+    X_new = np.c_[x1.ravel(), x2.ravel()]
+    y_pred = clf.predict(X_new).reshape(x1.shape)
+    
+    # Plot the contour of the predictions.
+    custom_cmap = ListedColormap(['#fafab0','#9898ff','#a0faa0'])
+    plt.contourf(x1, x2, y_pred, alpha=0.3, cmap=custom_cmap)
+
+    # Plot the iris data points.
+    plt.scatter(X[:, 0][y==0], X[:, 1][y==0], color='orange', s=10)
+    plt.scatter(X[:, 0][y==1], X[:, 1][y==1], color='blue', s=10)
+    plt.scatter(X[:, 0][y==2], X[:, 1][y==2], color='green', s=10)
+
+
+iris = load_iris()
+X = iris.data[:, 2:] # petal length and width
+y = iris.target
+
+fig = plt.figure(figsize=(12, 12))
+for i in range(1, 10):
+    
+    flips = np.random.binomial(n=1, p=0.95, size=X.shape[0])
+    idx = [True if x == 1 else False for x in flips]
+    
+    X_subset = X[idx, :]
+    y_subset = y[idx]
+    
+    tree_clf = DecisionTreeClassifier(max_depth=3)
+    tree_clf.fit(X_subset, y_subset)
+    
+    plt.subplot(3, 3, i)
+    plot_decision_boundary(tree_clf, X_subset, y_subset)
+    plt.title(f'Removed {X.shape[0] - len(y_subset)} data')
+
+plt.show()
+```
+
+
+![png](homl_ch06_files/homl_ch06_64_0.png)
+
+
+### Exercise 7
+
+(This was completed in an above example.)
+
+### Exercise 8
+
+Grow a forest by following these steps:
+
+1. Continuing the previous exercise, generate 1,000 subsets of the training set, each containing 100 instances selected randomly (use `ShuffleSplit`).
+2. Train one decision tree on each subset using the best hyperparamters from Exercise 7. Evaluate these trees on the test set.
+3. For each test set instance, generate predictions from each of the 1,000 trees, keeping only the most frequent prediction (using Scipy-Learn's `mode()`).
+4. Evaluate these results on the test data. How does it compare to the original model?
 
 
 ```python

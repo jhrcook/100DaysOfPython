@@ -243,3 +243,5 @@ I learned and played around with the regularization parameters for a decision tr
 
 **Day 49 - December 09, 2019:**
 I learned about and experimented with decision tree regressors.
+I did another few hours of playing with the regression trees in the evening.
+Here, I demonstrated the sensitivty of decision trees classifiers to rotation (combatting it with PCA) and how different models can be obtainined from the same training data.
