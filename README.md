@@ -245,3 +245,7 @@ I learned and played around with the regularization parameters for a decision tr
 I learned about and experimented with decision tree regressors.
 I did another few hours of playing with the regression trees in the evening.
 Here, I demonstrated the sensitivty of decision trees classifiers to rotation (combatting it with PCA) and how different models can be obtainined from the same training data.
+
+**Day 50 - December 10, 2019:**
+I finished the section of decision trees by building a rudimentary random forest classifier as one of the exercises at the end of the chpater.
+I then began working on Chapter 7 learning about Ensemble methods.
