@@ -249,3 +249,7 @@ Here, I demonstrated the sensitivty of decision trees classifiers to rotation (c
 **Day 50 - December 10, 2019:**
 I finished the section of decision trees by building a rudimentary random forest classifier as one of the exercises at the end of the chpater.
 I then began working on Chapter 7 learning about Ensemble methods.
+
+**Day 51 - December 11, 2019:**
+I learned about bagging and pasting, using random subsamples of the training data to build diverse and robust models.
+We specifically made an ensemble of decision trees that massively outperformed an individual tree.
