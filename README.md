@@ -253,3 +253,6 @@ I then began working on Chapter 7 learning about Ensemble methods.
 **Day 51 - December 11, 2019:**
 I learned about bagging and pasting, using random subsamples of the training data to build diverse and robust models.
 We specifically made an ensemble of decision trees that massively outperformed an individual tree.
+
+**Day 52 - December 12, 2019:**
+I learned about random patches and subspaces, methods that subsample the feature space for training the models of an ensemble, random forests, and extra-trees classifiers, random forests with trees trained using an algorithm that randomly selects feature thresholds instead of finding the optimal split.

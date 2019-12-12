@@ -22,6 +22,15 @@ plt.style.use('seaborn-whitegrid')
 %matplotlib inline
 ```
 
+
+```python
+%load_ext ipycache
+```
+
+    The ipycache extension is already loaded. To reload it, use:
+      %reload_ext ipycache
+
+
 ## Voting classifiers
 
 The idea behind the power of ensemble method can be explained by thinking about a slightly biased coin. 
@@ -116,7 +125,7 @@ plt.show()
 ```
 
 
-![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_6_0.png)
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_7_0.png)
 
 
 
@@ -205,7 +214,7 @@ plt.show()
 ```
 
 
-![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_9_0.png)
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_10_0.png)
 
 
 
@@ -263,7 +272,7 @@ plt.show()
 ```
 
 
-![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_12_0.png)
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_13_0.png)
 
 
 ### Out-of-bag evaluation
@@ -320,6 +329,211 @@ bag_clf.oob_decision_function_[1:5, ]
 
 
 ## Random patches and random subspaces
+
+The *random subspaces* method is when an ensemble of models is created, each one only using a random subset of the features (but all of the training instances).
+The *random patches* method is when an both the features and data are randomly sampled for each model of the ensemble.
+They are particularly useful when dealing with high-dimensional data.
+
+## Random forests
+
+A *random forest* is just an ensemble of decision trees.
+Generally, they are trained using the bagging method.
+
+Scikit-Learn created optimized classes for random forests, [`RandomForestClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) and [`RandomForestRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html).
+For the most part, these classes are simillar to passing a single decision tree to a `BaggingClassifier/Regressor`, with a few changes to the hyperparameters.
+However, one difference is that the splitting algorithm for each tree in the `RandomForestClassifier/Regressor` uses only a subset of the features.
+This leads to greater diversity in the forest.
+
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+
+# A random forest of 500 decision tree classifiers.
+rnd_clf = RandomForestClassifier(n_estimators=500,
+                                 max_leaf_nodes=16,
+                                 oob_score=True,
+                                 n_jobs=-1,
+                                 random_state=0)
+
+# Train on the mood data.
+rnd_clf.fit(X_train, y_train)
+
+# Accuracy of the random forest classifier.
+train_acc = accuracy_score(y_train, rnd_clf.predict(X_train))
+test_acc = accuracy_score(y_test, rnd_clf.predict(X_test))
+
+print(
+    f'''
+Random Forest Classifier evaluation
+        oob score: {np.round(rnd_clf.oob_score_, 3)}
+training accuracy: {np.round(train_acc, 3)}
+ testing accuracy: {np.round(test_acc, 3)}
+'''
+)
+```
+
+    
+    Random Forest Classifier evaluation
+            oob score: 0.883
+    training accuracy: 0.941
+     testing accuracy: 0.888
+    
+
+
+
+```python
+plot_tree_classifier(rnd_clf, X_train, y_train)
+plt.title("Random forest classifier")
+plt.show()
+```
+
+
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_20_0.png)
+
+
+### Extremely Randomized Trees (Extra-Trees)
+
+A random forest can have even more diversity if the trees in the forest are made with a splitting algorithm that randomly assigns feature thresholds, rather than finding the most optimal threshold.
+These are called *extremely randomized trees*.
+It is difficult to know if an extra-trees classifier will perform better than a random forest, so tuning a model of each and comparing them with CV is often the only way to find out.
+
+
+```python
+from sklearn.ensemble import ExtraTreesClassifier
+
+# An extra-tree classifier with 500 trees.
+extra_clf = ExtraTreesClassifier(n_estimators=500,
+                                 max_leaf_nodes=16,
+                                 oob_score=True,
+                                 bootstrap=True,
+                                 n_jobs=-1,
+                                 random_state=0)
+
+# Train on the moon data.
+extra_clf.fit(X_train, y_train)
+
+# Accuracy of the extra-tree classifier.
+train_acc = accuracy_score(y_train, extra_clf.predict(X_train))
+test_acc = accuracy_score(y_test, extra_clf.predict(X_test))
+
+print(
+    f'''
+Random Forest Classifier evaluation
+        oob score: {np.round(extra_clf.oob_score_, 3)}
+training accuracy: {np.round(train_acc, 3)}
+ testing accuracy: {np.round(test_acc, 3)}
+'''
+)
+```
+
+    
+    Random Forest Classifier evaluation
+            oob score: 0.893
+    training accuracy: 0.909
+     testing accuracy: 0.872
+    
+
+
+
+```python
+plot_tree_classifier(extra_clf, X_train, y_train)
+plt.title("Extra-Trees classifier")
+plt.show()
+```
+
+
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_23_0.png)
+
+
+### Feature importance
+
+It is easy to find the feature importance for a decision tree because the consequence of each split is known.
+Therefore, the feature importance is measured from the reduction in impurity from each split (node of the tree).
+
+In Scikit-Learn, these values are computed automatically and made available in the `tree_mdl.feature_importances_` attribute.
+
+
+```python
+from sklearn.datasets import load_iris
+
+# Load  iris data.
+iris = load_iris()
+
+# Train a random forest to classify the 3 types of iris.
+rnd_clf = RandomForestClassifier(n_estimators=500, n_jobs=-1, random_state=0)
+rnd_clf.fit(iris['data'], iris['target'])
+
+# Print the importance of each feature.
+for name, score in zip(iris['feature_names'], rnd_clf.feature_importances_):
+    print(f'{name}: {np.round(score, 4)}')
+```
+
+    sepal length (cm): 0.0944
+    sepal width (cm): 0.0246
+    petal length (cm): 0.4358
+    petal width (cm): 0.4452
+
+
+
+```python
+from sklearn.datasets import load_digits
+
+digits = load_digits()
+
+X_train, X_test, y_train, y_test = train_test_split(digits['data'],
+                                                    digits['target'],
+                                                    test_size=0.25,
+                                                    shuffle=True,
+                                                    random_state=0)
+```
+
+
+```python
+def plot_digit(data, val):
+    plt.imshow(data.reshape(8, 8))
+    plt.title(f'label: {val}')
+
+plot_digit(digits['data'][0], digits['target'][0])
+plt.show()
+```
+
+
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_27_0.png)
+
+
+
+```python
+%%cache -d caches ch07_coarse_digit_girdsearch.pkl grid_clf
+
+from sklearn.model_selection import GridSearchCV
+
+# Parameters for a coarse grid search.
+grid_params = {
+    'max_depth': np.arange(5, 30, 2, dtype=int),
+    'max_leaf_nodes': np.arange(5, 100, 5, dtype=int),
+}
+
+# Random forest classifer with 1000 trees.
+rnd_clf = RandomForestClassifier(n_estimators=500)
+
+# Grid search
+grid_clf = GridSearchCV(rnd_clf, grid_params, cv=5)
+grid_clf.fit(X_train, y_train)
+```
+
+    [Skipped the cell's code and loaded variables grid_clf from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch07_coarse_digit_girdsearch.pkl'.]
+
+
+
+```python
+plt.imshow(grid_clf.best_estimator_.feature_importances_.reshape(8, 8))
+plt.title("Feature importances")
+plt.show()
+```
+
+
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_29_0.png)
+
 
 
 ```python
