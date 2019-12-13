@@ -452,6 +452,8 @@ Therefore, the feature importance is measured from the reduction in impurity fro
 
 In Scikit-Learn, these values are computed automatically and made available in the `tree_mdl.feature_importances_` attribute.
 
+Two examples are shown below in which a random forest classifier was built and its feature importances revealed. The first is for the `iris` data set and the second is for the `digits` data set.
+
 
 ```python
 from sklearn.datasets import load_iris
@@ -534,6 +536,228 @@ plt.show()
 
 ![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_29_0.png)
 
+
+## Boosting
+
+*Hypothesis Boosting* (or *boosting* for short) refers to any ensembe method that combines several weak learners into a strong learner.
+In general, boosting methods train predictors sequentially, each successor trying to improve upon its predecessor.
+
+### Adabost
+
+The Adabost algorithm improves the training of each model by having it pay more attention to the training instanes that the predecessor underfit.
+First, a base classifier is trained, and then evaluated on the training data.
+The relative weight of the misclassified training instances are increased for the next model.
+This is done repeatedly, adding each new model to the ensemble.
+A learning rate hyperparameter controls the extent to which successive models are influenced by the previous.
+If the base model provides a prediction of its classification, this can be used to make the weighting process even more successful in weighting in the hard cases.
+
+Scikit-Learn provides `AdaBoostClassifier` and `AdaBoostRegressor`. 
+The classifier's default base model is a "Decision Stump," a decision tree with `max_depth=1`.
+
+
+```python
+from sklearn.ensemble import AdaBoostClassifier
+
+# Remake the moon data.
+X, y = make_moons(500, noise=0.3, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
+
+# Train an Adaboost model on the moons data.
+ada_clf = AdaBoostClassifier(
+    base_estimator=DecisionTreeClassifier(max_depth=1),
+    n_estimators=200,
+    algorithm='SAMME.R',
+    learning_rate=0.5,
+    random_state=0
+)
+ada_clf.fit(X_train, y_train)
+
+# Plot.
+plot_tree_classifier(ada_clf, X_train, y_train)
+```
+
+
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_31_0.png)
+
+
+
+```python
+ada_clf.feature_importances_
+```
+
+
+
+
+    array([0.355, 0.645])
+
+
+
+
+```python
+train_acc = accuracy_score(y_train, ada_clf.predict(X_train))
+test_acc = accuracy_score(y_test, ada_clf.predict(X_test))
+
+print(f'''training accuracy: {np.round(train_acc, 4)}
+testing accuracy: {np.round(test_acc, 4)}''')
+```
+
+    training accuracy: 0.9653
+    testing accuracy: 0.856
+
+
+
+```python
+# Train the model on the iris data set.
+ada_clf.fit(iris['data'], iris['target'])
+
+# Print the importance of each feature.
+for name, score in zip(iris['feature_names'], ada_clf.feature_importances_):
+    print(f'{name}: {np.round(score, 4)}')
+```
+
+    sepal length (cm): 0.0
+    sepal width (cm): 0.0
+    petal length (cm): 0.47
+    petal width (cm): 0.53
+
+
+### Gradient boosting
+
+*Gradient boosting* improves each sequential model in the ensemble by fitting it to te residual error of its predecessor.
+Below is a manual example of how to do this with a decision tree regressor on data from a degree-3 polynomial with noise.
+
+
+```python
+from sklearn.tree import DecisionTreeRegressor
+
+
+# Preapre data from model: y = 2x^3 + 3x^2 - x + N()
+n = 300
+X = np.linspace(-10, 10, n) + (np.random.randn(n) / 10)
+y = (2 * X**3) + (3 * X**2) - X + (np.random.randn(n) * 200)
+
+
+
+# Train 3 successive trees using the Graident Boosting method.
+
+X = X.reshape(-1, 1)
+tree_reg1 = DecisionTreeRegressor(max_depth=2)
+tree_reg1.fit(X, y)
+
+y2 = y - tree_reg1.predict(X)
+tree_reg2 = DecisionTreeRegressor(max_depth=2)
+tree_reg2.fit(X, y2)
+
+y3 = y2 - tree_reg2.predict(X)
+tree_reg3 = DecisionTreeRegressor(max_depth=2)
+tree_reg3.fit(X, y3)
+
+
+
+# Plot the intermediate and total results.
+
+fig = plt.figure(figsize=(12, 15))
+axes = [min(X), max(X), min(y), max(y)]
+X_new = np.linspace(axes[0], axes[1], 300)
+
+subplot_counter = 1
+gradient_boost_ensemble = []
+
+for mdl, y_vals in zip([tree_reg1, tree_reg2, tree_reg3], [y, y2, y3]):
+    # Plot the model's predictions on `X` and it's training `y`
+    y_new = mdl.predict(X_new)
+    plt.subplot(3, 2, subplot_counter)
+    plt.scatter(X, y_vals, color='#75b1ff', alpha = 0.5, s=20)
+    plt.plot(X_new, y_new, 'b-', linewidth=3)
+    plt.title(f'Regression tree {int((subplot_counter + 1) / 2)} on it\'s training data')
+    
+    subplot_counter = subplot_counter + 1
+    
+    gradient_boost_ensemble.append(mdl)
+    
+    y_new = sum([tree.predict(X_new) for tree in gradient_boost_ensemble])
+    plt.subplot(3, 2, subplot_counter)
+    plt.scatter(X, y, color='#75b1ff', alpha = 0.5, s=20)
+    plt.plot(X_new, y_new, 'r-', linewidth=3)
+    plt.title('Ensemble on original data')
+    
+    subplot_counter = subplot_counter + 1
+
+plt.show()
+```
+
+
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_36_0.png)
+
+
+Of course, Sikit-Learn provides `GraidentBoostClassifier` and `GradientBoostRegressor` classes.
+
+
+```python
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor
+
+# Gradient boost regressor
+gbrt = GradientBoostingRegressor(max_depth=2, 
+                                 n_estimators=3, 
+                                 learning_rate=1.0)
+gbrt.fit(X, y)
+
+# Random forest regressor
+rf = RandomForestRegressor(n_estimators=10,
+                          max_depth=2)
+rf.fit(X, y)
+
+gbrt_y_pred = gbrt.predict(X_new)
+rf_y_pred = rf.predict(X_new)
+
+fig = plt.figure(figsize=(8, 5))
+plt.scatter(X, y, color='#75b1ff', alpha = 0.5, s=20)
+plt.plot(X_new, gbrt_y_pred, 
+         'r-', linewidth=3, alpha=0.7,
+         label='gradient boost')
+plt.plot(X_new, rf_y_pred, 
+         'b-', linewidth=3, alpha=0.7,
+         label = 'random forest')
+
+plt.xlabel('$x$')
+plt.ylabel('$y$')
+plt.title('Comparing graident boost and random forest regressors')
+plt.legend(loc='best')
+plt.show()
+```
+
+
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_38_0.png)
+
+
+It is tremendously easy for gradient boosting trees to overfit.
+Below are multiple regressors with increasing number of estimators.
+
+
+```python
+fig = plt.figure(figsize=(15, 12))
+
+for i in range(1, 10):
+    gbrt = GradientBoostingRegressor(max_depth=2, 
+                                     n_estimators=i, 
+                                     learning_rate=1.0)
+    gbrt.fit(X, y)    
+    gbrt_y_pred = gbrt.predict(X_new)
+
+    plt.subplot(3, 3, i)
+    plt.scatter(X, y, color='#75b1ff', alpha=0.5, s=10)
+    plt.plot(X_new, gbrt_y_pred, 'r-', linewidth=2, alpha=0.9)
+    plt.title(f'no. estimators: {i}')
+
+plt.show()
+```
+
+
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_40_0.png)
+
+
+TODO: effect of learning rate hyperparamter (shrinkage).
 
 
 ```python

@@ -256,3 +256,7 @@ We specifically made an ensemble of decision trees that massively outperformed a
 
 **Day 52 - December 12, 2019:**
 I learned about random patches and subspaces, methods that subsample the feature space for training the models of an ensemble, random forests, and extra-trees classifiers, random forests with trees trained using an algorithm that randomly selects feature thresholds instead of finding the optimal split.
+
+**Day 53 - December 13, 2019:**
+We covered Adaboost and Gradient Boosting for decision tree ensembles.
+These are both methods of boosting, whereby each model in the ensemble is trained in order to improve upon the weaknesses of the predecessor.
