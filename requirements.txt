@@ -27,6 +27,7 @@ cycler=0.10.0=py37_0
 dbus=1.13.12=h90a0687_0
 decorator=4.4.1=py_0
 defusedxml=0.6.0=py_0
+deslib=0.3=pypi_0
 entrypoints=0.3=py37_0
 et_xmlfile=1.0.1=py37_0
 expat=2.2.6=h0a44026_0

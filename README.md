@@ -263,3 +263,7 @@ These are both methods of boosting, whereby each model in the ensemble is traine
 
 **Day 54 - December 14, 2019:**
 We continued learning about random forest ensembles by learning about turing boosting decision tree ensembles using the learning rate, depth of the trees, using early stopping to prevent overfitting.
+
+**Day 55 - December 15, 2019:**
+We learned about stacking, the process of using another model for the aggregation steps in an ensemble.
+I am still expexperimenting and working on the exercises, but am almost done with the chapter.

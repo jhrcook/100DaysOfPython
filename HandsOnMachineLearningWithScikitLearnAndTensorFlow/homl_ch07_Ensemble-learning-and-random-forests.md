@@ -27,8 +27,10 @@ plt.style.use('seaborn-whitegrid')
 %load_ext ipycache
 ```
 
-    The ipycache extension is already loaded. To reload it, use:
-      %reload_ext ipycache
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/IPython/config.py:13: ShimWarning: The `IPython.config` package has been deprecated since IPython 4.0. You should import from traitlets.config instead.
+      "You should import from traitlets.config instead.", ShimWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/ipycache.py:17: UserWarning: IPython.utils.traitlets has moved to a top-level traitlets package.
+      from IPython.utils.traitlets import Unicode
 
 
 ## Voting classifiers
@@ -52,9 +54,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 # Individual classifiers.
-log_clf = LogisticRegression()
-rnd_clf = RandomForestClassifier(max_depth=3)
-svm_clf = SVC(probability=True)
+log_clf = LogisticRegression(solver='lbfgs')
+rnd_clf = RandomForestClassifier(max_depth=3, n_estimators=100)
+svm_clf = SVC(probability=True, gamma='scale')
 
 # Hard voting classifier ensemble.
 voting_clf_hard = VotingClassifier(
@@ -143,8 +145,7 @@ bag_clf.fit(X_train, y_train)
 
 
 
-    BaggingClassifier(base_estimator=DecisionTreeClassifier(ccp_alpha=0.0,
-                                                            class_weight=None,
+    BaggingClassifier(base_estimator=DecisionTreeClassifier(class_weight=None,
                                                             criterion='gini',
                                                             max_depth=None,
                                                             max_features=None,
@@ -154,7 +155,7 @@ bag_clf.fit(X_train, y_train)
                                                             min_samples_leaf=1,
                                                             min_samples_split=2,
                                                             min_weight_fraction_leaf=0.0,
-                                                            presort='deprecated',
+                                                            presort=False,
                                                             random_state=None,
                                                             splitter='best'),
                       bootstrap=True, bootstrap_features=False, max_features=1.0,
@@ -519,7 +520,7 @@ grid_params = {
 rnd_clf = RandomForestClassifier(n_estimators=500)
 
 # Grid search
-grid_clf = GridSearchCV(rnd_clf, grid_params, cv=5)
+grid_clf = GridSearchCV(rnd_clf, grid_params, cv=3)
 grid_clf.fit(X_train, y_train)
 ```
 
@@ -994,7 +995,7 @@ xgb_reg.fit(X_train, y_train,
             early_stopping_rounds=5)
 ```
 
-    [20:05:11] WARNING: src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [14:43:50] WARNING: src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
     [0]	validation_0-rmse:762.192
     Will train until validation_0-rmse hasn't improved in 5 rounds.
     [1]	validation_0-rmse:705.736
@@ -1140,6 +1141,143 @@ plt.show()
 
 
 ## Stacking
+
+The idea behind *stacking* (also called *blending*) is to use another model for the aggregation step.
+This would replace the averaging or voting methods we have used thus far.
+
+The training data is initially split in two.
+The first set is used to train the first layer of predictors.
+Then, the second set is used to train the blender.
+Note that this puts the input for the blender into higher dimensions, up to the number of individual predictors in the first layer.
+
+This functionality is not supported directly by Scikit-Learn, though there are open-source libraries for implementing this ensemble method.
+One example is the [DESlib](https://github.com/scikit-learn-contrib/DESlib) library, demonstrated below.
+
+
+```python
+from deslib.static import StackedClassifier
+
+X_train, X_test, y_train, y_test = train_test_split(iris.data,
+                                                    iris.target,
+                                                    random_state=0)
+
+X_train, X_dsel, y_train, y_dsel = train_test_split(X_train,
+                                                    y_train,
+                                                    random_state=0)
+
+n_trees = 3
+pool_classifiers = []
+for i in range(n_trees):
+    dt_clf = DecisionTreeClassifier().fit(X_train, y_train)
+    pool_classifiers.append(dt_clf)
+
+
+stacked_dt = StackedClassifier(pool_classifiers=pool_classifiers,
+                               meta_classifier=DecisionTreeClassifier())
+
+stacked_dt.fit(X_dsel, y_dsel)
+
+stacked_acc = accuracy_score(y_test, stacked_dt.predict(X_test))
+print(f'stacked classifier accuracy: {np.round(stacked_acc, 3)}')
+```
+
+    stacked classifier accuracy: 0.974
+
+
+## Exercises
+
+**Exercise 8.** Create an ensemble of a random forest classifier, Extra-Trees classifier, and SVM classifier and aggregate them using soft or hard voting.
+
+
+```python
+from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
+from sklearn.ensemble import VotingClassifier
+from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV
+from sklearn.datasets import fetch_openml
+
+X, y = fetch_openml('mnist_784', version=1, return_X_y=True)
+
+X_train, X_test, y_train, y_test = train_test_split(X, 
+                                                    y, 
+                                                    test_size=10000)
+X_train, X_val, y_train, y_val = train_test_split(X_train, 
+                                                  y_train, 
+                                                  test_size=10000)
+```
+
+
+```python
+%%cache -d caches ch07_coarse_mnist_rf.pkl rf_clf, rf_grid, rf_param_grid
+
+rf_param_grid = {
+    'max_depth': np.arange(3, 30, 5),
+    'max_leaf_nodes': np.arange(5, 50, 5)
+}
+rf_clf = RandomForestClassifier(n_estimators=10)
+rf_grid = GridSearchCV(estimator=rf_clf,
+                       param_grid=rf_param_grid,
+                       n_jobs=-1,
+                       cv=3)
+rf_grid.fit(X_train, y_train)
+```
+
+    [Skipped the cell's code and loaded variables rf_clf, rf_grid, rf_param_grid from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch07_coarse_mnist_rf.pkl'.]
+
+
+
+```python
+%%cache -d caches ch07_coarse_mnist_xt.pkl xt_clf, xt_grid, xt_param_grid
+
+xt_param_grid = {
+    'max_depth': np.arange(3, 30, 5),
+    'max_leaf_nodes': np.arange(5, 50, 5)
+}
+xt_clf = ExtraTreesClassifier(n_estimators=50)
+xt_grid = GridSearchCV(estimator=xt_clf,
+                       param_grid=xt_param_grid,
+                       n_jobs=-1,
+                       cv=3)
+xt_grid.fit(X_train, y_train)
+```
+
+    [Skipped the cell's code and loaded variables xt_clf, xt_grid, xt_param_grid from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch07_coarse_mnist_xt.pkl'.]
+
+
+
+```python
+# %%cache -d caches ch07_coarse_mnist_svm.pkl svm_clf, svm_grid, svm_param_grid
+
+# svm_param_grid = {
+#     'degree': np.arange(3, 20, 2, dtype=int),
+#     'shrinking': [True, False],
+    
+# }
+# svm_clf = SVC(gamma='scale')
+# svm_grid = GridSearchCV(estimator=svm_clf,
+#                         param_grid=svm_param_grid,
+#                         n_jobs=1,
+#                         cv=3)
+# svm_grid.fit(X_train, y_train)
+```
+
+
+```python
+svm_clf = SVC(gamma='scale', degree=5)
+%time svm_clf.fit(X_train, y_train)
+```
+
+    CPU times: user 6min 12s, sys: 2.75 s, total: 6min 14s
+    Wall time: 6min 20s
+
+
+
+
+
+    SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+        decision_function_shape='ovr', degree=5, gamma='scale', kernel='rbf',
+        max_iter=-1, probability=False, random_state=None, shrinking=True,
+        tol=0.001, verbose=False)
 
 
 
