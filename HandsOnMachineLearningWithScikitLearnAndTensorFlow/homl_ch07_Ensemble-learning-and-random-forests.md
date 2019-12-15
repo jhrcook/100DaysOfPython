@@ -757,7 +757,391 @@ plt.show()
 ![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_40_0.png)
 
 
-TODO: effect of learning rate hyperparamter (shrinkage).
+The learning rate controls how much each successive model tries to correct for its predecessor.
+Therefore, it also effect how many trees are required for a good fit.
+In general, a lower learning rate with more trees leads to a more accurate model.
+This is called *shrinkage*.
+
+The following example shows the effect of adjusting the learning rate on a model with the same number of trees.
+The first few trees are likely overfitting, whereas the last few are likely underfitting, especially at the tails.
+
+
+```python
+fig = plt.figure(figsize=(15, 12))
+
+for i in range(1, 10):
+    gbrt = GradientBoostingRegressor(max_depth=2, 
+                                     n_estimators=10, 
+                                     learning_rate=1.0 / i)
+    gbrt.fit(X, y)    
+    gbrt_y_pred = gbrt.predict(X_new)
+
+    plt.subplot(3, 3, i)
+    plt.scatter(X, y, color='#75b1ff', alpha=0.5, s=10)
+    plt.plot(X_new, gbrt_y_pred, 'r-', linewidth=2, alpha=0.9)
+    plt.title(f'learning rate: {np.round(1.0 /i, 3)}')
+
+plt.show()
+```
+
+
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_42_0.png)
+
+
+Early stopping (previously covered in Chapter 4) can be used to find the optimal number of trees.
+The `staged_predict()` method returns an iterator over the predictions made by the ensemble at each stage of the learning procedure.
+An example is shown below.
+
+
+```python
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import train_test_split
+
+X_train, X_val, y_train, y_val = train_test_split(X, y, random_state=0)
+
+gbrf = GradientBoostingRegressor(max_depth=2, 
+                                 n_estimators=50, 
+                                 learning_rate=1, 
+                                 random_state=0)
+gbrf.fit(X_train, y_train)
+
+errors = [mean_squared_error(y_val, y_p) for y_p in gbrf.staged_predict(X_val)]
+best_n_estimators = np.argmin(errors) + 1  # add one because of indexing base 0
+
+gbrf_best = GradientBoostingRegressor(max_depth=2,
+                                     n_estimators=best_n_estimators,
+                                     learning_rate=1,
+                                     random_state=0)
+gbrf_best.fit(X_train, y_train)
+
+errors = np.sqrt(errors)
+fig = plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+plt.plot(np.arange(0, len(errors), 1), errors, 'b-')
+plt.plot([0, best_n_estimators - 1],
+         [np.min(errors), np.min(errors)], 
+         'k--')
+plt.plot([best_n_estimators - 1, best_n_estimators - 1],
+         [0, np.min(errors)],
+         'k--')
+plt.scatter(best_n_estimators - 1, np.min(errors), color='k')
+plt.text(best_n_estimators + 1, np.min(errors) - 5, 
+         f'minimum: {best_n_estimators} trees',
+         fontsize=12)
+plt.axis([0, gbrf.n_estimators, 100, 300])
+plt.ylabel('root mean squared error', fontsize=12)
+plt.xlabel('number of trees', fontsize=12)
+plt.title('Early stopping of Gradient Boost Decision Tree')
+
+
+plt.subplot(1, 2, 2)
+axes = [min(X), max(X), min(y), max(y)]
+X_new = np.linspace(axes[0], axes[1], 300)
+gbrf_y_pred = gbrf_best.predict(X_new)
+plt.plot(X_new, gbrf_y_pred, 'r-', linewidth=2, alpha=0.9)
+plt.scatter(X_train, y_train, color='#75b1ff', alpha=0.8, s=10)
+plt.title(f'Optimal model with {best_n_estimators} trees')
+plt.axis(axes)
+plt.xlabel('$x$', fontsize=12)
+plt.ylabel('$y$', fontsize=12)
+
+plt.show()
+```
+
+
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_44_0.png)
+
+
+Alternatively, early stopping can be implemented during the initial training step by setting the `warm_start=True` parameter and testing the model on every new tree.
+
+
+```python
+gbrf = GradientBoostingRegressor(max_depth=2,
+                                learning_rate=1,
+                                warm_start=True)
+
+min_val_error = float('inf')
+best_n_estimators = 0
+error_increasing = 0
+
+
+for n_estimators in range(1, 120):
+    # Train the forest with `n_estimators` number of trees.
+    gbrf.n_estimators = n_estimators
+    gbrf.fit(X_train, y_train)
+    
+    # Test the GBRF
+    y_pred = gbrf.predict(X_val)
+    val_error = np.sqrt(mean_squared_error(y_val, y_pred))
+    print(f'error for {n_estimators} trees: {int(val_error)}')
+    
+    
+    # Respond to the validation error decreasing or not.
+    if (val_error < min_val_error):
+        min_val_error = val_error
+        best_n_estimators = n_estimators
+        error_increasing = 0
+    else:
+        error_increasing += 1
+    
+    # Early stopping
+    if error_increasing == 5:
+        break
+
+print('')
+print(f'number of trees: {best_n_estimators}')
+print(f'minimum RMSE: {np.round(min_val_error, 2)}')
+```
+
+    error for 1 trees: 290
+    error for 2 trees: 268
+    error for 3 trees: 249
+    error for 4 trees: 227
+    error for 5 trees: 223
+    error for 6 trees: 220
+    error for 7 trees: 190
+    error for 8 trees: 185
+    error for 9 trees: 196
+    error for 10 trees: 199
+    error for 11 trees: 199
+    error for 12 trees: 199
+    error for 13 trees: 202
+    
+    number of trees: 8
+    minimum RMSE: 185.35
+
+
+### Stochastic gradient boosting
+
+Setting the `subsample` parameter of the `GradientBoostingRegressor` class to a value below 1 will cause each tree to only be trained on a subsample of the data at each step.
+This increases bias but reduces variance of the final model.
+
+The following example is identical to that previous, except a only half of the training data is used for each round of training.
+
+
+```python
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import train_test_split
+
+gbrf = GradientBoostingRegressor(max_depth=2, 
+                                 n_estimators=50, 
+                                 learning_rate=1,
+                                 subsample=0.5,
+                                 random_state=0)
+gbrf.fit(X_train, y_train)
+
+errors = [mean_squared_error(y_val, y_p) for y_p in gbrf.staged_predict(X_val)]
+best_n_estimators = np.argmin(errors) + 1  # add one because of indexing base 0
+
+gbrf_best = GradientBoostingRegressor(max_depth=2,
+                                     n_estimators=best_n_estimators,
+                                     learning_rate=1,
+                                     subsample=0.5,
+                                     random_state=0)
+gbrf_best.fit(X_train, y_train)
+
+errors = np.sqrt(errors)
+fig = plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+plt.plot(np.arange(0, len(errors), 1), errors, 'b-')
+plt.plot([0, best_n_estimators - 1],
+         [np.min(errors), np.min(errors)], 
+         'k--')
+plt.plot([best_n_estimators - 1, best_n_estimators - 1],
+         [0, np.min(errors)],
+         'k--')
+plt.scatter(best_n_estimators - 1, np.min(errors), color='k')
+plt.text(best_n_estimators + 1, np.min(errors) - 5, 
+         f'minimum: {best_n_estimators} trees',
+         fontsize=12)
+plt.axis([0, gbrf.n_estimators, 100, 300])
+plt.ylabel('root mean squared error', fontsize=12)
+plt.xlabel('number of trees', fontsize=12)
+plt.title('Early stopping of Gradient Boost Decision Tree')
+
+
+plt.subplot(1, 2, 2)
+axes = [min(X), max(X), min(y), max(y)]
+X_new = np.linspace(axes[0], axes[1], 300)
+gbrf_y_pred = gbrf_best.predict(X_new)
+plt.plot(X_new, gbrf_y_pred, 'r-', linewidth=2, alpha=0.9)
+plt.scatter(X_train, y_train, color='#75b1ff', alpha=0.8, s=10)
+plt.title(f'Optimal model with {best_n_estimators} trees')
+plt.axis(axes)
+plt.xlabel('$x$', fontsize=12)
+plt.ylabel('$y$', fontsize=12)
+
+plt.show()
+```
+
+
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_48_0.png)
+
+
+### Extreme gradient boosting
+
+The author only mentioned that XGBoost is a powerful tool and available through the 'xgboost' library with an API simillar to Scikit-Learn's.
+
+
+```python
+import xgboost
+
+xgb_reg = xgboost.XGBRegressor(max_depth=2, random_state=0)
+xgb_reg.fit(X_train, y_train, 
+            eval_set=[(X_val, y_val)], 
+            early_stopping_rounds=5)
+```
+
+    [20:05:11] WARNING: src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [0]	validation_0-rmse:762.192
+    Will train until validation_0-rmse hasn't improved in 5 rounds.
+    [1]	validation_0-rmse:705.736
+    [2]	validation_0-rmse:654.138
+    [3]	validation_0-rmse:606.246
+    [4]	validation_0-rmse:564.135
+    [5]	validation_0-rmse:524.994
+    [6]	validation_0-rmse:488.412
+    [7]	validation_0-rmse:456.818
+    [8]	validation_0-rmse:429.556
+    [9]	validation_0-rmse:405.361
+    [10]	validation_0-rmse:380.057
+    [11]	validation_0-rmse:360.842
+    [12]	validation_0-rmse:340.329
+    [13]	validation_0-rmse:324.085
+    [14]	validation_0-rmse:306.039
+    [15]	validation_0-rmse:289.015
+    [16]	validation_0-rmse:275.048
+    [17]	validation_0-rmse:266.747
+    [18]	validation_0-rmse:256.081
+    [19]	validation_0-rmse:248.711
+    [20]	validation_0-rmse:238.886
+    [21]	validation_0-rmse:232.63
+    [22]	validation_0-rmse:226.808
+    [23]	validation_0-rmse:222.722
+    [24]	validation_0-rmse:218.819
+    [25]	validation_0-rmse:213.46
+    [26]	validation_0-rmse:211.013
+    [27]	validation_0-rmse:207.037
+    [28]	validation_0-rmse:204.163
+    [29]	validation_0-rmse:202.031
+    [30]	validation_0-rmse:200.505
+    [31]	validation_0-rmse:199.076
+    [32]	validation_0-rmse:197.945
+    [33]	validation_0-rmse:195.593
+    [34]	validation_0-rmse:193.379
+    [35]	validation_0-rmse:192.906
+    [36]	validation_0-rmse:191.339
+    [37]	validation_0-rmse:190.071
+    [38]	validation_0-rmse:189.739
+    [39]	validation_0-rmse:189.35
+    [40]	validation_0-rmse:188.071
+    [41]	validation_0-rmse:187.655
+    [42]	validation_0-rmse:186.99
+    [43]	validation_0-rmse:186.966
+    [44]	validation_0-rmse:185.968
+    [45]	validation_0-rmse:185.898
+    [46]	validation_0-rmse:185.611
+    [47]	validation_0-rmse:185.361
+    [48]	validation_0-rmse:185.217
+    [49]	validation_0-rmse:185.24
+    [50]	validation_0-rmse:185.063
+    [51]	validation_0-rmse:185.342
+    [52]	validation_0-rmse:184.952
+    [53]	validation_0-rmse:184.862
+    [54]	validation_0-rmse:184.782
+    [55]	validation_0-rmse:184.83
+    [56]	validation_0-rmse:184.607
+    [57]	validation_0-rmse:184.346
+    [58]	validation_0-rmse:184.121
+    [59]	validation_0-rmse:184.357
+    [60]	validation_0-rmse:184.272
+    [61]	validation_0-rmse:184.175
+    [62]	validation_0-rmse:183.937
+    [63]	validation_0-rmse:183.804
+    [64]	validation_0-rmse:183.75
+    [65]	validation_0-rmse:183.66
+    [66]	validation_0-rmse:183.71
+    [67]	validation_0-rmse:183.853
+    [68]	validation_0-rmse:183.747
+    [69]	validation_0-rmse:183.738
+    [70]	validation_0-rmse:183.731
+    Stopping. Best iteration:
+    [65]	validation_0-rmse:183.66
+    
+
+
+
+
+
+    XGBRegressor(base_score=0.5, booster='gbtree', colsample_bylevel=1,
+                 colsample_bynode=1, colsample_bytree=1, gamma=0,
+                 importance_type='gain', learning_rate=0.1, max_delta_step=0,
+                 max_depth=2, min_child_weight=1, missing=None, n_estimators=100,
+                 n_jobs=1, nthread=None, objective='reg:linear', random_state=0,
+                 reg_alpha=0, reg_lambda=1, scale_pos_weight=1, seed=None,
+                 silent=None, subsample=1, verbosity=1)
+
+
+
+
+```python
+print(f'number of trees: {xgb_reg.best_iteration}')
+print(f'minimum error: {np.round(xgb_reg.best_score, 2)}')
+```
+
+    number of trees: 65
+    minimum error: 183.66
+
+
+
+```python
+errors = xgb_reg.evals_result_['validation_0']['rmse']
+n_iters = len(errors)
+best_n = xgb_reg.best_iteration
+
+fig = plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+plt.plot(np.arange(0, len(errors), 1), errors, 'b-')
+plt.plot([0, best_n - 1],
+         [np.min(errors), np.min(errors)], 
+         'k--')
+plt.plot([best_n - 1, best_n - 1],
+         [0, np.min(errors)],
+         'k--')
+plt.scatter(best_n - 1, np.min(errors), color='k')
+plt.text(best_n - 25, np.min(errors) - 10, 
+         f'minimum: {best_n} trees',
+         fontsize=12)
+plt.axis([0, n_iters, 100, 300])
+plt.ylabel('root mean squared error', fontsize=12)
+plt.xlabel('number of trees', fontsize=12)
+plt.title('Early stopping of XGBoost Decision Tree')
+
+
+plt.subplot(1, 2, 2)
+axes = [min(X), max(X), min(y), max(y)]
+X_new = np.linspace(axes[0], axes[1], 300)
+xgb_y_pred = xgb_reg.predict(X_new)
+plt.plot(X_new, xgb_y_pred, 'r-', linewidth=2, alpha=0.9)
+plt.scatter(X_train, y_train, color='#75b1ff', alpha=0.8, s=10)
+plt.title(f'Optimal model with {best_n} trees')
+plt.axis(axes)
+plt.xlabel('$x$', fontsize=12)
+plt.ylabel('$y$', fontsize=12)
+
+plt.show()
+```
+
+
+![png](homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_52_0.png)
+
+
+## Stacking
+
+
 
 
 ```python

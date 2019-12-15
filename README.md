@@ -260,3 +260,6 @@ I learned about random patches and subspaces, methods that subsample the feature
 **Day 53 - December 13, 2019:**
 We covered Adaboost and Gradient Boosting for decision tree ensembles.
 These are both methods of boosting, whereby each model in the ensemble is trained in order to improve upon the weaknesses of the predecessor.
+
+**Day 54 - December 14, 2019:**
+We continued learning about random forest ensembles by learning about turing boosting decision tree ensembles using the learning rate, depth of the trees, using early stopping to prevent overfitting.
