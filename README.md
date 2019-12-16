@@ -267,3 +267,7 @@ We continued learning about random forest ensembles by learning about turing boo
 **Day 55 - December 15, 2019:**
 We learned about stacking, the process of using another model for the aggregation steps in an ensemble.
 I am still expexperimenting and working on the exercises, but am almost done with the chapter.
+
+**Day 56 - December 16, 2019:**
+I am still working on implementing my own stacking classifier, but training the SVM takes a long time.
+While it was training, I read the introduction to Chapter 8 on Dimensionality Reduction and learned about how to conduct PCA in Scikit-Learn.

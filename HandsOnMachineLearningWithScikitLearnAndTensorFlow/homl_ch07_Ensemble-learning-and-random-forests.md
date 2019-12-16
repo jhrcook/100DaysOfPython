@@ -995,7 +995,7 @@ xgb_reg.fit(X_train, y_train,
             early_stopping_rounds=5)
 ```
 
-    [14:43:50] WARNING: src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [06:39:06] WARNING: src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
     [0]	validation_0-rmse:762.192
     Will train until validation_0-rmse hasn't improved in 5 rounds.
     [1]	validation_0-rmse:705.736
@@ -1187,6 +1187,7 @@ print(f'stacked classifier accuracy: {np.round(stacked_acc, 3)}')
 ## Exercises
 
 **Exercise 8.** Create an ensemble of a random forest classifier, Extra-Trees classifier, and SVM classifier and aggregate them using soft or hard voting.
+**Exercise 9.** Make predictions with the classifiers from **8** for the validation set and train a classifier using these values as the input.
 
 
 ```python
@@ -1246,39 +1247,155 @@ xt_grid.fit(X_train, y_train)
 
 
 ```python
-# %%cache -d caches ch07_coarse_mnist_svm.pkl svm_clf, svm_grid, svm_param_grid
+%%cache -d caches ch07_coarse_mnist_svm.pkl svm_clf, svm_grid, svm_param_grid
 
-# svm_param_grid = {
-#     'degree': np.arange(3, 20, 2, dtype=int),
-#     'shrinking': [True, False],
+svm_param_grid = {
+    'degree': np.arange(4, 11, 2, dtype=int)
     
-# }
-# svm_clf = SVC(gamma='scale')
-# svm_grid = GridSearchCV(estimator=svm_clf,
-#                         param_grid=svm_param_grid,
-#                         n_jobs=1,
-#                         cv=3)
-# svm_grid.fit(X_train, y_train)
+}
+svm_clf = SVC(gamma='scale', probability=True)
+svm_grid = GridSearchCV(estimator=svm_clf,
+                        param_grid=svm_param_grid,
+                        n_jobs=-1,
+                        cv=3)
+svm_grid.fit(X_train, y_train)
+```
+
+    [Saved variables 'svm_clf, svm_grid, svm_param_grid' to file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch07_coarse_mnist_svm.pkl'.]
+
+
+
+```python
+best_estimators = [
+    ('random_forest', rf_grid.best_estimator_),
+    ('extra_trees', xt_grid.best_estimator_,),
+    ('svc', svm_grid.best_estimator_)
+]
+
+for name, estimator in best_estimators:
+    acc = accuracy_score(y_val, estimator.predict(X_val))
+    print(f'{name}: {acc}')
+```
+
+
+    ---------------------------------------------------------------------------
+
+    AttributeError                            Traceback (most recent call last)
+
+    <ipython-input-65-c75154a1fcae> in <module>
+          2     ('random_forest', rf_grid.best_estimator_),
+          3     ('extra_trees', xt_grid.best_estimator_,),
+    ----> 4     ('svc', svm_grid.best_estimator_)
+          5 ]
+          6 
+
+
+    AttributeError: 'GridSearchCV' object has no attribute 'best_estimator_'
+
+
+
+```python
+%%cache -d caches ch07_softhard_voters.pkl soft_voter, hard_voter
+
+soft_voter = VotingClassifier(estimators=best_estimators, voting='soft')
+soft_voter.fit(X_val, y_val)
+
+hard_voter = VotingClassifier(estimators=best_estimators, voting='hard')
+hard_voter.fit(X_val, y_val)
 ```
 
 
 ```python
-svm_clf = SVC(gamma='scale', degree=5)
-%time svm_clf.fit(X_train, y_train)
+X_predictions = []
+for _, estimator in best_estimators:
+    x_pred = estimator.predict_proba(X_val[0:50])
+    X_predictions.append(x_pred)
+
+    
+# X_val.shape[0]
+X_predictions = np.array(X_predictions).reshape(50, 30)
+
+# stacking_tree = DecisionTreeClassifier(max_depth=10)
+# stacking_tree.fit(X_predictions, y_val)
 ```
 
-    CPU times: user 6min 12s, sys: 2.75 s, total: 6min 14s
-    Wall time: 6min 20s
+
+```python
+# soft_voting_pred = soft_voter.predict(X_test)
+# hard_voting_pred = hard_voter.predict(X_test)
 
 
+# X_predictions = []
+# for _, estimator in best_estimators:
+#     x_pred = estimator.predict(X_test)
+#     X_predictions.append(X_test)
+
+# X_predictions = np.array(X_predictions).reshape(X_test.shape[0], 3)
+# stacking_pred = stacking_tree.predict(X_predictions)
+```
 
 
+    ---------------------------------------------------------------------------
 
-    SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
-        decision_function_shape='ovr', degree=5, gamma='scale', kernel='rbf',
-        max_iter=-1, probability=False, random_state=None, shrinking=True,
-        tol=0.001, verbose=False)
+    AttributeError                            Traceback (most recent call last)
 
+    <ipython-input-63-4ff833a0460b> in <module>
+    ----> 1 soft_voting_pred = soft_voter.predict(X_test)
+          2 hard_voting_pred = hard_voter.predict(X_test)
+          3 
+          4 
+          5 X_predictions = []
+
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/ensemble/voting.py in predict(self, X)
+        295         check_is_fitted(self, 'estimators_')
+        296         if self.voting == 'soft':
+    --> 297             maj = np.argmax(self.predict_proba(X), axis=1)
+        298 
+        299         else:  # 'hard' voting
+
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/ensemble/voting.py in _predict_proba(self, X)
+        318                                  " voting=%r" % self.voting)
+        319         check_is_fitted(self, 'estimators_')
+    --> 320         avg = np.average(self._collect_probas(X), axis=0,
+        321                          weights=self._weights_not_none)
+        322         return avg
+
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/ensemble/voting.py in _collect_probas(self, X)
+        310     def _collect_probas(self, X):
+        311         """Collect results from clf.predict calls. """
+    --> 312         return np.asarray([clf.predict_proba(X) for clf in self.estimators_])
+        313 
+        314     def _predict_proba(self, X):
+
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/ensemble/voting.py in <listcomp>(.0)
+        310     def _collect_probas(self, X):
+        311         """Collect results from clf.predict calls. """
+    --> 312         return np.asarray([clf.predict_proba(X) for clf in self.estimators_])
+        313 
+        314     def _predict_proba(self, X):
+
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/svm/base.py in predict_proba(self)
+        614         datasets.
+        615         """
+    --> 616         self._check_proba()
+        617         return self._predict_proba
+        618 
+
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/svm/base.py in _check_proba(self)
+        581     def _check_proba(self):
+        582         if not self.probability:
+    --> 583             raise AttributeError("predict_proba is not available when "
+        584                                  " probability=False")
+        585         if self._impl not in ('c_svc', 'nu_svc'):
+
+
+    AttributeError: predict_proba is not available when  probability=False
 
 
 
