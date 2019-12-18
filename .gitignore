@@ -214,3 +214,5 @@ vignettes/*.pdf
 
 # large data files
 assets/datasets/fec/P00000001-ALL.csv
+HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch07_softhard_voters.pkl
+
