@@ -271,3 +271,7 @@ I am still expexperimenting and working on the exercises, but am almost done wit
 **Day 56 - December 16, 2019:**
 I am still working on implementing my own stacking classifier, but training the SVM takes a long time.
 While it was training, I read the introduction to Chapter 8 on Dimensionality Reduction and learned about how to conduct PCA in Scikit-Learn.
+
+**Day 57 - December 17, 2019:**
+I finished creating my simple stacking classifier for the MNIST data to finish off chapter 7 on ensembles.
+Without any real tuning, the Decision Tree model for the blender model out-performed both soft and hard voting on the test set.

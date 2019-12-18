@@ -995,7 +995,7 @@ xgb_reg.fit(X_train, y_train,
             early_stopping_rounds=5)
 ```
 
-    [06:39:06] WARNING: src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [23:55:42] WARNING: src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
     [0]	validation_0-rmse:762.192
     Will train until validation_0-rmse hasn't improved in 5 rounds.
     [1]	validation_0-rmse:705.736
@@ -1261,41 +1261,18 @@ svm_grid = GridSearchCV(estimator=svm_clf,
 svm_grid.fit(X_train, y_train)
 ```
 
-    [Saved variables 'svm_clf, svm_grid, svm_param_grid' to file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch07_coarse_mnist_svm.pkl'.]
+    [Skipped the cell's code and loaded variables svm_clf, svm_grid, svm_param_grid from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch07_coarse_mnist_svm.pkl'.]
 
 
 
 ```python
+%%cache -d caches ch07_softhard_voters.pkl best_estimators, soft_voter, hard_voter
+
 best_estimators = [
     ('random_forest', rf_grid.best_estimator_),
     ('extra_trees', xt_grid.best_estimator_,),
     ('svc', svm_grid.best_estimator_)
 ]
-
-for name, estimator in best_estimators:
-    acc = accuracy_score(y_val, estimator.predict(X_val))
-    print(f'{name}: {acc}')
-```
-
-
-    ---------------------------------------------------------------------------
-
-    AttributeError                            Traceback (most recent call last)
-
-    <ipython-input-65-c75154a1fcae> in <module>
-          2     ('random_forest', rf_grid.best_estimator_),
-          3     ('extra_trees', xt_grid.best_estimator_,),
-    ----> 4     ('svc', svm_grid.best_estimator_)
-          5 ]
-          6 
-
-
-    AttributeError: 'GridSearchCV' object has no attribute 'best_estimator_'
-
-
-
-```python
-%%cache -d caches ch07_softhard_voters.pkl soft_voter, hard_voter
 
 soft_voter = VotingClassifier(estimators=best_estimators, voting='soft')
 soft_voter.fit(X_val, y_val)
@@ -1304,101 +1281,63 @@ hard_voter = VotingClassifier(estimators=best_estimators, voting='hard')
 hard_voter.fit(X_val, y_val)
 ```
 
+    [Skipped the cell's code and loaded variables best_estimators, hard_voter, soft_voter from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch07_softhard_voters.pkl'.]
+
+
 
 ```python
+%%cache -d caches ch07_stacking_tree.pkl X_predictions, stacking_tree
+
 X_predictions = []
 for _, estimator in best_estimators:
-    x_pred = estimator.predict_proba(X_val[0:50])
+    x_pred = estimator.predict_proba(X_val)
+    x_pred = np.array(x_pred)
     X_predictions.append(x_pred)
 
-    
-# X_val.shape[0]
-X_predictions = np.array(X_predictions).reshape(50, 30)
+X_predictions = np.hstack(X_predictions)
 
-# stacking_tree = DecisionTreeClassifier(max_depth=10)
-# stacking_tree.fit(X_predictions, y_val)
+stacking_tree = DecisionTreeClassifier()
+stacking_tree.fit(X_predictions, y_val)
 ```
 
-
-```python
-# soft_voting_pred = soft_voter.predict(X_test)
-# hard_voting_pred = hard_voter.predict(X_test)
-
-
-# X_predictions = []
-# for _, estimator in best_estimators:
-#     x_pred = estimator.predict(X_test)
-#     X_predictions.append(X_test)
-
-# X_predictions = np.array(X_predictions).reshape(X_test.shape[0], 3)
-# stacking_pred = stacking_tree.predict(X_predictions)
-```
-
-
-    ---------------------------------------------------------------------------
-
-    AttributeError                            Traceback (most recent call last)
-
-    <ipython-input-63-4ff833a0460b> in <module>
-    ----> 1 soft_voting_pred = soft_voter.predict(X_test)
-          2 hard_voting_pred = hard_voter.predict(X_test)
-          3 
-          4 
-          5 X_predictions = []
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/ensemble/voting.py in predict(self, X)
-        295         check_is_fitted(self, 'estimators_')
-        296         if self.voting == 'soft':
-    --> 297             maj = np.argmax(self.predict_proba(X), axis=1)
-        298 
-        299         else:  # 'hard' voting
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/ensemble/voting.py in _predict_proba(self, X)
-        318                                  " voting=%r" % self.voting)
-        319         check_is_fitted(self, 'estimators_')
-    --> 320         avg = np.average(self._collect_probas(X), axis=0,
-        321                          weights=self._weights_not_none)
-        322         return avg
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/ensemble/voting.py in _collect_probas(self, X)
-        310     def _collect_probas(self, X):
-        311         """Collect results from clf.predict calls. """
-    --> 312         return np.asarray([clf.predict_proba(X) for clf in self.estimators_])
-        313 
-        314     def _predict_proba(self, X):
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/ensemble/voting.py in <listcomp>(.0)
-        310     def _collect_probas(self, X):
-        311         """Collect results from clf.predict calls. """
-    --> 312         return np.asarray([clf.predict_proba(X) for clf in self.estimators_])
-        313 
-        314     def _predict_proba(self, X):
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/svm/base.py in predict_proba(self)
-        614         datasets.
-        615         """
-    --> 616         self._check_proba()
-        617         return self._predict_proba
-        618 
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/svm/base.py in _check_proba(self)
-        581     def _check_proba(self):
-        582         if not self.probability:
-    --> 583             raise AttributeError("predict_proba is not available when "
-        584                                  " probability=False")
-        585         if self._impl not in ('c_svc', 'nu_svc'):
-
-
-    AttributeError: predict_proba is not available when  probability=False
+    [Skipped the cell's code and loaded variables X_predictions, stacking_tree from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch07_stacking_tree.pkl'.]
 
 
 
 ```python
+%%cache -d caches ch07_stacking_test_predictions.pkl soft_voting_pred, hard_voting_pred, X_predictions, stacking_pred
 
+soft_voting_pred = soft_voter.predict(X_test)
+hard_voting_pred = hard_voter.predict(X_test)
+
+
+X_predictions = []
+for _, estimator in best_estimators:
+    x_pred = estimator.predict_proba(X_test)
+    x_pred = np.array(x_pred)
+    X_predictions.append(x_pred)
+
+X_predictions = np.hstack(X_predictions)
+
+X_predictions = np.array(X_predictions)
+stacking_pred = stacking_tree.predict(X_predictions)
 ```
+
+    [Skipped the cell's code and loaded variables X_predictions, hard_voting_pred, soft_voting_pred, stacking_pred from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch07_stacking_test_predictions.pkl'.]
+
+
+
+```python
+soft_acc = accuracy_score(y_test, soft_voting_pred) * 100.0
+hard_acc = accuracy_score(y_test, hard_voting_pred) * 100.0
+stacking_acc = accuracy_score(y_test, stacking_pred)  * 100.0
+
+print(f'soft-voting accuracy: {np.round(soft_acc, 2)}')
+print(f'hard-voting accuracy: {np.round(hard_acc, 2)}')
+print(f'stacking accuracy: {np.round(stacking_acc, 2)}')
+```
+
+    soft-voting accuracy: 95.14
+    hard-voting accuracy: 89.21
+    stacking accuracy: 96.53
+
