@@ -275,3 +275,7 @@ While it was training, I read the introduction to Chapter 8 on Dimensionality Re
 **Day 57 - December 17, 2019:**
 I finished creating my simple stacking classifier for the MNIST data to finish off chapter 7 on ensembles.
 Without any real tuning, the Decision Tree model for the blender model out-performed both soft and hard voting on the test set.
+
+**Day 58 - December 18, 2019:**
+I finally got to the coding portion fro PCA.
+I spent a bit more time on the plotting of the PCs because that is a skill I want to improve upon.
