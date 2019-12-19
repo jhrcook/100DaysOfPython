@@ -10,8 +10,16 @@ End Date: January 30, 2020**
 
 ## Sources
 
-To begin, I am working through [
-Python for Data Analysis, 2nd Edition](http://shop.oreilly.com/product/0636920050896.do).
+To begin, I worked through [*Python for Data Analysis, 2nd Edition*](http://shop.oreilly.com/product/0636920050896.do).
+The notebooks can be found [here](./PythonForDataAnalysis/).
+
+I am currently working through [*Hands-On Machine Learning with Scikit-Learn, Keras, and Tensorflow*](https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/), using the new seconnd edition of the book that has been updated for TF 2.0.
+The notebooks can be found [here](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/).
+
+## Interesting Images
+
+During my progress through my learning materials, I have created a lot of fun and interesting data visualizations.
+I have documented some of my favorites [here](cool-plots-and-viz.md).
 
 ## Creating the environment
 
