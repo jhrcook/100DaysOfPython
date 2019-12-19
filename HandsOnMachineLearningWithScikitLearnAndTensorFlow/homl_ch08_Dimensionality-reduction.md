@@ -18,8 +18,14 @@ plt.style.use('seaborn-whitegrid')
 
 
 ```python
-# %load_ext ipycache
+%load_ext ipycache
 ```
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/IPython/config.py:13: ShimWarning: The `IPython.config` package has been deprecated since IPython 4.0. You should import from traitlets.config instead.
+      "You should import from traitlets.config instead.", ShimWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/ipycache.py:17: UserWarning: IPython.utils.traitlets has moved to a top-level traitlets package.
+      from IPython.utils.traitlets import Unicode
+
 
 We will consider two main approaches of dimensionality reduction, *project* and *manifold learning*, by learning about **PCA**, **kernel PCA**, and **LLE**.
 
@@ -210,12 +216,170 @@ plt.show()
 
 ### Choosing the right number of dimensions
 
+Instead of choosing an arbitrary number of dimensions from the PCA, it can be best to select the top dimensions that explain a certain amount of the variance.
+This can be done automatically by setting the `n_components` parameter of a `PCA` object to a value less than 1.
+An example is shown below with the digits data from Scikit-Learn.
+
 
 ```python
+from sklearn.datasets import load_digits
 
+digits = load_digits()
+
+# The data is in 96-dimensional space.
+print(f' digits data dimensionality: {digits.data.shape[1]}')
+```
+
+     digits data dimensionality: 64
+
+
+
+```python
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(digits.data, 
+                                                    digits.target, 
+                                                    random_state=0)
+
+pca = PCA()
+pca.fit(X_train)
+
+plt.plot(pca.explained_variance_ratio_, 'r-o')
+plt.xlabel('Principal components')
+plt.ylabel('Variance explained')
+plt.title('PCA keeping all dimensions')
+plt.show()
 ```
 
 
-```python
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_18_0.png)
 
+
+
+```python
+pca = PCA(n_components=0.9)
+pca.fit(X_train)
+
+plt.plot(pca.explained_variance_ratio_, 'r-o')
+plt.xlabel('Principal components')
+plt.ylabel('Variance explained')
+plt.title('PCA keeping 90 % of variance')
+plt.show()
 ```
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_19_0.png)
+
+
+
+```python
+X_reduced = pca.transform(X_train)
+print(f'reduced digit data dimensionality: {X_reduced.shape[1]}')
+```
+
+    reduced digit data dimensionality: 21
+
+
+### PCA for compression
+
+PCA can be used for compression by only keeping the new dimensions from PCA.
+The original data can be reconstituted by applying the inverse transformation of the PCA projection.
+Of course, this is a lossy compression, though the most important features should be maintained.
+An example is shown below on the MNIST data.
+
+
+```python
+%%cache -d caches ch08_load_mnist.pkl X, y, X_train, X_test, y_train, y_test
+
+from sklearn.datasets import fetch_openml
+
+X, y = fetch_openml('mnist_784', version=1, return_X_y=True)
+
+X_train, X_test, y_train, y_test = train_test_split(X,
+                                                    y,
+                                                    test_size=10000,
+                                                    random_state=0)
+```
+
+    [Saved variables 'X, X_test, X_train, y, y_test, y_train' to file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch08_load_mnist.pkl'.]
+
+
+
+```python
+pca = PCA(n_components=0.9)
+X_reduced = pca.fit_transform(X_train)
+X_reduced.shape
+```
+
+
+
+
+    (60000, 87)
+
+
+
+
+```python
+X_recovered = pca.inverse_transform(X_reduced)
+X_recovered.shape
+```
+
+
+
+
+    (60000, 784)
+
+
+
+
+```python
+def plot_digit(x, title=None, axis=None):
+    ax = axis or plt.gca()
+    ax.grid(False)
+    plt.axis('equal')
+    img = x.reshape((28, 28))
+    plt.title(title)
+    plt.imshow(img)
+
+for i in range(5):
+    fig = plt.figure(figsize=(10, 4.7))
+
+    ax1 = plt.subplot(1, 2, 1)
+    plot_digit(X_train[i, :], title="Original")
+
+
+    ax2 = plt.subplot(1, 2, 2)
+    ax2.grid(False)
+    plot_digit(X_recovered[i, :], title="Recovered")
+
+    plt.show()
+```
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_25_0.png)
+
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_25_1.png)
+
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_25_2.png)
+
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_25_3.png)
+
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_25_4.png)
+
+
+### Randomized  PCA
+
+Scikit-Learn's `PCA` module can use a stochaistic algorithm, *Randomized PCA* to approximate the first $d$ principal components.
+This can be used in place of SVD by setting the `svd_solver` parameter to `'randomized'`; by default, this parameter is set to `'auto'` and this approximation is used when there are more than 500 original dimensions.
+
+### Incremental PCA
+
+
