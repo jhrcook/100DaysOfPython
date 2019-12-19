@@ -48,6 +48,6 @@ Below is a collection of cool and interesting visualizations I created during my
 
 ![](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/homl_ch07_Ensemble-learning-and-random-forests_files/homl_ch07_Ensemble-learning-and-random-forests_52_0.png)
 
-### Effects of the $\gamma$ hyperparameter of RBF Kernel PCA
+### Effects of the gamma hyperparameter of RBF Kernel PCA
 
 ![](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_31_0.png)
