@@ -281,3 +281,7 @@ I finally got to the coding portion fro PCA.
 I spent a bit more time on the plotting of the PCs because that is a skill I want to improve upon.
 I returned in the evening and learned how I can determine the number of PCs to keep by keeping the top n PCs that perserve 90 % of the variance.
 I also learned how PCA can be a form of compression by using the inverse transformation equation to project the reduced data into the original dimensions.
+
+**Day 59 - December 19, 2019:**
+I continued learning about using PCA and got some experience with Kernel PCA.
+I experimented with the various hyperparameters and how to use Grid Search to optimize them as part of a regression (or classifier) pipeline.

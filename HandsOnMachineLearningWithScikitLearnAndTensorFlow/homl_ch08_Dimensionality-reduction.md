@@ -21,10 +21,8 @@ plt.style.use('seaborn-whitegrid')
 %load_ext ipycache
 ```
 
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/IPython/config.py:13: ShimWarning: The `IPython.config` package has been deprecated since IPython 4.0. You should import from traitlets.config instead.
-      "You should import from traitlets.config instead.", ShimWarning)
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/ipycache.py:17: UserWarning: IPython.utils.traitlets has moved to a top-level traitlets package.
-      from IPython.utils.traitlets import Unicode
+    The ipycache extension is already loaded. To reload it, use:
+      %reload_ext ipycache
 
 
 We will consider two main approaches of dimensionality reduction, *project* and *manifold learning*, by learning about **PCA**, **kernel PCA**, and **LLE**.
@@ -301,7 +299,7 @@ X_train, X_test, y_train, y_test = train_test_split(X,
                                                     random_state=0)
 ```
 
-    [Saved variables 'X, X_test, X_train, y, y_test, y_train' to file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch08_load_mnist.pkl'.]
+    [Skipped the cell's code and loaded variables X, X_test, X_train, y, y_test, y_train from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch08_load_mnist.pkl'.]
 
 
 
@@ -382,4 +380,165 @@ This can be used in place of SVD by setting the `svd_solver` parameter to `'rand
 
 ### Incremental PCA
 
+*Incremental PCA* is an algorithm that does PCA on the data in batches.
+It is useful in cases where the entire data set is too large to hold  in memory or with "on-the-fly" learning where new data instances are continuously coming in.
 
+
+```python
+from sklearn.decomposition import IncrementalPCA
+
+n_batches = 100
+inc_pca = IncrementalPCA(n_components=100)
+for X_batch in np.array_split(X_train, n_batches):
+    inc_pca.partial_fit(X_batch)
+
+inc_pca.components_.shape
+```
+
+
+
+
+    (100, 784)
+
+
+
+### Kernel PCA
+
+A *kernel* (covered in Chapter 5 on SVM) is a mathematical technique that maps instances into a higher dimensional *feature space*.
+Then, the separation of the instances is greater, allowing for nonlinear classification and regression relative to the original space.
+*Kernel PCA* iss  often good for preserving clusters after the dimensionality reduction or unrolling datasets that lie close to a complex manifold.
+
+Below is an example with the famous "swiss roll."
+
+
+```python
+from sklearn.datasets import make_swiss_roll
+from mpl_toolkits.mplot3d import Axes3D
+Axes3D
+
+X, color = make_swiss_roll(1500)
+
+
+fig = plt.figure(figsize=(8, 8))
+
+ax = fig.add_subplot(111, projection='3d')
+ax.view_init(10, -70)
+ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=color, cmap=plt.cm.Spectral)
+ax.set_title("Original data")
+plt.show()
+```
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_29_0.png)
+
+
+
+```python
+from sklearn.decomposition import KernelPCA
+
+def plot_swiss_roll_pca(X_reduced, title=None):
+    plt.scatter(X_reduced[:, 0], X_reduced[:, 1], c=color, cmap=plt.cm.Spectral)
+    plt.xlabel('PC 1')
+    plt.ylabel('PC 2')
+    plt.title(title)
+
+pca = PCA(n_components=2)
+rbf_kpca = KernelPCA(n_components=2, kernel='rbf', gamma=0.07)
+sigmoid_kpca = KernelPCA(n_components=2, kernel='sigmoid', gamma=0.001, coef0=1)
+
+pca_names = ('PCA', 'RBF KPCA', 'Sigmoid KPCA')
+
+fig = plt.figure(figsize=(12, 5))
+subplot_counter = 1
+
+for pca_obj, name in zip((pca, rbf_kpca, sigmoid_kpca), pca_names):
+    X_reduced = pca_obj.fit_transform(X)
+    plt.subplot(1, 3, subplot_counter)
+    plot_swiss_roll_pca(X_reduced, name)
+    subplot_counter += 1
+
+plt.show()
+```
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_30_0.png)
+
+
+
+```python
+fig = plt.figure(figsize=(12, 30))
+subplot_counter = 1
+
+for g in np.linspace(0.00001, 0.2, 21):
+    pca = KernelPCA(n_components=2, kernel='rbf', gamma=g)
+    X_reduced = pca.fit_transform(X)
+    plt.subplot(7, 3, subplot_counter)
+    name = f'RBF KPCA, $\gamma = {np.round(g, 5)}$'
+    plot_swiss_roll_pca(X_reduced, name)
+    subplot_counter += 1
+```
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_31_0.png)
+
+
+### Selecting a kernel and  tuning hyperparameters
+
+Since PCA is an unsupervised learning method, there is no obvious value to optimize for.
+However, since it is usually a step in a classifier or regressor, the hyperparamters can be included in a grid search over a pipeline.
+Below is an example trying to use linear regression to predict the `color` values for the points in the swiss roll.
+
+
+```python
+%%cache -d caches ch08_kpca_gridsearch.pkl reg_pipeline, param_grid, grid_search
+
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import GridSearchCV
+
+reg_pipeline = Pipeline([
+    ('kpca', KernelPCA(n_components=2)),
+    ('linear_reg', LinearRegression())
+])
+
+param_grid = {
+    'kpca__gamma': np.arange(0.01, 1, 0.005),
+    'kpca__kernel': ['linear', 'poly', 'rbf', 'sigmoid', 'cosine']
+}
+
+grid_search = GridSearchCV(reg_pipeline, param_grid=param_grid, cv=3)
+grid_search.fit(X, color)
+```
+
+    [Skipped the cell's code and loaded variables grid_search, param_grid, reg_pipeline from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch08_kpca_gridsearch.pkl'.]
+
+
+
+```python
+grid_search.best_params_
+```
+
+
+
+
+    {'kpca__gamma': 0.06499999999999999, 'kpca__kernel': 'rbf'}
+
+
+
+
+```python
+best_kpca = grid_search.best_estimator_.named_steps['kpca']
+X_reduced = best_kpca.transform(X)
+plot_swiss_roll_pca(X_reduced)
+```
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_35_0.png)
+
+
+TODO: also tune hyperparameters by reducing error of reconstruction
+
+
+```python
+
+```
