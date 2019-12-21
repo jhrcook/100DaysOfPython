@@ -297,3 +297,8 @@ I experimented with the various hyperparameters and how to use Grid Search to op
 **Day 60 - December 20, 2019:**
 I learned about optimizing KPCA by finding the hyperparamters that reduce the error when the original dimensions are recreated.
 I also learned about other dimensionality reduction techniques including LLE, random projections, MDS, Isomap, t-SNE, and LDA.
+
+**Day 61 - December 21, 2019:**
+I finished chapter 8 on dimensionality reduction by playing around with some of the other techniques including MDS, isomap, and t-SNE.
+I also completed one of the exercises by demonstrating the improvement in a simple random forest at classifying the MNIST data after preprocessing the data with PCA.
+I began the chapter on clustering with K-means.

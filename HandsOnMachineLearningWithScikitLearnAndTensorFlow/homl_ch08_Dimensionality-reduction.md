@@ -21,10 +21,8 @@ plt.style.use('seaborn-whitegrid')
 %load_ext ipycache
 ```
 
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/IPython/config.py:13: ShimWarning: The `IPython.config` package has been deprecated since IPython 4.0. You should import from traitlets.config instead.
-      "You should import from traitlets.config instead.", ShimWarning)
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/ipycache.py:17: UserWarning: IPython.utils.traitlets has moved to a top-level traitlets package.
-      from IPython.utils.traitlets import Unicode
+    The ipycache extension is already loaded. To reload it, use:
+      %reload_ext ipycache
 
 
 We will consider two main approaches of dimensionality reduction, *project* and *manifold learning*, by learning about **PCA**, **kernel PCA**, and **LLE**.
@@ -558,12 +556,17 @@ def fit_rbf_kpca(gamma):
 
 
 ```python
+%%cache -d caches ch08_kpca_bestgamma.pkl gammas, mses
+
 gammas = np.arange(0.00001, 0.1, 0.0005)
 mses = list()
 for g in gammas:
     _, mse = fit_rbf_kpca(g)
     mses.append(mse)
 ```
+
+    [Skipped the cell's code and loaded variables gammas, mses from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch08_kpca_bestgamma.pkl'.]
+
 
 
 ```python
@@ -645,6 +648,24 @@ This method projects the data to a lower-dimensional space using a random linear
 Surprisingly, it does a very good job of preserving local relations.
 
 
+
+```python
+from sklearn.random_projection import GaussianRandomProjection
+
+# Reduce the swiss-roll data by random projection.
+random_projection = GaussianRandomProjection(n_components=2, random_state=0)
+X_reduced = random_projection.fit_transform(X)
+plot_swiss_roll_pca(X_reduced)
+plt.xlabel('$z_1$')
+plt.ylabel('$z_2$')
+plt.title('Gaussian Random Projection')
+plt.show()
+```
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_45_0.png)
+
+
 ### Multidimensional scaling (MDS)
 
 MDS reduces dimensionality while trying to preserve the distances between the instances.
@@ -661,14 +682,173 @@ t-SNE reduces dimensionality while trying to keep simillar instances close and d
 It is generally used for visualizing higher-dimensional data in 2D.
 
 
+```python
+%%cache -d caches ch08_other_dimreducts.pkl transformers
+
+from sklearn.manifold import MDS, Isomap, TSNE
+
+# Several transformers to iterate through.
+transformers = [
+    ('MDS', MDS(n_components=2)),
+    ('Isomap', Isomap(n_neighbors=20, n_components=2)),
+    ('t-SNE', TSNE(n_components=2)),
+]
+
+fig = plt.figure(figsize=(12, 5))
+subplot_counter = 1
+
+# Get reduced data for each transformer and plot.
+for name, transformer in transformers:
+    plt.subplot(1, 3, subplot_counter)
+    subplot_counter += 1
+    
+    X_reduced = transformer.fit_transform(X)
+    
+    plot_swiss_roll_pca(X_reduced)
+    plt.xlabel(None)
+    plt.ylabel(None)
+    plt.title(name)
+    
+plt.show()
+```
+
+    [Skipped the cell's code and loaded variables transformers from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch08_other_dimreducts.pkl'.]
+
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_47_1.png)
+
+
 ### Linear Discriminant Analysis (LDA)
 
 LDA is a classification algorithm that tries to find the axes of best separation between the classes (because of this, it is often compared to PCA).
 These new axes can be projected onto, maintaining separation between the classes.
 
 
+```python
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+# Pipeline for reducing the digits data using LDA.
+digit_lda = Pipeline([
+    ('standard_scaler', StandardScaler()),
+    ('lda', LinearDiscriminantAnalysis(n_components=2)),
+])
+
+# The reduced data from LDA.
+lda_reduced = digit_lda.fit_transform(digits.data, digits.target)
+
+# For comparison, the digits were reduced by PCA, too.
+digit_pca = PCA(n_components=2)
+pca_reduced = digit_pca.fit_transform(digits.data)
+
+
+# Plotting:
+
+fig = plt.figure(figsize=(10, 5))
+
+# Plot LDA-reduced data.
+plt.subplot(1, 2, 1)
+plt.scatter(lda_reduced[:, 0], lda_reduced[:, 1],
+            c=digits.target, s=30, cmap='Set1')
+plt.xlabel('LD 1')
+plt.ylabel('LD 2')
+plt.title('LDA dimensionality reduction of digits')
+
+# Plot the PCA reduced data.
+plt.subplot(1, 2, 2)
+plt.scatter(pca_reduced[:, 0], pca_reduced[:, 1],
+            c=digits.target, s=30, cmap='Set1')
+plt.xlabel('LD 1')
+plt.ylabel('LD 2')
+plt.title('PCA dimensionality reduction of digits')
+
+plt.show()
+```
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/discriminant_analysis.py:388: UserWarning: Variables are collinear.
+      warnings.warn("Variables are collinear.")
+
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_49_1.png)
+
+
+The following is an example of paring LDA with t-SNE.
+LDA finds the best separation of the data into 10 pieces (9 components) and then t-SNE reduces it to 2 dimensions for visualization of the separation in 9D.
 
 
 ```python
+# Pipeline of LDA to 5 components and t-SNE to 2 components.
+digit_lda = Pipeline([
+    ('standard_scaler', StandardScaler()),
+    ('lda', LinearDiscriminantAnalysis(n_components=9)),
+    ('tsne', TSNE(n_components=2))
+])
+X_reduced = digit_lda.fit_transform(digits.data, digits.target)
 
+plt.scatter(X_reduced[:, 0], X_reduced[:, 1],
+            c=digits.target, s=30, cmap='Set1')
+plt.xlabel('LD 1')
+plt.ylabel('LD 2')
+plt.title('LDA dimensionality reduction of digits')
+plt.show()
 ```
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/discriminant_analysis.py:388: UserWarning: Variables are collinear.
+      warnings.warn("Variables are collinear.")
+
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_51_1.png)
+
+
+## Exercises
+
+**Exercise 9.** Compare the results of a decision forest on the MNIST data with and without dimensionality reduction.
+
+
+```python
+%%cache -d caches ch08_exercise8.pkl X, y, X_train, X_test, y_train, y_test, rf_clf, rf_pca_clf
+
+from sklearn.datasets import fetch_openml
+from sklearn.metrics import accuracy_score
+from sklearn.ensemble import RandomForestClassifier
+
+
+# Load MNIST data and split into train and test datasets.
+X, y = fetch_openml('mnist_784', version=1, return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y,
+                                                    test_size=10000,
+                                                    random_state=0)
+
+
+# A random forest with direct input from MNIST.
+rf_clf = RandomForestClassifier(max_depth=2, n_estimators=500)
+rf_clf.fit(X_train, y_train)
+
+
+# The same random forest, but the data is preprocessed by PCA
+rf_pca_clf = Pipeline([
+    ('PCA', PCA(n_components=0.95)),
+    ('random_forest', RandomForestClassifier(max_depth=2, n_estimators=500))
+])
+rf_pca_clf.fit(X_train, y_train)
+
+
+# Assess accuracy with the test data.
+rf_acc = accuracy_score(y_test, rf_clf.predict(X_test))
+rf_pca_acc = accuracy_score(y_test, rf_pca_clf.predict(X_test))
+
+print(f'accuracy of RF: {np.round(rf_acc, 3)}')
+print(f'accuracy of PCA-RF: {np.round(rf_pca_acc, 3)}')
+```
+
+    [Saved variables 'X, X_test, X_train, rf_clf, rf_pca_clf, y, y_test, y_train' to file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch08_exercise8.pkl'.]
+    accuracy of RF: 0.651
+    accuracy of PCA-RF: 0.697
+
+
+Though the performance of each random forest was rather poor and would benefit from further optimization, just adding PCA increased the accuracy substantially.
+This is likely from both a reduction in feature space and also noise from less-important features.
