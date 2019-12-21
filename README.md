@@ -293,3 +293,7 @@ I also learned how PCA can be a form of compression by using the inverse transfo
 **Day 59 - December 19, 2019:**
 I continued learning about using PCA and got some experience with Kernel PCA.
 I experimented with the various hyperparameters and how to use Grid Search to optimize them as part of a regression (or classifier) pipeline.
+
+**Day 60 - December 20, 2019:**
+I learned about optimizing KPCA by finding the hyperparamters that reduce the error when the original dimensions are recreated.
+I also learned about other dimensionality reduction techniques including LLE, random projections, MDS, Isomap, t-SNE, and LDA.

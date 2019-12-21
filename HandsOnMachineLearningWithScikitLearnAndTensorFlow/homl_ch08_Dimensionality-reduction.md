@@ -21,8 +21,10 @@ plt.style.use('seaborn-whitegrid')
 %load_ext ipycache
 ```
 
-    The ipycache extension is already loaded. To reload it, use:
-      %reload_ext ipycache
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/IPython/config.py:13: ShimWarning: The `IPython.config` package has been deprecated since IPython 4.0. You should import from traitlets.config instead.
+      "You should import from traitlets.config instead.", ShimWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/ipycache.py:17: UserWarning: IPython.utils.traitlets has moved to a top-level traitlets package.
+      from IPython.utils.traitlets import Unicode
 
 
 We will consider two main approaches of dimensionality reduction, *project* and *manifold learning*, by learning about **PCA**, **kernel PCA**, and **LLE**.
@@ -536,7 +538,135 @@ plot_swiss_roll_pca(X_reduced)
 ![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_35_0.png)
 
 
-TODO: also tune hyperparameters by reducing error of reconstruction
+The hyperparamters of a KPCA model can also be tuned by selecting the kernel and additional parameters based on which has the lowest reconstruction error.
+This process is shown below.
+
+
+```python
+from sklearn.metrics import mean_squared_error
+
+
+def fit_rbf_kpca(gamma):
+    rbf_kpca = KernelPCA(n_components=2,
+                         kernel='rbf',
+                         gamma=gamma,
+                         fit_inverse_transform=True)
+    X_reduced = rbf_kpca.fit_transform(X)
+    X_recovered = rbf_kpca.inverse_transform(X_reduced)
+    return rbf_kpca, mean_squared_error(X, X_recovered)
+```
+
+
+```python
+gammas = np.arange(0.00001, 0.1, 0.0005)
+mses = list()
+for g in gammas:
+    _, mse = fit_rbf_kpca(g)
+    mses.append(mse)
+```
+
+
+```python
+min_mse_idx = np.argmin(mses)
+min_gamma = gammas[min_mse_idx]
+min_mse = mses[min_mse_idx]
+
+fig = plt.figure(figsize=(8, 5))
+
+plt.scatter(min_gamma, min_mse, color='r', s=100)
+plt.text(min_gamma+0.007, min_mse, f'min. MSE at $\gamma = {min_gamma}$')
+
+plt.plot(gammas, mses, 'k-o', alpha=0.5, ms=3)
+plt.xlabel('$\gamma$')
+plt.ylabel('MSE')
+plt.title('Unsupervised hyperparameter tuning of RBF KPCA')
+
+plt.show()
+```
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_39_0.png)
+
+
+
+```python
+best_rbf_kpca, mse = fit_rbf_kpca(min_gamma)
+X_reduced = best_rbf_kpca.transform(X)
+plot_swiss_roll_pca(X_reduced, title='Optimized RBF KPCA')
+```
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_40_0.png)
+
+
+## Local Linear Embedding (LLE)
+
+LLE is a nonlinear dimensionality reduction technique that uses a manifold learning technique.
+Basically, it tries to preserve the relationship between each data point and its neighbors in lower dimensions.
+The details of the two-step optimization problem used for LLE is described in more detail in the book.
+
+
+```python
+from sklearn.manifold import LocallyLinearEmbedding
+
+lle = LocallyLinearEmbedding(n_components=2, n_neighbors=20)
+X_reduced = lle.fit_transform(X)
+plot_swiss_roll_pca(X_reduced)
+```
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_42_0.png)
+
+
+
+```python
+fig = plt.figure(figsize=(12, 20))
+subplot_counter = 1
+for n_neighbors in np.arange(5, 20, 1):
+    plt.subplot(5, 3, subplot_counter)
+    subplot_counter += 1
+    
+    lle = LocallyLinearEmbedding(n_components=2, n_neighbors=n_neighbors)
+    X_reduced = lle.fit_transform(X)
+    plot_swiss_roll_pca(X_reduced)
+    plt.xlabel(None)
+    plt.ylabel(None)
+```
+
+
+![png](homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_43_0.png)
+
+
+## Additional dimensionality reduction techniques
+
+### Random projections
+
+This method projects the data to a lower-dimensional space using a random linear projection.
+Surprisingly, it does a very good job of preserving local relations.
+
+
+### Multidimensional scaling (MDS)
+
+MDS reduces dimensionality while trying to preserve the distances between the instances.
+
+
+### Isomap
+
+Isomap creates a graph by connecting each instance to its nearest neighbors, then reduces dimensionality while trying to preserve the geodesic distances (number of nodes in the shortest path).
+
+
+### t-Distributed Stochastic Neighbor Embedding (t-SNE)
+
+t-SNE reduces dimensionality while trying to keep simillar instances close and dissimilar instances apart.
+It is generally used for visualizing higher-dimensional data in 2D.
+
+
+### Linear Discriminant Analysis (LDA)
+
+LDA is a classification algorithm that tries to find the axes of best separation between the classes (because of this, it is often compared to PCA).
+These new axes can be projected onto, maintaining separation between the classes.
+
+
 
 
 ```python
