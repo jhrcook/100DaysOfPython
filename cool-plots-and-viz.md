@@ -51,3 +51,7 @@ Below is a collection of cool and interesting visualizations I created during my
 ### Effects of the gamma hyperparameter of RBF Kernel PCA
 
 ![](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/homl_ch08_Dimensionality-reduction_files/homl_ch08_Dimensionality-reduction_31_0.png)
+
+### K-means clustering of the colors of a picture of a flower
+
+![](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_22_0.png)
