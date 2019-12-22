@@ -216,4 +216,7 @@ vignettes/*.pdf
 assets/datasets/fec/P00000001-ALL.csv
 HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch07_softhard_voters.pkl
 HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch08_load_mnist.pkl
+HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch08_load_mnist_2.pkl
+HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch08_exercise8.pkl
+
 

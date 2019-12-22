@@ -302,3 +302,4 @@ I also learned about other dimensionality reduction techniques including LLE, ra
 I finished chapter 8 on dimensionality reduction by playing around with some of the other techniques including MDS, isomap, and t-SNE.
 I also completed one of the exercises by demonstrating the improvement in a simple random forest at classifying the MNIST data after preprocessing the data with PCA.
 I began the chapter on clustering with K-means.
+Later in the day, I did a bit more work on K-means clustering and learned about various under the hood details and about optimizing $k$ using an elbow plot and the silhouette scores.
