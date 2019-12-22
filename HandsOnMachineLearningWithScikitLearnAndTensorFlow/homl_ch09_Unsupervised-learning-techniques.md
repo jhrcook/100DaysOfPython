@@ -20,8 +20,14 @@ plt.style.use('seaborn-whitegrid')
 
 
 ```python
-# %load_ext ipycache
+%load_ext ipycache
 ```
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/IPython/config.py:13: ShimWarning: The `IPython.config` package has been deprecated since IPython 4.0. You should import from traitlets.config instead.
+      "You should import from traitlets.config instead.", ShimWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/ipycache.py:17: UserWarning: IPython.utils.traitlets has moved to a top-level traitlets package.
+      from IPython.utils.traitlets import Unicode
+
 
 This chapter covers the following unsupervised learning techniques: clustering, anomaly detection, and density estimation.
 
@@ -203,7 +209,7 @@ An instance's silhouette coefficient is shown below where $a$ is the means dista
 The value can range from -1 to 1 where the greater the number the more likely the point was assigned correctly.
 
 $$
-\frac{b-a}{max{a, b}
+\frac{b-a}{max(a, b)}
 $$
 
 Thankfully, Scikit-Learn offers the `silhouette_score()` function to compute this.
@@ -230,7 +236,157 @@ plt.show()
 ![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_13_0.png)
 
 
-TODO: silhouette diagrams
+Below are *silhouette diagrams* for multiple K-means models with various $k$ values.
+The plot is effectively a horizontal bar plot of each instance's silhouette coefficient, ordered by cluster and rank.
+The plot segments into a shape per cluster where the height indicates the number of instances in the cluster and the width reflects on well the instances fit in the clusters.
+The red-dotted line indicates the silhouette score for the model.
+
+
+```python
+from sklearn.metrics import silhouette_samples
+from yellowbrick.cluster import SilhouetteVisualizer
+
+fig = plt.figure(figsize=(12, 18))
+
+for i, k in enumerate(np.arange(2, 8)):
+    plt.subplot(3, 2, i+1)
+    km = KMeans(n_clusters=k)
+    viz = SilhouetteVisualizer(km, colors='yellowbrick')
+    viz.fit(X)
+    viz.finalize()
+
+plt.show()
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_15_0.png)
+
+
+Below are some of the limits of K-means:
+
+* can reach suboptimal solutions
+* the number of clusters must be declared
+* K-means is not great at clustering non-spherical clusters of unequal densities
+
+### Using clustering for image segmentation
+
+Below is an example of using K-means to segment an image by color.
+
+
+```python
+from matplotlib.image import imread
+import os
+
+ladybug = imread(os.path.join('assets', 'homl', 'images', 'ladybug.png'))
+# ladybug = ladybug[100:300, 300:500, :]
+ladybug.shape
+```
+
+
+
+
+    (533, 800, 3)
+
+
+
+
+```python
+def plot_img(img): 
+    plt.imshow(img)
+    plt.grid(None)
+    plt.gca().axes.get_xaxis().set_visible(False)
+    plt.gca().axes.get_yaxis().set_visible(False)
+
+plot_img(ladybug)
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_18_0.png)
+
+
+
+```python
+X = ladybug.reshape(-1, 3)
+X[:5, :]
+```
+
+
+
+
+    array([[0.09803922, 0.11372549, 0.00784314],
+           [0.09411765, 0.10980392, 0.00392157],
+           [0.09411765, 0.11372549, 0.        ],
+           [0.10196079, 0.11372549, 0.        ],
+           [0.09803922, 0.11372549, 0.00784314]], dtype=float32)
+
+
+
+
+```python
+kmeans = KMeans(n_clusters=8).fit(X)
+
+segmented_img = kmeans.cluster_centers_[kmeans.labels_]
+segmented_img = segmented_img.reshape(ladybug.shape)
+
+plot_img(segmented_img)
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_20_0.png)
+
+
+
+```python
+%%cache -d caches ch09_ladybug_silhouetteplot.pkl
+
+ks = np.arange(2, 15)
+sil_scores = []
+
+for k in ks:
+    km = KMeans(n_clusters=k).fit(X)
+    # Sample the data for silhouette score (too slow, otherwise).
+    sample_idx = np.random.randint(0, len(X), 5000)
+    X_sample = X[sample_idx, :]
+    label_sample = km.labels_[sample_idx]
+    sil_scores.append(silhouette_score(X_sample, label_sample))
+
+plt.plot(ks, sil_scores, 'k--o')
+plt.xlabel('$k$')
+plt.ylabel('silhouette score')
+plt.title('Ladybug image silhouette scores')
+plt.show()
+```
+
+    [Saved variables '' to file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch09_ladybug_silhouetteplot.pkl'.]
+
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_21_1.png)
+
+
+
+```python
+# Subjective judgement from silhouette scores
+best_k = 6
+
+kmeans = KMeans(n_clusters=best_k).fit(X)
+
+fig = plt.figure(figsize=(9, 15))
+o3 = np.ones(3)
+
+for i in range(best_k):
+    plt.subplot(4, 2, i+1)
+    partial_img = [x if l == i else o3 for x, l in zip(X, kmeans.labels_)]
+    partial_img = np.concatenate(partial_img).reshape(X.shape)
+    plot_img(partial_img.reshape(ladybug.shape))
+    plt.title(f'Ladybug segment {i}')
+
+plt.show()
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_22_0.png)
+
 
 
 ```python

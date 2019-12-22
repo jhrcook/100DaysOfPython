@@ -303,3 +303,6 @@ I finished chapter 8 on dimensionality reduction by playing around with some of 
 I also completed one of the exercises by demonstrating the improvement in a simple random forest at classifying the MNIST data after preprocessing the data with PCA.
 I began the chapter on clustering with K-means.
 Later in the day, I did a bit more work on K-means clustering and learned about various under the hood details and about optimizing $k$ using an elbow plot and the silhouette scores.
+
+**Day 62 - December 22, 2019:**
+I continued working with K-means clustering, creating silhouette diagrams and using it to segment the colors of an image.
