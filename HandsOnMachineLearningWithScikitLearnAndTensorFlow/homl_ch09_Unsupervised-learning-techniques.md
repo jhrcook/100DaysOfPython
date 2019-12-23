@@ -23,10 +23,8 @@ plt.style.use('seaborn-whitegrid')
 %load_ext ipycache
 ```
 
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/IPython/config.py:13: ShimWarning: The `IPython.config` package has been deprecated since IPython 4.0. You should import from traitlets.config instead.
-      "You should import from traitlets.config instead.", ShimWarning)
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/ipycache.py:17: UserWarning: IPython.utils.traitlets has moved to a top-level traitlets package.
-      from IPython.utils.traitlets import Unicode
+    The ipycache extension is already loaded. To reload it, use:
+      %reload_ext ipycache
 
 
 This chapter covers the following unsupervised learning techniques: clustering, anomaly detection, and density estimation.
@@ -357,7 +355,7 @@ plt.title('Ladybug image silhouette scores')
 plt.show()
 ```
 
-    [Saved variables '' to file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch09_ladybug_silhouetteplot.pkl'.]
+    [Skipped the cell's code and loaded variables  from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch09_ladybug_silhouetteplot.pkl'.]
 
 
 
@@ -366,6 +364,8 @@ plt.show()
 
 
 ```python
+%%cache -d caches ch09_ladybug_decomposed.pkl
+
 # Subjective judgement from silhouette scores
 best_k = 6
 
@@ -384,9 +384,376 @@ for i in range(best_k):
 plt.show()
 ```
 
+    [Skipped the cell's code and loaded variables  from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch09_ladybug_decomposed.pkl'.]
 
-![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_22_0.png)
 
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_22_1.png)
+
+
+### Using clustering for preprocessing
+
+K-means clustering can be used for dimensionality reduction as a preprocessing step for a supervised learning algorithm.
+Below is an example using the digits data.
+
+
+```python
+from sklearn.datasets import load_digits
+from sklearn.model_selection import train_test_split
+
+X_digits, y_digits = load_digits(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(X_digits, y_digits)
+```
+
+First, just a logistic regression with the raw data.
+
+
+```python
+from sklearn.linear_model import LogisticRegression
+
+log_reg = LogisticRegression(solver='lbfgs',
+                             max_iter=5000,
+                             multi_class='auto')
+log_reg.fit(X_train, y_train)
+
+# Logistic regression accuracy on test data.
+log_reg.score(X_test, y_test)
+```
+
+
+
+
+    0.9666666666666667
+
+
+
+This can be compared to using a pipeline with K-means as a preprocessing step.
+
+There is a large drop in performance using the default number of clusters, 8.
+
+
+```python
+from sklearn.pipeline import Pipeline
+
+log_reg_pipeline = Pipeline([
+    ('kmeans', KMeans()),
+    ('log_reg', LogisticRegression(solver='lbfgs',
+                                   max_iter=5000,
+                                   multi_class='auto'))
+])
+
+log_reg_pipeline.fit(X_train, y_train)
+
+log_reg_pipeline.score(X_test, y_test)
+```
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+
+
+
+
+
+    0.9177777777777778
+
+
+
+Grid search can be used to find the best value for $k$.
+
+
+```python
+%%cache -d caches ch09_digitslogreg_coarsegridsearch.pkl grid_log_reg, param_grid
+
+from sklearn.model_selection import GridSearchCV
+
+param_grid = {'kmeans__n_clusters': np.arange(10, 220, 20)}
+grid_log_reg = GridSearchCV(log_reg_pipeline,
+                            param_grid,
+                            cv=3,
+                            n_jobs=-1)
+grid_log_reg.fit(X_train, y_train)
+```
+
+    [Skipped the cell's code and loaded variables grid_log_reg, param_grid from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch09_digitslogreg_coarsegridsearch.pkl'.]
+
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+
+
+
+```python
+grid_log_reg.best_params_
+```
+
+
+
+
+    {'kmeans__n_clusters': 170}
+
+
+
+
+```python
+%%cache -d caches ch09_digitslogreg_finegridsearch.pkl grid_log_reg, param_grid
+
+param_grid = {'kmeans__n_clusters': np.arange(180, 220, 1)}
+
+grid_log_reg = GridSearchCV(log_reg_pipeline,
+                            param_grid,
+                            cv=3)
+grid_log_reg.fit(X_train, y_train)
+```
+
+    [Skipped the cell's code and loaded variables grid_log_reg, param_grid from file '/Users/admin/Developer/Python/100DaysOfPython/HandsOnMachineLearningWithScikitLearnAndTensorFlow/caches/ch09_digitslogreg_finegridsearch.pkl'.]
+
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/linear_model/logistic.py:947: ConvergenceWarning: lbfgs failed to converge. Increase the number of iterations.
+      "of iterations.", ConvergenceWarning)
+
+
+
+```python
+grid_log_reg.best_params_
+```
+
+
+
+
+    {'kmeans__n_clusters': 181}
+
+
+
+
+```python
+grid_log_reg.best_score_
+```
+
+
+
+
+    0.9673348181143281
+
+
+
+
+```python
+grid_log_reg.score(X_test, y_test)
+```
+
+
+
+
+    0.9911111111111112
+
+
+
+The best value for $k$ was 181 and the accuracy achieved with the best model was 99.1 %.
+
+### Using clustering for semi-supervised learning
+
+Often, the training data will only be partial labeled.
+We can use clustering to propagate labels to instances without them.
+
+This is mocked below in several steps.
+The main goal is to extract "representative images" from the clusters, label them manually, and then propagate the label to the rest of the cluster.
+
+The first example below shows how using clustering to find the 50 representative images is better than some random sample (here, using the first 50 instances).
+
+
+```python
+n_labeled = 50
+log_reg = LogisticRegression(solver='lbfgs',
+                             max_iter=5000,
+                             multi_class='auto')
+log_reg.fit(X_train[:n_labeled], y_train[:n_labeled])
+log_reg.score(X_test, y_test)
+```
+
+
+
+
+    0.8288888888888889
+
+
+
+
+```python
+k = n_labeled
+kmeans = KMeans(n_clusters=k)
+X_digits_dist = kmeans.fit_transform(X_train)
+
+# Get the representative images.
+representative_idx = np.argmin(X_digits_dist, axis=0)
+X_representative = X_train[representative_idx]
+
+# Plot the representative images for manual labeling.
+fig = plt.figure(figsize=(12, 3))
+for i, x in enumerate(X_representative):
+    plt.subplot(5, 10, i+1)
+    plot_img(x.reshape((8, 8)))
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_38_0.png)
+
+
+
+```python
+# Normally, we wouldn't know this and have to manually assign values using
+# the grid of images below.
+y_representative = y_train[representative_idx]
+```
+
+Using the same number of instances for training , just this time from the clusters, greatly improved the success of the logistic regression on the test data.
+
+
+```python
+log_reg = LogisticRegression(solver='lbfgs',
+                             max_iter=5000,
+                             multi_class='auto')
+log_reg.fit(X_representative, y_representative)
+log_reg.score(X_test, y_test)
+```
+
+
+
+
+    0.9155555555555556
+
+
+
+We can also propagate the manual labels to all of the data instances in the respective clusters.
+This gives an appreciable boost to the testing accuracy.
+
+
+```python
+y_train_propagated = np.empty(len(X_train), dtype=np.int32)
+for i in range(k):
+    y_train_propagated[kmeans.labels_ == i] = y_representative[i]
+
+
+log_reg = LogisticRegression(solver='lbfgs',
+                             max_iter=5000,
+                             multi_class='auto')
+log_reg.fit(X_train, y_train_propagated)
+log_reg.score(X_test, y_test)
+```
+
+
+
+
+    0.9311111111111111
+
+
+
+One last improvement can come from limiting the label propagation to only those nearest the centroid.
+
+
+```python
+percentile_closest = 20
+
+X_cluster_dist = X_digits_dist[np.arange(len(X_train)), kmeans.labels_]
+
+for i in range(k):
+    in_cluster = (kmeans.labels_ == i)
+    
+    cluster_dist = X_cluster_dist[in_cluster]
+    cutoff_dist = np.percentile(cluster_dist, percentile_closest)
+    above_cutoff = (X_cluster_dist > cutoff_dist)
+    
+    X_cluster_dist[in_cluster & above_cutoff] = -1
+
+
+partially_prop_idx = (X_cluster_dist != -1)
+X_train_partially_prop = X_train[partially_prop_idx]
+y_train_partially_prop = y_train_propagated[partially_prop_idx]
+
+log_reg = LogisticRegression(solver='lbfgs',
+                             max_iter=5000,
+                             multi_class='auto')
+log_reg.fit(X_train_partially_prop, y_train_partially_prop)
+log_reg.score(X_test, y_test)
+```
+
+
+
+
+    0.9377777777777778
+
+
+
+It doesn't seem to have helped too much in this instance, but it can often lead to improved testing accuracy in other circumstances.
 
 
 ```python
