@@ -754,6 +754,159 @@ log_reg.score(X_test, y_test)
 
 
 It doesn't seem to have helped too much in this instance, but it can often lead to improved testing accuracy in other circumstances.
+The propagation was quite successful, as shown by how many were accurately identified below.
+
+
+```python
+np.mean(y_train_partially_prop == y_train[partially_prop_idx])
+```
+
+
+
+
+    1.0
+
+
+
+## Density-Based Spatial Clustering of Applications with Noise (DBSCAN)
+
+DBSCAN defines clusters as continuous regions of high density.
+Below is the general algorithm:
+
+1. For each instance, the algorithm counts how many instances are located within $\epsilon$ of it. This is the instance's *$\epsilon$-neighborhood*
+2. If an instance has `min_samples` instances in its neighborhood, it is a *core instance*.
+3. All instances, including other core instances, in the neighborhood of a core instance belong to the same cluster. This can create chain of core instances.
+4. Any instance that is not itself a core instance nor is in the neighborhood of a core instance is an anomaly.
+
+Below is an example of using DBSCAN on the artificial moons data.
+
+
+```python
+from sklearn.cluster import DBSCAN
+from sklearn.datasets import make_moons
+from matplotlib import cm
+
+# Moons data.
+X, y = make_moons(n_samples=1000, noise=0.05, random_state=0)
+
+# DBSCAN with unoptimzed hyperparameters.
+dbscan = DBSCAN(eps=0.05, min_samples=5)
+dbscan.fit(X)
+
+# Plotting.
+plt.scatter(X[:, 0], X[:, 1], c=dbscan.labels_, cmap='Set1')
+plt.xlabel('$x_1$', fontsize=12)
+plt.ylabel('$x_2$', fontsize=12)
+plt.title(f'DBSCAN (unoptimized)', fontsize=14)
+plt.show()
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_49_0.png)
+
+
+The random red dots above were detected to be anomalies by DBSCAN.
+They are labeled as -1 and therefore are easily removed, as shown below.
+
+
+```python
+clustered_X = X[dbscan.labels_ != -1, :]
+plt.scatter(clustered_X[:, 0], clustered_X[:, 1],
+            c=dbscan.labels_[dbscan.labels_ != -1], 
+            cmap='Set1')
+plt.xlabel('$x_1$', fontsize=12)
+plt.ylabel('$x_2$', fontsize=12)
+plt.title(f'DBSCAN (anomalies removed)', fontsize=14)
+plt.show()
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_51_0.png)
+
+
+Annoyingly, DBSCAN has found 11 clusters where we would want it to find 2.
+By changing the $\epsilon$ to 0.2, though, 2 clusters are found.
+
+
+```python
+# DBSCAN with a higher epsilon.
+dbscan = DBSCAN(eps=0.20, min_samples=5)
+dbscan.fit(X)
+
+# Plotting.
+plt.scatter(X[:, 0], X[:, 1], c=dbscan.labels_, cmap='Set1')
+plt.xlabel('$x_1$', fontsize=12)
+plt.ylabel('$x_2$', fontsize=12)
+plt.title(f'DBSCAN clustering', fontsize=14)
+plt.show()
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_53_0.png)
+
+
+The `DBSCAN` class from Scikit-Learn does not have a `predict()` method.
+Instead, the user is intended to use another classifier based on the clustering by DBSCAN.
+This is shown below with KNN and random forest models.
+
+
+```python
+from sklearn.neighbors import KNeighborsClassifier
+
+# Get labeled training data from DBSCAN.
+X_dbscan = dbscan.components_
+y_dbscan = dbscan.labels_[dbscan.core_sample_indices_]
+
+# Train a KNN classifier
+knn = KNeighborsClassifier(n_neighbors=50)
+knn.fit(X_dbscan, y_dbscan)
+
+# Get classifications from KNN.
+knn_predicted_y = knn.predict(X)
+
+# Plot with the color from the KNN predictions.
+plt.scatter(X[:, 0], X[:, 1], c=knn_predicted_y, cmap='Set1')
+plt.xlabel('$x_1$', fontsize=12)
+plt.ylabel('$x_2$', fontsize=12)
+plt.title(f'DBSCAN clustering with KNN classification', fontsize=14)
+plt.show()
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_55_0.png)
+
+
+
+```python
+from sklearn.ensemble import AdaBoostClassifier
+
+# Train a KNN classifier
+rf = AdaBoostClassifier(n_estimators=50)
+rf.fit(X_dbscan, y_dbscan)
+
+# Get classifications from KNN.
+rf_predicted_y = rf.predict(X)
+
+# Plot with the color from the KNN predictions.
+plt.scatter(X[:, 0], X[:, 1], c=rf_predicted_y, cmap='Set1')
+plt.xlabel('$x_1$', fontsize=12)
+plt.ylabel('$x_2$', fontsize=12)
+plt.title(f'DBSCAN clustering with AdaBoost Random Forest classification', fontsize=14)
+plt.show()
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_56_0.png)
+
+
+This was just a brief introduction to DBSCAN.
+It is efficient, flexible, and robust, though proper tuning of the hyperparameters is essential.
+Another interesting related clustering algorithm is *Hierarchical DBSCAN*, implemented in the [scikit-lean-contrib/hdbscan](https://github.com/scikit-learn-contrib/hdbscan) project.
+
+## Other clustering algorithms
+
+Below is a list of additional common clustering algorithms. 
+I tried to provide a brief explanation and example for each.
 
 
 ```python

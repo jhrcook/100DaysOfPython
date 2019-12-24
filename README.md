@@ -309,3 +309,7 @@ I continued working with K-means clustering, creating silhouette diagrams and us
 
 **Day 63 - December 23, 2019:**
 I learned about using K-Means clustering as a preprocessing step in a classification pipeline and in label-propagation for semi-supervised learning.
+
+**Day 64 - December 24, 2019:**
+I learned about DBSCAN and using it in conjunction with a classifier to make predictions.
+I made examples of using it with KNN and AdaBoost RF models.
