@@ -792,17 +792,31 @@ X, y = make_moons(n_samples=1000, noise=0.05, random_state=0)
 # DBSCAN with unoptimzed hyperparameters.
 dbscan = DBSCAN(eps=0.05, min_samples=5)
 dbscan.fit(X)
+```
 
-# Plotting.
-plt.scatter(X[:, 0], X[:, 1], c=dbscan.labels_, cmap='Set1')
-plt.xlabel('$x_1$', fontsize=12)
-plt.ylabel('$x_2$', fontsize=12)
-plt.title(f'DBSCAN (unoptimized)', fontsize=14)
+
+
+
+    DBSCAN(algorithm='auto', eps=0.05, leaf_size=30, metric='euclidean',
+           metric_params=None, min_samples=5, n_jobs=None, p=None)
+
+
+
+
+```python
+def plot_clustered_moon(x, c, title=None):
+    plt.scatter(x[:, 0], x[:, 1], c=c, cmap='Set1')
+    plt.xlabel('$x_1$', fontsize=12)
+    plt.ylabel('$x_2$', fontsize=12)
+    plt.title(title, fontsize=14)
+
+
+plot_clustered_moon(X, dbscan.labels_, 'DBSCAN (unoptimized)')
 plt.show()
 ```
 
 
-![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_49_0.png)
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_50_0.png)
 
 
 The random red dots above were detected to be anomalies by DBSCAN.
@@ -811,17 +825,14 @@ They are labeled as -1 and therefore are easily removed, as shown below.
 
 ```python
 clustered_X = X[dbscan.labels_ != -1, :]
-plt.scatter(clustered_X[:, 0], clustered_X[:, 1],
-            c=dbscan.labels_[dbscan.labels_ != -1], 
-            cmap='Set1')
-plt.xlabel('$x_1$', fontsize=12)
-plt.ylabel('$x_2$', fontsize=12)
-plt.title(f'DBSCAN (anomalies removed)', fontsize=14)
+plot_clustered_moon(clustered_X, 
+                    dbscan.labels_[dbscan.labels_ != -1], 
+                    'DBSCAN (anomalies removed)')
 plt.show()
 ```
 
 
-![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_51_0.png)
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_52_0.png)
 
 
 Annoyingly, DBSCAN has found 11 clusters where we would want it to find 2.
@@ -834,15 +845,12 @@ dbscan = DBSCAN(eps=0.20, min_samples=5)
 dbscan.fit(X)
 
 # Plotting.
-plt.scatter(X[:, 0], X[:, 1], c=dbscan.labels_, cmap='Set1')
-plt.xlabel('$x_1$', fontsize=12)
-plt.ylabel('$x_2$', fontsize=12)
-plt.title(f'DBSCAN clustering', fontsize=14)
+plot_clustered_moon(X, dbscan.labels_, 'DBSCAN clustering')
 plt.show()
 ```
 
 
-![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_53_0.png)
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_54_0.png)
 
 
 The `DBSCAN` class from Scikit-Learn does not have a `predict()` method.
@@ -865,38 +873,36 @@ knn.fit(X_dbscan, y_dbscan)
 knn_predicted_y = knn.predict(X)
 
 # Plot with the color from the KNN predictions.
-plt.scatter(X[:, 0], X[:, 1], c=knn_predicted_y, cmap='Set1')
-plt.xlabel('$x_1$', fontsize=12)
-plt.ylabel('$x_2$', fontsize=12)
-plt.title(f'DBSCAN clustering with KNN classification', fontsize=14)
-plt.show()
-```
-
-
-![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_55_0.png)
-
-
-
-```python
-from sklearn.ensemble import AdaBoostClassifier
-
-# Train a KNN classifier
-rf = AdaBoostClassifier(n_estimators=50)
-rf.fit(X_dbscan, y_dbscan)
-
-# Get classifications from KNN.
-rf_predicted_y = rf.predict(X)
-
-# Plot with the color from the KNN predictions.
-plt.scatter(X[:, 0], X[:, 1], c=rf_predicted_y, cmap='Set1')
-plt.xlabel('$x_1$', fontsize=12)
-plt.ylabel('$x_2$', fontsize=12)
-plt.title(f'DBSCAN clustering with AdaBoost Random Forest classification', fontsize=14)
+plot_clustered_moon(X, knn_predicted_y, 
+                     'DBSCAN clustering with KNN classification')
 plt.show()
 ```
 
 
 ![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_56_0.png)
+
+
+
+```python
+from sklearn.ensemble import GradientBoostingClassifier
+
+# Train a gradient boosting random forest classifier
+rf = GradientBoostingClassifier(n_estimators=50)
+rf.fit(X_dbscan, y_dbscan)
+
+# Get classifications from random forest.
+rf_predicted_y = rf.predict(X)
+
+# Plot with the color from the random forest's predictions.
+plt.scatter(X[:, 0], X[:, 1], c=rf_predicted_y, cmap='Set1')
+plt.xlabel('$x_1$', fontsize=12)
+plt.ylabel('$x_2$', fontsize=12)
+plt.title(f'DBSCAN clustering with Gradient Boosting Random Forest classification', fontsize=14)
+plt.show()
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_57_0.png)
 
 
 This was just a brief introduction to DBSCAN.
@@ -907,6 +913,151 @@ Another interesting related clustering algorithm is *Hierarchical DBSCAN*, imple
 
 Below is a list of additional common clustering algorithms. 
 I tried to provide a brief explanation and example for each.
+
+### Agglomerative clustering
+
+The instances are clustered from the bottom up, each new cluster being treated as a single instance to be compared to the remaining instances.
+
+
+```python
+from sklearn.cluster import AgglomerativeClustering
+
+fig = plt.figure(figsize=(10, 5))
+for i, k in enumerate((2, 10)):
+    agg_clst = AgglomerativeClustering(n_clusters=k)
+    agg_clst.fit(X, y)
+    plt.subplot(1, 2, i+1)
+    plot_clustered_moon(X, agg_clst.labels_, title=f'Agglomerative Clustering ($k={k}$)')
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_59_0.png)
+
+
+### Balanced  Iterative Reducing and Clustering using Hierarchies (BIRCH)
+
+BIRCH was specifically designed for large data sets with not too many features (<20).
+It holds less information in memory than K-Means and therefore can be more efficient for predicting the cluster for new instances.
+
+
+```python
+from sklearn.cluster import Birch
+
+birch = Birch(threshold=0.5, 
+              branching_factor=50, 
+              n_clusters=4)
+birch.fit(X)
+plot_clustered_moon(X, birch.labels_, 'BIRCH')
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_61_0.png)
+
+
+### Mean-shift
+
+The mean-shift algorithm assigns circle around each instance with a predefined radius (the `bandwidth` in Scikit-Learn).
+The circle is then shifted to have a center at the mean of all of the circles it encloses.
+This is completed iteratively until the circles stop moving.
+All of the instances with circles that ended up at the same place are assigned to a cluster.
+This clustering method has many of the benefits of DBSCAN - can recognize different shapes, has few hyperparameters (just 1), can identify the number of clusters - but it is a far slower algorithm (exponential) and has the tendency to chop up clusters at regions of differential density.
+
+
+```python
+from sklearn.cluster import MeanShift
+
+fig = plt.figure(figsize=(10, 20))
+for i, b in enumerate(np.arange(0.1, 0.9, 0.1)):
+    plt.subplot(4, 2, i+1)
+    ms = MeanShift(bandwidth=b)
+    ms.fit(X)
+    plot_clustered_moon(X, ms.labels_, 
+                        f'Mean-Shift (bandwidth={np.round(b, 1)})')
+
+plt.show()
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_63_0.png)
+
+
+The `MeanShift` class in Scikit-Learn has the parameter `cluster_all` to determine if anomalies should be unassigned to a cluster:
+
+> If true, then all points are clustered, even those orphans that are not within any kernel. Orphans are assigned to the nearest kernel. If false, then orphans are given cluster label -1.
+
+
+```python
+# Mean-shift with `cluster_all=False` so not all points must be assigned.
+ms = MeanShift(bandwidth = 0.65, cluster_all=False)
+ms.fit(X)
+
+# Plot with outliers small, black points.
+plot_clustered_moon(X[ms.labels_ != -1, :], 
+                    ms.labels_[ms.labels_ != -1],
+                   'Mean-Shift with outliers')
+plt.scatter(X[ms.labels_ == -1, 0], X[ms.labels_ == -1, 1], c='k', marker='.', label='outliers')
+plt.legend(loc='best', fontsize=12)
+plt.show()
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_65_0.png)
+
+
+### Affinity propagation
+
+Affinity propagation can be thought of as voting: each instance votes for similar instances to be their representative until convergence where the representatives and their voters form a cluster.
+It can detect any number of clusters with varying size and shape, though has exponential complexity.
+
+
+```python
+from sklearn.cluster import AffinityPropagation
+
+affprop = AffinityPropagation(damping=0.6)
+affprop.fit(X)
+plot_clustered_moon(X, affprop.labels_, 'Affinity Propagation')
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_67_0.png)
+
+
+### Spectral clustering
+
+Spectral clustering embeds the similarity matrix of the data in a lower dimension (i.e. it reduces the dimensionality) then uses another clustering algorithm in the lower-dimensional space (Scikit-Lean uses K-Means).
+It can capture complex structures, but does not scale well for large data sets.
+
+
+```python
+from sklearn.cluster import SpectralClustering
+
+sc = SpectralClustering(n_clusters=2)
+sc.fit(X)
+plot_clustered_moon(X, sc.labels_, 'Spectral Clustering (default params.)')
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_69_0.png)
+
+
+
+```python
+sc = SpectralClustering(n_clusters=2, 
+                        affinity='nearest_neighbors', 
+                        n_neighbors=10)
+sc.fit(X)
+plot_clustered_moon(X, sc.labels_, 'Spectral Clustering (affinity assignment by NN)')
+```
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/manifold/spectral_embedding_.py:235: UserWarning: Graph is not fully connected, spectral embedding may not work as expected.
+      warnings.warn("Graph is not fully connected, spectral embedding"
+
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_70_1.png)
+
+
+## Gaussian Mixtures
 
 
 ```python

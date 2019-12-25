@@ -313,3 +313,7 @@ I learned about using K-Means clustering as a preprocessing step in a classifica
 **Day 64 - December 24, 2019:**
 I learned about DBSCAN and using it in conjunction with a classifier to make predictions.
 I made examples of using it with KNN and AdaBoost RF models.
+
+**Day 65 - December 25, 2019:**
+We were briefly introduced to several other clustering algorithms including agglomerative clustering, BIRCH, mean-shift, affinity-prop.
+, and spectral clustering.
