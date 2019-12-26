@@ -23,10 +23,8 @@ plt.style.use('seaborn-whitegrid')
 %load_ext ipycache
 ```
 
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/IPython/config.py:13: ShimWarning: The `IPython.config` package has been deprecated since IPython 4.0. You should import from traitlets.config instead.
-      "You should import from traitlets.config instead.", ShimWarning)
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/ipycache.py:17: UserWarning: IPython.utils.traitlets has moved to a top-level traitlets package.
-      from IPython.utils.traitlets import Unicode
+    The ipycache extension is already loaded. To reload it, use:
+      %reload_ext ipycache
 
 
 This chapter covers the following unsupervised learning techniques: clustering, anomaly detection, and density estimation.
@@ -1117,9 +1115,9 @@ gm.means_
 
 
 
-    array([[ 0.90032899,  4.21134015],
+    array([[-1.52637074,  3.03228352],
            [ 2.13303741,  0.81616235],
-           [-1.52637074,  3.03228352]])
+           [ 0.90032899,  4.21134015]])
 
 
 
@@ -1133,14 +1131,14 @@ gm.covariances_
 
 
 
-    array([[[0.94327485, 0.05809688],
-            [0.05809688, 1.00935793]],
+    array([[[0.96775285, 0.06885643],
+            [0.06885643, 1.02552756]],
     
            [[0.93452405, 0.02019267],
             [0.02019267, 0.81981003]],
     
-           [[0.96775285, 0.06885643],
-            [0.06885643, 1.02552756]]])
+           [[0.94327485, 0.05809688],
+            [0.05809688, 1.00935793]]])
 
 
 
@@ -1154,7 +1152,7 @@ gm.weights_
 
 
 
-    array([0.32933545, 0.32827093, 0.34239362])
+    array([0.34239362, 0.32827093, 0.32933545])
 
 
 
@@ -1249,6 +1247,156 @@ plt.show()
 
 ![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_88_0.png)
 
+
+Sometimes, EM will fail to converge on a solution.
+Limiting the number of parameters it must estimate makes it easier to converge.
+One common way of doing this is to limit the variation of the covariance matrices $\mathbf{\Sigma}$.
+The four options available in Scikit-Learn are `'full'` (default), `'sperical'`, `'diag'`, and `'tied'`.
+Below I show the results of each non-default option on the spherical blobs followed by samples taken from the fitted models.
+You can see from the plots made of samples from the fitted models what each constraint does to the covariance matrices.
+
+
+```python
+# Number of samples for new Gaussian mixtures.
+n_samples = 100
+# Generate spherical data centered on (10, 10).
+shifted_gaussian = np.random.randn(n_samples, 2) + np.array([10, 10])
+# Generate 0-centered stretched Gaussian data
+C = np.array([[0., -0.7], [3.5, .7]])
+stretched_gaussian = np.dot(np.random.randn(n_samples, 2), C)
+# Generate shited and stretched Gaussian data
+C = np.array([[0., -0.7], [3.5, .7]])
+stretched_gaussian2 = np.dot(np.random.randn(n_samples, 2), C) + np.array([0, 5])
+
+X_train = np.vstack([shifted_gaussian, stretched_gaussian, stretched_gaussian2])
+
+fig = plt.figure(figsize=(10, 15))
+for i, cov_type in enumerate(('spherical', 'diag', 'tied')):
+    # Subplot index.
+    idx = (i+1) * 2
+    
+    # Fit Gaussian MM and get predicted cluster assignments.
+    gm = GaussianMixture(n_components=3, n_init=10, covariance_type=cov_type)
+    gm.fit(X_train)
+    y_pred = gm.predict(X_train)
+    
+    # Plot the clusters.
+    plt.subplot(3, 2, idx-1)
+    plt.scatter(X_train[:, 0], X_train[:, 1], c=y_pred, cmap='Set1', s=20)
+    plt.title(f'GMM clusters - cov. mat.: {cov_type}', fontsize=14)
+    
+    # Plot new samples fro fitted model.
+    X_new, y_new = gm.sample(1000)
+    plt.subplot(3, 2, idx)
+    plt.scatter(X_new[:, 0], X_new[:, 1], c=y_new, cmap='Set1', s=20, alpha=0.5)
+    plt.title(f'GMM generated - cov. mat.: {cov_type}', fontsize=14)
+
+plt.show()
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_90_0.png)
+
+
+### Anomaly detection using Gaussian mixtures
+
+With a GMM, the outliers can be defined as those that lie in low-density areas.
+The percentile threshold can be set based on known or expected rates and adjusted in correspondence with the desired FP and FN rates.
+Below is an example of flagging anomalies as those in the bottom 5th percentile.
+
+
+```python
+gm = GaussianMixture(n_components=3, n_init=10)
+gm.fit(X_train)
+
+densities = gm.score_samples(X_train)
+density_threshold = np.percentile(densities, 5)
+anomalies = X_train[densities < density_threshold]
+
+plt.scatter(anomalies[:, 0], anomalies[:, 1], 
+            c='#0fbbff', s=150, alpha=1.0, label='anomalies')
+plt.scatter(X_train[:, 0], X_train[:, 1], 
+            c=gm.predict(X_train), cmap='Set1', 
+            s=50, label='data')
+plt.legend(loc='best')
+plt.title('GMM for anomaly detection (5th percentile cut-off)', fontsize=14)
+plt.show()
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_92_0.png)
+
+
+### Selecting the number of clusters
+
+Theoretical information criterion, such as AIC and BIC, are often used to select the best GMM.
+These two metric are shown below where $m$ is the number of instances, $p$ is the number of parameters being estimated, and $\hat{L}$ is the maximized value of the *likelihood function* of the model.
+
+$$
+\text{AIC} = \log(m)p - 2\log(\hat{L}) \\
+\text{BIC} = 2p - 2 \log(\hat{L}) \\
+$$
+
+Both of these values penalize the number of parameters and reward for goodness of fit.
+They generally tend to agree with each other.
+
+Both of these values are available through methods in the `GaussianMixture` class.
+
+
+```python
+# AIC
+gm.aic(X_train)
+```
+
+
+
+
+    2766.9393238129464
+
+
+
+
+```python
+# BIC
+gm.bic(X_train)
+```
+
+
+
+
+    2829.903625882102
+
+
+
+
+```python
+ks = np.arange(1, 10)
+aics = []
+bics = []
+
+for k in ks:
+    gm = GaussianMixture(n_components=k, n_init=10)
+    gm.fit(X_train)
+    aics.append(gm.aic(X_train))
+    bics.append(gm.bic(X_train))
+
+```
+
+
+```python
+plt.figure(figsize=(10, 5))
+plt.plot(ks, aics, 'b--o', label='AIC')
+plt.plot(ks, bics, 'g--o', label='BIC')
+plt.xlabel('$k$')
+plt.legend(loc='best')
+plt.show()
+```
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_97_0.png)
+
+
+### Bayesian Gaussian mixture models
 
 
 ```python

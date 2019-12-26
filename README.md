@@ -317,3 +317,6 @@ I made examples of using it with KNN and AdaBoost RF models.
 **Day 65 - December 25, 2019:**
 We were briefly introduced to several other clustering algorithms including agglomerative clustering, BIRCH, mean-shift, affinity-propagation, and spectral clustering.
 I did a second hour where I began working through the section on Gaussian Mixture models.
+
+**Day 66 - December 26, 2019:**
+I continued with the section on GMMs by learning about different ways of constraining the covariance matrix parameters, anomaly detection, and model selection using AIC and BIC.
