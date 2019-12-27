@@ -320,3 +320,7 @@ I did a second hour where I began working through the section on Gaussian Mixtur
 
 **Day 66 - December 26, 2019:**
 I continued with the section on GMMs by learning about different ways of constraining the covariance matrix parameters, anomaly detection, and model selection using AIC and BIC.
+
+**Day 67 - December 27, 2019:**
+I finished up Ch 9 on clustering by learning about Bayesian Gaussian Mixture models.
+I then began Part II of the book on NN and Deep Learning by learning about the origins of neural networks and perceptrons.

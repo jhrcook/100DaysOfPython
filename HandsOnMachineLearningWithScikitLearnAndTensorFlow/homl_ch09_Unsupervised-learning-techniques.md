@@ -1248,6 +1248,11 @@ plt.show()
 ![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_88_0.png)
 
 
+
+```python
+
+```
+
 Sometimes, EM will fail to converge on a solution.
 Limiting the number of parameters it must estimate makes it easier to converge.
 One common way of doing this is to limit the variation of the covariance matrices $\mathbf{\Sigma}$.
@@ -1295,7 +1300,7 @@ plt.show()
 ```
 
 
-![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_90_0.png)
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_91_0.png)
 
 
 ### Anomaly detection using Gaussian mixtures
@@ -1324,7 +1329,7 @@ plt.show()
 ```
 
 
-![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_92_0.png)
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_93_0.png)
 
 
 ### Selecting the number of clusters
@@ -1393,10 +1398,69 @@ plt.show()
 ```
 
 
-![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_97_0.png)
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_98_0.png)
 
 
 ### Bayesian Gaussian mixture models
+
+The `BaysianGaussianMixture` class is capable of finding the correct number of clusters.
+
+
+```python
+from sklearn.mixture import BayesianGaussianMixture
+
+bgm = BayesianGaussianMixture(n_components=10, n_init=10)
+bgm.fit(X_train)
+
+# Cluster weights
+np.round(bgm.weights_, 3)
+```
+
+
+
+
+    array([0.335, 0.334, 0.33 , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   ,
+           0.   ])
+
+
+
+
+```python
+plt.scatter(X_train[:, 0], X_train[:, 1], c=bgm.predict(X_train), 
+            cmap='Set1', s=20)
+plt.title(f'Bayesian Gaussian Mixture model', fontsize=14)
+```
+
+
+
+
+    Text(0.5, 1.0, 'Bayesian Gaussian Mixture model')
+
+
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_101_1.png)
+
+
+
+```python
+X_moons, y_moons = make_moons(1000, noise=0.03, random_state=0)
+
+bgm = BayesianGaussianMixture(n_components=10, n_init=10, random_state=0)
+bgm.fit(X_moons)
+
+plt.scatter(X_moons[:, 0], X_moons[:, 1], c=bgm.predict(X_moons), cmap='Set1')
+plt.title('BGM on moons data', fontsize=14)
+plt.show()
+```
+
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/sklearn/mixture/base.py:265: ConvergenceWarning: Initialization 10 did not converge. Try different init parameters, or increase max_iter, tol or check for degenerate data.
+      % (init + 1), ConvergenceWarning)
+
+
+
+![png](homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_102_1.png)
+
 
 
 ```python
