@@ -330,3 +330,8 @@ I learned about multilayer perceptrons and the backpropagation algorithm.
 I played around with the common activation functions used in artifical neurons.
 Finally, I learned the basics of regression and classification with MLPs.
 Soon, I will begin playing with Keras!
+
+**Day 69 - December 29, 2019:**
+I learned about the fundamentals of the Keras API and TF2's implementation.
+I began making my first ANN and loading and preparing the MNIST Fashion data.
+We built a MLP with 2 hidden layers.

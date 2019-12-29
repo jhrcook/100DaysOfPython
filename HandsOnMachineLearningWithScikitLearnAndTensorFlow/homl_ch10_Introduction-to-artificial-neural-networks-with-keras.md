@@ -21,8 +21,10 @@ plt.style.use('seaborn-whitegrid')
 %load_ext ipycache
 ```
 
-    The ipycache extension is already loaded. To reload it, use:
-      %reload_ext ipycache
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/IPython/config.py:13: ShimWarning: The `IPython.config` package has been deprecated since IPython 4.0. You should import from traitlets.config instead.
+      "You should import from traitlets.config instead.", ShimWarning)
+    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/ipycache.py:17: UserWarning: IPython.utils.traitlets has moved to a top-level traitlets package.
+      from IPython.utils.traitlets import Unicode
 
 
 ## From biological to artificial neurons
@@ -266,6 +268,273 @@ The loss function is usually the cross-entropy loss function.
 >**Before moving on to using Keras to build ANNs, I followed the advice of the author and skipped to Exercise 1 for the chapter which was to experiment in the [TensorFlow Playground](https://playground.tensorflow.org/).**
 
 ---
+
+## Implementing MLPs with Keras
+
+
+
+
+```python
+import tensorflow as tf
+from tensorflow import keras
+
+tf.__version__
+```
+
+
+
+
+    '2.0.0'
+
+
+
+
+```python
+keras.__version__
+```
+
+
+
+
+    '2.2.4-tf'
+
+
+
+### Building an image classifier using the sequential API
+
+For the first example, we will build an image classifier of the MNIST Fashion data set.
+It contains 70,000 28x28 grayscale images of clothing of 10 classes.
+
+Keras provides some functions for accessing commonly used data.
+
+
+```python
+fashion_mnist = keras.datasets.fashion_mnist
+(X_train_full, y_train_full), (X_test, y_test) = fashion_mnist.load_data()
+```
+
+Each image is a 28x28 array.
+
+
+```python
+X_train_full.shape
+```
+
+
+
+
+    (60000, 28, 28)
+
+
+
+Each data point is an integer between 0 and 255.
+
+
+```python
+X_train_full.dtype
+```
+
+
+
+
+    dtype('uint8')
+
+
+
+We need to make a validation set from the training data and scale the data to between 0 and 1.
+
+
+```python
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.base import BaseEstimator, TransformerMixin
+
+
+# Split the training data into training and validation.
+X_train, X_valid, y_train, y_valid = train_test_split(X_train_full,
+                                                      y_train_full,
+                                                      test_size=5000,
+                                                      random_state=0)
+
+
+class FashionImageFlatten(BaseEstimator, TransformerMixin):
+    """Flatten the 28x28 MNIST Fashion image."""
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        return X.reshape(len(X), 28*28)
+
+
+class FashionImageReshape(BaseEstimator, TransformerMixin):
+    """Reshape the 28x28 MNIST Fashion image."""
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        return X.reshape(len(X), 28, 28)
+
+
+# A pipeline for pre-processing the MNIST Fashion data.
+fashion_preprocesser = Pipeline([
+    ('flattener', FashionImageFlatten()),
+    ('minmax_scaler', MinMaxScaler()),
+    ('reshaper', FashionImageReshape())
+])
+fashion_preprocesser.fit(X_train)
+
+X_train = fashion_preprocesser.transform(X_train)
+X_valid = fashion_preprocesser.transform(X_valid)
+```
+
+The names of the classes was not provided, so I had to enter them manually.
+I found the known values in the [Keras documentation](https://keras.io/datasets/#fashion-mnist-database-of-fashion-articles).
+
+
+```python
+class_names = ["T-shirt/top", "Trouser", "Pullover", "Dress", "Coat", "Sandal", 
+               "Shirt", "Sneaker", "Bag", "Ankle boot"]
+```
+
+
+```python
+fig = plt.figure(figsize=(12, 6))
+for i in range(40):
+    plt.subplot(4, 10, i+1)
+    plt.imshow(X_train[i, :, :])
+    plt.title(class_names[y_train[i]])
+    plt.axis('off')
+
+plt.show()
+```
+
+
+![png](homl_ch10_Introduction-to-artificial-neural-networks-with-keras_files/homl_ch10_Introduction-to-artificial-neural-networks-with-keras_21_0.png)
+
+
+The sequential API is used below to create the first neural network with two hidden layers.
+
+
+```python
+model = keras.models.Sequential()
+model.add(keras.layers.Flatten(input_shape=[28, 28]))
+model.add(keras.layers.Dense(300, activation='relu'))
+model.add(keras.layers.Dense(100, activation='relu'))
+model.add(keras.layers.Dense(10, activation='softmax'))
+```
+
+Here is an explanation of each line:
+
+1. A sequential model is initialized. It is just a single stack of layers connected sequentially.
+2. The first layer is the input nodes that just flattens the 28x28 image into a single array. Since it is the first layer, the shape of the input must be explicitly stated.
+3. The first hidden layer is a dense network of 300 neurons each with a ReLU activation function.
+4. The second hidden layer is a dense network of 100 neurons each with a ReLU activation function.
+5. The output layer is a dense network of 10 neurons using a softmax activation function.
+
+Alternatively, the model could have been declared directly when initializing the Sequential model by passing a list of the layers.
+The model can be inspected with the `summary()` method.
+
+
+```python
+model.summary()
+```
+
+    Model: "sequential"
+    _________________________________________________________________
+    Layer (type)                 Output Shape              Param #   
+    =================================================================
+    flatten (Flatten)            (None, 784)               0         
+    _________________________________________________________________
+    dense (Dense)                (None, 300)               235500    
+    _________________________________________________________________
+    dense_1 (Dense)              (None, 100)               30100     
+    _________________________________________________________________
+    dense_2 (Dense)              (None, 10)                1010      
+    =================================================================
+    Total params: 266,610
+    Trainable params: 266,610
+    Non-trainable params: 0
+    _________________________________________________________________
+
+
+The list of layers can be accessed and specifically indexed by name.
+
+
+```python
+model.layers
+```
+
+
+
+
+    [<tensorflow.python.keras.layers.core.Flatten at 0x1a69d30bd0>,
+     <tensorflow.python.keras.layers.core.Dense at 0x1a677ec310>,
+     <tensorflow.python.keras.layers.core.Dense at 0x1a69df7e90>,
+     <tensorflow.python.keras.layers.core.Dense at 0x1a69eeac10>]
+
+
+
+
+```python
+model.get_layer('dense_1')
+```
+
+
+
+
+    <tensorflow.python.keras.layers.core.Dense at 0x1a69df7e90>
+
+
+
+
+```python
+weights, biases = model.get_layer('dense_1').get_weights()
+```
+
+
+```python
+weights
+```
+
+
+
+
+    array([[-0.00879986, -0.07515811,  0.06497706, ...,  0.11903795,
+             0.07374778,  0.05484692],
+           [-0.03729662,  0.01894935,  0.00111901, ..., -0.09445816,
+            -0.07571814,  0.09576071],
+           [ 0.00711408,  0.07247523,  0.03655251, ...,  0.11183139,
+            -0.05266035,  0.018851  ],
+           ...,
+           [-0.09655114,  0.02525335,  0.1110655 , ..., -0.06223533,
+             0.11951583,  0.11410477],
+           [ 0.05039761,  0.06828137,  0.10170751, ...,  0.10597477,
+             0.11961287,  0.1118615 ],
+           [ 0.09079873, -0.06618667, -0.06561208, ...,  0.06613105,
+             0.06456951,  0.1206238 ]], dtype=float32)
+
+
+
+
+```python
+biases
+```
+
+
+
+
+    array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+           0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+           0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+           0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+           0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+           0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+          dtype=float32)
+
+
 
 
 ```python
