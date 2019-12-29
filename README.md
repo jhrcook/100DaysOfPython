@@ -324,3 +324,9 @@ I continued with the section on GMMs by learning about different ways of constra
 **Day 67 - December 27, 2019:**
 I finished up Ch 9 on clustering by learning about Bayesian Gaussian Mixture models.
 I then began Part II of the book on NN and Deep Learning by learning about the origins of neural networks and perceptrons.
+
+**Day 68 - December 28, 2019:**
+I learned about multilayer perceptrons and the backpropagation algorithm.
+I played around with the common activation functions used in artifical neurons.
+Finally, I learned the basics of regression and classification with MLPs.
+Soon, I will begin playing with Keras!
