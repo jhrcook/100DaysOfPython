@@ -335,3 +335,6 @@ Soon, I will begin playing with Keras!
 I learned about the fundamentals of the Keras API and TF2's implementation.
 I began making my first ANN and loading and preparing the MNIST Fashion data.
 We built a MLP with 2 hidden layers.
+
+**Day 70 - December 30, 2019:**
+I learned how to use the Keras sequential API to build a classification and regression ANN.

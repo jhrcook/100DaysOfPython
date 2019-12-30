@@ -3,8 +3,9 @@
 
 ```python
 import numpy as np
-import pandas as pd 
+import pandas as pd
 import matplotlib.pyplot as plt
+from IPython.core.interactiveshell import InteractiveShell
 
 np.random.seed(0)
 
@@ -470,10 +471,10 @@ model.layers
 
 
 
-    [<tensorflow.python.keras.layers.core.Flatten at 0x1a69d30bd0>,
-     <tensorflow.python.keras.layers.core.Dense at 0x1a677ec310>,
-     <tensorflow.python.keras.layers.core.Dense at 0x1a69df7e90>,
-     <tensorflow.python.keras.layers.core.Dense at 0x1a69eeac10>]
+    [<tensorflow.python.keras.layers.core.Flatten at 0x1a42727b90>,
+     <tensorflow.python.keras.layers.core.Dense at 0x1a5dd8b8d0>,
+     <tensorflow.python.keras.layers.core.Dense at 0x1a1bbd3650>,
+     <tensorflow.python.keras.layers.core.Dense at 0x1a1bbd38d0>]
 
 
 
@@ -485,7 +486,7 @@ model.get_layer('dense_1')
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x1a69df7e90>
+    <tensorflow.python.keras.layers.core.Dense at 0x1a1bbd3650>
 
 
 
@@ -502,19 +503,19 @@ weights
 
 
 
-    array([[-0.00879986, -0.07515811,  0.06497706, ...,  0.11903795,
-             0.07374778,  0.05484692],
-           [-0.03729662,  0.01894935,  0.00111901, ..., -0.09445816,
-            -0.07571814,  0.09576071],
-           [ 0.00711408,  0.07247523,  0.03655251, ...,  0.11183139,
-            -0.05266035,  0.018851  ],
+    array([[ 0.11562026, -0.09146738,  0.03914911, ..., -0.05768988,
+            -0.08965203, -0.10332903],
+           [ 0.03291359,  0.04758274, -0.06447461, ...,  0.11550095,
+            -0.11767888, -0.11875456],
+           [ 0.11963636, -0.06059965, -0.00824888, ..., -0.04262203,
+             0.1223997 ,  0.01008546],
            ...,
-           [-0.09655114,  0.02525335,  0.1110655 , ..., -0.06223533,
-             0.11951583,  0.11410477],
-           [ 0.05039761,  0.06828137,  0.10170751, ...,  0.10597477,
-             0.11961287,  0.1118615 ],
-           [ 0.09079873, -0.06618667, -0.06561208, ...,  0.06613105,
-             0.06456951,  0.1206238 ]], dtype=float32)
+           [ 0.12000973, -0.00090205,  0.04413744, ...,  0.0543538 ,
+            -0.07552329, -0.07220218],
+           [ 0.08202974,  0.10626879,  0.06814391, ..., -0.0877194 ,
+            -0.05468229,  0.09630699],
+           [ 0.04204778, -0.06469244,  0.00569629, ..., -0.01384209,
+            -0.11549228, -0.00111773]], dtype=float32)
 
 
 
@@ -535,6 +536,297 @@ biases
           dtype=float32)
 
 
+
+Once the model's structure is created, it must be compiled.
+This is when the loss function, optimizer, and any other metrics to be calculated during training and evaluation are added to the model.
+There are additional parameters that we will learn about and opt to set in the future for increased performance.
+
+
+```python
+model.compile(
+    loss='sparse_categorical_crossentropy',
+    optimizer='sgd',
+    metrics=['accuracy']
+)
+```
+
+Now the model is ready to be trained using the `fit()` method.
+
+
+```python
+history = model.fit(X_train, y_train, epochs=30, validation_data=(X_valid, y_valid))
+```
+
+    Train on 55000 samples, validate on 5000 samples
+    Epoch 1/30
+    55000/55000 [==============================] - 8s 151us/sample - loss: 0.6948 - accuracy: 0.7739 - val_loss: 0.5662 - val_accuracy: 0.7940
+    Epoch 2/30
+    55000/55000 [==============================] - 7s 135us/sample - loss: 0.4829 - accuracy: 0.8317 - val_loss: 0.4518 - val_accuracy: 0.8428
+    Epoch 3/30
+    55000/55000 [==============================] - 7s 134us/sample - loss: 0.4405 - accuracy: 0.8459 - val_loss: 0.4497 - val_accuracy: 0.8402
+    Epoch 4/30
+    55000/55000 [==============================] - 7s 135us/sample - loss: 0.4138 - accuracy: 0.8554 - val_loss: 0.4078 - val_accuracy: 0.8578
+    Epoch 5/30
+    55000/55000 [==============================] - 7s 135us/sample - loss: 0.3934 - accuracy: 0.8608 - val_loss: 0.3909 - val_accuracy: 0.8634
+    Epoch 6/30
+    55000/55000 [==============================] - 7s 136us/sample - loss: 0.3771 - accuracy: 0.8675 - val_loss: 0.3766 - val_accuracy: 0.8670
+    Epoch 7/30
+    55000/55000 [==============================] - 7s 136us/sample - loss: 0.3634 - accuracy: 0.8712 - val_loss: 0.3698 - val_accuracy: 0.8708
+    Epoch 8/30
+    55000/55000 [==============================] - 7s 136us/sample - loss: 0.3512 - accuracy: 0.8761 - val_loss: 0.3682 - val_accuracy: 0.8714
+    Epoch 9/30
+    55000/55000 [==============================] - 9s 164us/sample - loss: 0.3416 - accuracy: 0.8788 - val_loss: 0.3537 - val_accuracy: 0.8744
+    Epoch 10/30
+    55000/55000 [==============================] - 8s 141us/sample - loss: 0.3328 - accuracy: 0.8821 - val_loss: 0.3504 - val_accuracy: 0.8802
+    Epoch 11/30
+    55000/55000 [==============================] - 8s 140us/sample - loss: 0.3234 - accuracy: 0.8850 - val_loss: 0.3500 - val_accuracy: 0.8752
+    Epoch 12/30
+    55000/55000 [==============================] - 8s 144us/sample - loss: 0.3171 - accuracy: 0.8867 - val_loss: 0.3653 - val_accuracy: 0.8642
+    Epoch 13/30
+    55000/55000 [==============================] - 8s 149us/sample - loss: 0.3098 - accuracy: 0.8895 - val_loss: 0.3405 - val_accuracy: 0.8792
+    Epoch 14/30
+    55000/55000 [==============================] - 8s 148us/sample - loss: 0.3031 - accuracy: 0.8909 - val_loss: 0.3696 - val_accuracy: 0.8718
+    Epoch 15/30
+    55000/55000 [==============================] - 8s 145us/sample - loss: 0.2960 - accuracy: 0.8934 - val_loss: 0.3269 - val_accuracy: 0.8836
+    Epoch 16/30
+    55000/55000 [==============================] - 8s 143us/sample - loss: 0.2907 - accuracy: 0.8948 - val_loss: 0.3371 - val_accuracy: 0.8774
+    Epoch 17/30
+    55000/55000 [==============================] - 8s 145us/sample - loss: 0.2852 - accuracy: 0.8968 - val_loss: 0.3239 - val_accuracy: 0.8832
+    Epoch 18/30
+    55000/55000 [==============================] - 8s 144us/sample - loss: 0.2802 - accuracy: 0.8995 - val_loss: 0.3268 - val_accuracy: 0.8806
+    Epoch 19/30
+    55000/55000 [==============================] - 9s 158us/sample - loss: 0.2752 - accuracy: 0.9008 - val_loss: 0.3248 - val_accuracy: 0.8848
+    Epoch 20/30
+    55000/55000 [==============================] - 8s 145us/sample - loss: 0.2705 - accuracy: 0.9019 - val_loss: 0.3249 - val_accuracy: 0.8844
+    Epoch 21/30
+    55000/55000 [==============================] - 8s 145us/sample - loss: 0.2644 - accuracy: 0.9047 - val_loss: 0.3165 - val_accuracy: 0.8858
+    Epoch 22/30
+    55000/55000 [==============================] - 8s 149us/sample - loss: 0.2604 - accuracy: 0.9063 - val_loss: 0.3217 - val_accuracy: 0.8820
+    Epoch 23/30
+    55000/55000 [==============================] - 8s 147us/sample - loss: 0.2560 - accuracy: 0.9076 - val_loss: 0.3127 - val_accuracy: 0.8894
+    Epoch 24/30
+    55000/55000 [==============================] - 8s 149us/sample - loss: 0.2517 - accuracy: 0.9104 - val_loss: 0.3099 - val_accuracy: 0.8906
+    Epoch 25/30
+    55000/55000 [==============================] - 8s 148us/sample - loss: 0.2481 - accuracy: 0.9105 - val_loss: 0.3159 - val_accuracy: 0.8884
+    Epoch 26/30
+    55000/55000 [==============================] - 8s 149us/sample - loss: 0.2432 - accuracy: 0.9120 - val_loss: 0.3104 - val_accuracy: 0.8900
+    Epoch 27/30
+    55000/55000 [==============================] - 9s 164us/sample - loss: 0.2405 - accuracy: 0.9133 - val_loss: 0.3069 - val_accuracy: 0.8918
+    Epoch 28/30
+    55000/55000 [==============================] - 8s 147us/sample - loss: 0.2358 - accuracy: 0.9147 - val_loss: 0.3173 - val_accuracy: 0.8880
+    Epoch 29/30
+    55000/55000 [==============================] - 9s 161us/sample - loss: 0.2321 - accuracy: 0.9162 - val_loss: 0.3068 - val_accuracy: 0.8904
+    Epoch 30/30
+    55000/55000 [==============================] - 8s 144us/sample - loss: 0.2287 - accuracy: 0.9185 - val_loss: 0.3102 - val_accuracy: 0.8890
+
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8,5))
+plt.show()
+```
+
+
+![png](homl_ch10_Introduction-to-artificial-neural-networks-with-keras_files/homl_ch10_Introduction-to-artificial-neural-networks-with-keras_36_0.png)
+
+
+After tuning the hyperparamters (discussed later) and once we are satisfied with the models performance on the training data, we can evaluate its accuracy on the test data.
+
+
+```python
+X_test_processed = fashion_preprocesser.transform(X_test)
+model.evaluate(X_test_processed, y_test, verbose=0)
+```
+
+
+
+
+    [0.32945477788448335, 0.8841]
+
+
+
+We can also use the model to make predictions.
+Using the `predict()` method, we get a probability per class.
+
+
+```python
+X_new = fashion_preprocesser.transform(X_test[:3])
+np.round(model.predict(X_new), 2)
+```
+
+
+
+
+    array([[0.  , 0.  , 0.  , 0.  , 0.  , 0.02, 0.  , 0.03, 0.  , 0.95],
+           [0.  , 0.  , 1.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ],
+           [0.  , 1.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]],
+          dtype=float32)
+
+
+
+The `predict_class()` method returns the class with the highest probability.
+
+
+```python
+y_pred = model.predict_classes(X_new)
+
+fig = plt.figure(figsize=(12, 6))
+for i in range(len(X_new)):
+    plt.subplot(1, 3, i+1)
+    plt.imshow(X_new[i, :, :])
+    plt.title(class_names[y_pred[i]])
+    plt.axis('off')
+
+plt.show()
+```
+
+
+![png](homl_ch10_Introduction-to-artificial-neural-networks-with-keras_files/homl_ch10_Introduction-to-artificial-neural-networks-with-keras_42_0.png)
+
+
+### Building a regression MLP using the sequential API
+
+We will build a regression ANN to predict housing prices in CA.
+
+
+```python
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+housing = fetch_california_housing()
+
+X_train_full, X_test, y_train_full, y_test = train_test_split(housing.data, 
+                                                              housing.target, 
+                                                              random_state=0)
+X_train, X_valid, y_train, y_valid = train_test_split(X_train_full, 
+                                                      y_train_full, 
+                                                      random_state=0)
+
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_valid = scaler.transform(X_valid)
+X_test = scaler.transform(X_test)
+```
+
+
+```python
+model = keras.models.Sequential([
+    keras.layers.Dense(30, activation='relu', input_shape = X_train.shape[1:]),
+    keras.layers.Dense(50, activation='relu'),
+    keras.layers.Dense(1, activation='relu')
+])
+
+model.compile(loss='mean_squared_error', optimizer='sgd')
+
+history = model.fit(X_train, y_train,
+                    epochs=20,
+                    validation_data=(X_valid, y_valid))
+```
+
+    Train on 11610 samples, validate on 3870 samples
+    Epoch 1/20
+    11610/11610 [==============================] - 2s 131us/sample - loss: 0.6884 - val_loss: 0.4887
+    Epoch 2/20
+    11610/11610 [==============================] - 1s 103us/sample - loss: 0.4448 - val_loss: 0.4605
+    Epoch 3/20
+    11610/11610 [==============================] - 1s 106us/sample - loss: 0.4064 - val_loss: 0.4276
+    Epoch 4/20
+    11610/11610 [==============================] - 1s 98us/sample - loss: 0.3884 - val_loss: 0.4057
+    Epoch 5/20
+    11610/11610 [==============================] - 1s 81us/sample - loss: 0.3796 - val_loss: 0.4043
+    Epoch 6/20
+    11610/11610 [==============================] - 1s 120us/sample - loss: 0.3718 - val_loss: 0.4000
+    Epoch 7/20
+    11610/11610 [==============================] - 1s 93us/sample - loss: 0.3670 - val_loss: 0.3934
+    Epoch 8/20
+    11610/11610 [==============================] - 1s 83us/sample - loss: 0.3610 - val_loss: 0.3886
+    Epoch 9/20
+    11610/11610 [==============================] - 1s 79us/sample - loss: 0.3785 - val_loss: 0.4102
+    Epoch 10/20
+    11610/11610 [==============================] - 1s 80us/sample - loss: 0.3650 - val_loss: 0.4145
+    Epoch 11/20
+    11610/11610 [==============================] - 2s 132us/sample - loss: 0.3555 - val_loss: 0.3898
+    Epoch 12/20
+    11610/11610 [==============================] - 1s 104us/sample - loss: 0.3513 - val_loss: 0.3822
+    Epoch 13/20
+    11610/11610 [==============================] - 1s 85us/sample - loss: 0.3491 - val_loss: 0.3758
+    Epoch 14/20
+    11610/11610 [==============================] - 1s 84us/sample - loss: 0.3437 - val_loss: 0.4791
+    Epoch 15/20
+    11610/11610 [==============================] - 1s 85us/sample - loss: 0.3421 - val_loss: 0.3696
+    Epoch 16/20
+    11610/11610 [==============================] - 1s 94us/sample - loss: 0.3381 - val_loss: 0.3761
+    Epoch 17/20
+    11610/11610 [==============================] - 1s 86us/sample - loss: 0.3354 - val_loss: 0.3704
+    Epoch 18/20
+    11610/11610 [==============================] - 1s 89us/sample - loss: 0.3325 - val_loss: 0.3644
+    Epoch 19/20
+    11610/11610 [==============================] - 1s 86us/sample - loss: 0.3291 - val_loss: 0.3626
+    Epoch 20/20
+    11610/11610 [==============================] - 1s 88us/sample - loss: 0.3265 - val_loss: 0.3682
+
+
+
+```python
+model.summary()
+```
+
+    Model: "sequential_1"
+    _________________________________________________________________
+    Layer (type)                 Output Shape              Param #   
+    =================================================================
+    dense_3 (Dense)              (None, 30)                270       
+    _________________________________________________________________
+    dense_4 (Dense)              (None, 50)                1550      
+    _________________________________________________________________
+    dense_5 (Dense)              (None, 1)                 51        
+    =================================================================
+    Total params: 1,871
+    Trainable params: 1,871
+    Non-trainable params: 0
+    _________________________________________________________________
+
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8, 5))
+plt.show()
+```
+
+
+![png](homl_ch10_Introduction-to-artificial-neural-networks-with-keras_files/homl_ch10_Introduction-to-artificial-neural-networks-with-keras_47_0.png)
+
+
+
+```python
+model.evaluate(X_test, y_test, verbose=0)
+```
+
+
+
+
+    0.34637213358583374
+
+
+
+
+```python
+y_pred = model.predict(X_test)
+plt.figure(figsize=(8, 5))
+plt.scatter(y_test, y_pred, color='b', s=10, alpha=0.2)
+plt.plot(np.linspace(0, 5, 10), np.linspace(0, 5, 10), 'k--')
+plt.title('Evaluation of the regression MLP')
+plt.xlabel('Real', fontsize=12)
+plt.ylabel('Predicted', fontsize=12)
+plt.show()
+```
+
+
+![png](homl_ch10_Introduction-to-artificial-neural-networks-with-keras_files/homl_ch10_Introduction-to-artificial-neural-networks-with-keras_49_0.png)
+
+
+### Building complex models using the functional API
 
 
 ```python
