@@ -338,3 +338,4 @@ We built a MLP with 2 hidden layers.
 
 **Day 70 - December 30, 2019:**
 I learned how to use the Keras sequential API to build a classification and regression ANN.
+In the evening, I began learning about Keras's functional API by creating a Wide and Deep model.

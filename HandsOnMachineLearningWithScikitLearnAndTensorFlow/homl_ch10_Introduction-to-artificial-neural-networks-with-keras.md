@@ -471,10 +471,10 @@ model.layers
 
 
 
-    [<tensorflow.python.keras.layers.core.Flatten at 0x1a42727b90>,
-     <tensorflow.python.keras.layers.core.Dense at 0x1a5dd8b8d0>,
-     <tensorflow.python.keras.layers.core.Dense at 0x1a1bbd3650>,
-     <tensorflow.python.keras.layers.core.Dense at 0x1a1bbd38d0>]
+    [<tensorflow.python.keras.layers.core.Flatten at 0x1a45e85590>,
+     <tensorflow.python.keras.layers.core.Dense at 0x1a45e7fd90>,
+     <tensorflow.python.keras.layers.core.Dense at 0x1a1f1b5210>,
+     <tensorflow.python.keras.layers.core.Dense at 0x1a1f2712d0>]
 
 
 
@@ -486,7 +486,7 @@ model.get_layer('dense_1')
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x1a1bbd3650>
+    <tensorflow.python.keras.layers.core.Dense at 0x1a1f1b5210>
 
 
 
@@ -503,19 +503,19 @@ weights
 
 
 
-    array([[ 0.11562026, -0.09146738,  0.03914911, ..., -0.05768988,
-            -0.08965203, -0.10332903],
-           [ 0.03291359,  0.04758274, -0.06447461, ...,  0.11550095,
-            -0.11767888, -0.11875456],
-           [ 0.11963636, -0.06059965, -0.00824888, ..., -0.04262203,
-             0.1223997 ,  0.01008546],
+    array([[ 0.04226477,  0.0675898 , -0.03870891, ...,  0.0034397 ,
+            -0.00837278,  0.10971475],
+           [-0.00363233, -0.05227313, -0.01891302, ..., -0.0590964 ,
+            -0.07518232, -0.11251503],
+           [ 0.09257477,  0.07943217,  0.11279535, ...,  0.11909293,
+             0.08816356,  0.03769266],
            ...,
-           [ 0.12000973, -0.00090205,  0.04413744, ...,  0.0543538 ,
-            -0.07552329, -0.07220218],
-           [ 0.08202974,  0.10626879,  0.06814391, ..., -0.0877194 ,
-            -0.05468229,  0.09630699],
-           [ 0.04204778, -0.06469244,  0.00569629, ..., -0.01384209,
-            -0.11549228, -0.00111773]], dtype=float32)
+           [ 0.02166473, -0.02492461, -0.10332146, ..., -0.09513385,
+             0.01682302, -0.0486192 ],
+           [-0.02611481, -0.0473621 , -0.070756  , ..., -0.02128414,
+             0.02146441, -0.00098518],
+           [-0.02285554,  0.0579894 , -0.1090183 , ...,  0.09612908,
+            -0.0815663 , -0.06957182]], dtype=float32)
 
 
 
@@ -559,65 +559,65 @@ history = model.fit(X_train, y_train, epochs=30, validation_data=(X_valid, y_val
 
     Train on 55000 samples, validate on 5000 samples
     Epoch 1/30
-    55000/55000 [==============================] - 8s 151us/sample - loss: 0.6948 - accuracy: 0.7739 - val_loss: 0.5662 - val_accuracy: 0.7940
+    55000/55000 [==============================] - 10s 183us/sample - loss: 0.7188 - accuracy: 0.7672 - val_loss: 0.5789 - val_accuracy: 0.7890
     Epoch 2/30
-    55000/55000 [==============================] - 7s 135us/sample - loss: 0.4829 - accuracy: 0.8317 - val_loss: 0.4518 - val_accuracy: 0.8428
+    55000/55000 [==============================] - 7s 135us/sample - loss: 0.4896 - accuracy: 0.8293 - val_loss: 0.4604 - val_accuracy: 0.8436
     Epoch 3/30
-    55000/55000 [==============================] - 7s 134us/sample - loss: 0.4405 - accuracy: 0.8459 - val_loss: 0.4497 - val_accuracy: 0.8402
+    55000/55000 [==============================] - 8s 136us/sample - loss: 0.4457 - accuracy: 0.8429 - val_loss: 0.4306 - val_accuracy: 0.8502
     Epoch 4/30
-    55000/55000 [==============================] - 7s 135us/sample - loss: 0.4138 - accuracy: 0.8554 - val_loss: 0.4078 - val_accuracy: 0.8578
+    55000/55000 [==============================] - 8s 139us/sample - loss: 0.4176 - accuracy: 0.8532 - val_loss: 0.4556 - val_accuracy: 0.8364
     Epoch 5/30
-    55000/55000 [==============================] - 7s 135us/sample - loss: 0.3934 - accuracy: 0.8608 - val_loss: 0.3909 - val_accuracy: 0.8634
+    55000/55000 [==============================] - 7s 136us/sample - loss: 0.3979 - accuracy: 0.8600 - val_loss: 0.3963 - val_accuracy: 0.8602
     Epoch 6/30
-    55000/55000 [==============================] - 7s 136us/sample - loss: 0.3771 - accuracy: 0.8675 - val_loss: 0.3766 - val_accuracy: 0.8670
+    55000/55000 [==============================] - 8s 137us/sample - loss: 0.3817 - accuracy: 0.8657 - val_loss: 0.3838 - val_accuracy: 0.8662
     Epoch 7/30
-    55000/55000 [==============================] - 7s 136us/sample - loss: 0.3634 - accuracy: 0.8712 - val_loss: 0.3698 - val_accuracy: 0.8708
+    55000/55000 [==============================] - 8s 137us/sample - loss: 0.3679 - accuracy: 0.8698 - val_loss: 0.3689 - val_accuracy: 0.8714
     Epoch 8/30
-    55000/55000 [==============================] - 7s 136us/sample - loss: 0.3512 - accuracy: 0.8761 - val_loss: 0.3682 - val_accuracy: 0.8714
+    55000/55000 [==============================] - 8s 137us/sample - loss: 0.3563 - accuracy: 0.8739 - val_loss: 0.3606 - val_accuracy: 0.8708
     Epoch 9/30
-    55000/55000 [==============================] - 9s 164us/sample - loss: 0.3416 - accuracy: 0.8788 - val_loss: 0.3537 - val_accuracy: 0.8744
+    55000/55000 [==============================] - 8s 141us/sample - loss: 0.3454 - accuracy: 0.8779 - val_loss: 0.3666 - val_accuracy: 0.8730
     Epoch 10/30
-    55000/55000 [==============================] - 8s 141us/sample - loss: 0.3328 - accuracy: 0.8821 - val_loss: 0.3504 - val_accuracy: 0.8802
+    55000/55000 [==============================] - 8s 138us/sample - loss: 0.3372 - accuracy: 0.8799 - val_loss: 0.4179 - val_accuracy: 0.8448
     Epoch 11/30
-    55000/55000 [==============================] - 8s 140us/sample - loss: 0.3234 - accuracy: 0.8850 - val_loss: 0.3500 - val_accuracy: 0.8752
+    55000/55000 [==============================] - 8s 141us/sample - loss: 0.3277 - accuracy: 0.8824 - val_loss: 0.3468 - val_accuracy: 0.8774
     Epoch 12/30
-    55000/55000 [==============================] - 8s 144us/sample - loss: 0.3171 - accuracy: 0.8867 - val_loss: 0.3653 - val_accuracy: 0.8642
+    55000/55000 [==============================] - 8s 142us/sample - loss: 0.3193 - accuracy: 0.8853 - val_loss: 0.3562 - val_accuracy: 0.8752
     Epoch 13/30
-    55000/55000 [==============================] - 8s 149us/sample - loss: 0.3098 - accuracy: 0.8895 - val_loss: 0.3405 - val_accuracy: 0.8792
+    55000/55000 [==============================] - 7s 136us/sample - loss: 0.3116 - accuracy: 0.8886 - val_loss: 0.3397 - val_accuracy: 0.8824
     Epoch 14/30
-    55000/55000 [==============================] - 8s 148us/sample - loss: 0.3031 - accuracy: 0.8909 - val_loss: 0.3696 - val_accuracy: 0.8718
+    55000/55000 [==============================] - 8s 139us/sample - loss: 0.3051 - accuracy: 0.8904 - val_loss: 0.3418 - val_accuracy: 0.8794
     Epoch 15/30
-    55000/55000 [==============================] - 8s 145us/sample - loss: 0.2960 - accuracy: 0.8934 - val_loss: 0.3269 - val_accuracy: 0.8836
+    55000/55000 [==============================] - 8s 138us/sample - loss: 0.2988 - accuracy: 0.8919 - val_loss: 0.3459 - val_accuracy: 0.8760
     Epoch 16/30
-    55000/55000 [==============================] - 8s 143us/sample - loss: 0.2907 - accuracy: 0.8948 - val_loss: 0.3371 - val_accuracy: 0.8774
+    55000/55000 [==============================] - 8s 139us/sample - loss: 0.2932 - accuracy: 0.8936 - val_loss: 0.3315 - val_accuracy: 0.8816
     Epoch 17/30
-    55000/55000 [==============================] - 8s 145us/sample - loss: 0.2852 - accuracy: 0.8968 - val_loss: 0.3239 - val_accuracy: 0.8832
+    55000/55000 [==============================] - 7s 136us/sample - loss: 0.2867 - accuracy: 0.8968 - val_loss: 0.3176 - val_accuracy: 0.8862
     Epoch 18/30
-    55000/55000 [==============================] - 8s 144us/sample - loss: 0.2802 - accuracy: 0.8995 - val_loss: 0.3268 - val_accuracy: 0.8806
+    55000/55000 [==============================] - 8s 140us/sample - loss: 0.2816 - accuracy: 0.8974 - val_loss: 0.3207 - val_accuracy: 0.8890
     Epoch 19/30
-    55000/55000 [==============================] - 9s 158us/sample - loss: 0.2752 - accuracy: 0.9008 - val_loss: 0.3248 - val_accuracy: 0.8848
+    55000/55000 [==============================] - 8s 139us/sample - loss: 0.2766 - accuracy: 0.8997 - val_loss: 0.3386 - val_accuracy: 0.8750
     Epoch 20/30
-    55000/55000 [==============================] - 8s 145us/sample - loss: 0.2705 - accuracy: 0.9019 - val_loss: 0.3249 - val_accuracy: 0.8844
+    55000/55000 [==============================] - 8s 138us/sample - loss: 0.2710 - accuracy: 0.9024 - val_loss: 0.3147 - val_accuracy: 0.8868
     Epoch 21/30
-    55000/55000 [==============================] - 8s 145us/sample - loss: 0.2644 - accuracy: 0.9047 - val_loss: 0.3165 - val_accuracy: 0.8858
+    55000/55000 [==============================] - 8s 138us/sample - loss: 0.2667 - accuracy: 0.9033 - val_loss: 0.3202 - val_accuracy: 0.8862
     Epoch 22/30
-    55000/55000 [==============================] - 8s 149us/sample - loss: 0.2604 - accuracy: 0.9063 - val_loss: 0.3217 - val_accuracy: 0.8820
+    55000/55000 [==============================] - 8s 137us/sample - loss: 0.2630 - accuracy: 0.9039 - val_loss: 0.3096 - val_accuracy: 0.8902
     Epoch 23/30
-    55000/55000 [==============================] - 8s 147us/sample - loss: 0.2560 - accuracy: 0.9076 - val_loss: 0.3127 - val_accuracy: 0.8894
+    55000/55000 [==============================] - 8s 139us/sample - loss: 0.2566 - accuracy: 0.9075 - val_loss: 0.3094 - val_accuracy: 0.8906
     Epoch 24/30
-    55000/55000 [==============================] - 8s 149us/sample - loss: 0.2517 - accuracy: 0.9104 - val_loss: 0.3099 - val_accuracy: 0.8906
+    55000/55000 [==============================] - 8s 139us/sample - loss: 0.2530 - accuracy: 0.9087 - val_loss: 0.3255 - val_accuracy: 0.8824
     Epoch 25/30
-    55000/55000 [==============================] - 8s 148us/sample - loss: 0.2481 - accuracy: 0.9105 - val_loss: 0.3159 - val_accuracy: 0.8884
+    55000/55000 [==============================] - 8s 137us/sample - loss: 0.2479 - accuracy: 0.9104 - val_loss: 0.3047 - val_accuracy: 0.8888
     Epoch 26/30
-    55000/55000 [==============================] - 8s 149us/sample - loss: 0.2432 - accuracy: 0.9120 - val_loss: 0.3104 - val_accuracy: 0.8900
+    55000/55000 [==============================] - 8s 137us/sample - loss: 0.2445 - accuracy: 0.9118 - val_loss: 0.3185 - val_accuracy: 0.8826
     Epoch 27/30
-    55000/55000 [==============================] - 9s 164us/sample - loss: 0.2405 - accuracy: 0.9133 - val_loss: 0.3069 - val_accuracy: 0.8918
+    55000/55000 [==============================] - 8s 139us/sample - loss: 0.2407 - accuracy: 0.9117 - val_loss: 0.2974 - val_accuracy: 0.8940
     Epoch 28/30
-    55000/55000 [==============================] - 8s 147us/sample - loss: 0.2358 - accuracy: 0.9147 - val_loss: 0.3173 - val_accuracy: 0.8880
+    55000/55000 [==============================] - 8s 143us/sample - loss: 0.2376 - accuracy: 0.9131 - val_loss: 0.2969 - val_accuracy: 0.8936
     Epoch 29/30
-    55000/55000 [==============================] - 9s 161us/sample - loss: 0.2321 - accuracy: 0.9162 - val_loss: 0.3068 - val_accuracy: 0.8904
+    55000/55000 [==============================] - 7s 136us/sample - loss: 0.2327 - accuracy: 0.9160 - val_loss: 0.3065 - val_accuracy: 0.8910
     Epoch 30/30
-    55000/55000 [==============================] - 8s 144us/sample - loss: 0.2287 - accuracy: 0.9185 - val_loss: 0.3102 - val_accuracy: 0.8890
+    55000/55000 [==============================] - 8s 137us/sample - loss: 0.2293 - accuracy: 0.9167 - val_loss: 0.3094 - val_accuracy: 0.8924
 
 
 
@@ -641,7 +641,7 @@ model.evaluate(X_test_processed, y_test, verbose=0)
 
 
 
-    [0.32945477788448335, 0.8841]
+    [0.3385821709036827, 0.8825]
 
 
 
@@ -657,7 +657,7 @@ np.round(model.predict(X_new), 2)
 
 
 
-    array([[0.  , 0.  , 0.  , 0.  , 0.  , 0.02, 0.  , 0.03, 0.  , 0.95],
+    array([[0.  , 0.  , 0.  , 0.  , 0.  , 0.01, 0.  , 0.02, 0.  , 0.97],
            [0.  , 0.  , 1.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ],
            [0.  , 1.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]],
           dtype=float32)
@@ -713,7 +713,7 @@ X_test = scaler.transform(X_test)
 ```python
 model = keras.models.Sequential([
     keras.layers.Dense(30, activation='relu', input_shape = X_train.shape[1:]),
-    keras.layers.Dense(50, activation='relu'),
+    keras.layers.Dense(100, activation='relu'),
     keras.layers.Dense(1, activation='relu')
 ])
 
@@ -726,45 +726,45 @@ history = model.fit(X_train, y_train,
 
     Train on 11610 samples, validate on 3870 samples
     Epoch 1/20
-    11610/11610 [==============================] - 2s 131us/sample - loss: 0.6884 - val_loss: 0.4887
+    11610/11610 [==============================] - 2s 138us/sample - loss: 0.8432 - val_loss: 0.4958
     Epoch 2/20
-    11610/11610 [==============================] - 1s 103us/sample - loss: 0.4448 - val_loss: 0.4605
+    11610/11610 [==============================] - 1s 80us/sample - loss: 0.4265 - val_loss: 0.4296
     Epoch 3/20
-    11610/11610 [==============================] - 1s 106us/sample - loss: 0.4064 - val_loss: 0.4276
+    11610/11610 [==============================] - 1s 80us/sample - loss: 0.4083 - val_loss: 0.4336
     Epoch 4/20
-    11610/11610 [==============================] - 1s 98us/sample - loss: 0.3884 - val_loss: 0.4057
+    11610/11610 [==============================] - 1s 80us/sample - loss: 0.3862 - val_loss: 0.4015
     Epoch 5/20
-    11610/11610 [==============================] - 1s 81us/sample - loss: 0.3796 - val_loss: 0.4043
+    11610/11610 [==============================] - 1s 81us/sample - loss: 0.3769 - val_loss: 0.4096
     Epoch 6/20
-    11610/11610 [==============================] - 1s 120us/sample - loss: 0.3718 - val_loss: 0.4000
+    11610/11610 [==============================] - 1s 88us/sample - loss: 0.3671 - val_loss: 0.3899
     Epoch 7/20
-    11610/11610 [==============================] - 1s 93us/sample - loss: 0.3670 - val_loss: 0.3934
+    11610/11610 [==============================] - 1s 80us/sample - loss: 0.3622 - val_loss: 0.3862
     Epoch 8/20
-    11610/11610 [==============================] - 1s 83us/sample - loss: 0.3610 - val_loss: 0.3886
+    11610/11610 [==============================] - 1s 84us/sample - loss: 0.3560 - val_loss: 0.3794
     Epoch 9/20
-    11610/11610 [==============================] - 1s 79us/sample - loss: 0.3785 - val_loss: 0.4102
+    11610/11610 [==============================] - 1s 80us/sample - loss: 0.3541 - val_loss: 0.3797
     Epoch 10/20
-    11610/11610 [==============================] - 1s 80us/sample - loss: 0.3650 - val_loss: 0.4145
+    11610/11610 [==============================] - 1s 82us/sample - loss: 0.3486 - val_loss: 0.3853
     Epoch 11/20
-    11610/11610 [==============================] - 2s 132us/sample - loss: 0.3555 - val_loss: 0.3898
+    11610/11610 [==============================] - 1s 78us/sample - loss: 0.3487 - val_loss: 0.3699
     Epoch 12/20
-    11610/11610 [==============================] - 1s 104us/sample - loss: 0.3513 - val_loss: 0.3822
+    11610/11610 [==============================] - 1s 77us/sample - loss: 0.3404 - val_loss: 0.3722
     Epoch 13/20
-    11610/11610 [==============================] - 1s 85us/sample - loss: 0.3491 - val_loss: 0.3758
+    11610/11610 [==============================] - 1s 77us/sample - loss: 0.3383 - val_loss: 0.3657
     Epoch 14/20
-    11610/11610 [==============================] - 1s 84us/sample - loss: 0.3437 - val_loss: 0.4791
+    11610/11610 [==============================] - 1s 79us/sample - loss: 0.3345 - val_loss: 0.3642
     Epoch 15/20
-    11610/11610 [==============================] - 1s 85us/sample - loss: 0.3421 - val_loss: 0.3696
+    11610/11610 [==============================] - 1s 77us/sample - loss: 0.3312 - val_loss: 0.3577
     Epoch 16/20
-    11610/11610 [==============================] - 1s 94us/sample - loss: 0.3381 - val_loss: 0.3761
+    11610/11610 [==============================] - 1s 77us/sample - loss: 0.3275 - val_loss: 0.3508
     Epoch 17/20
-    11610/11610 [==============================] - 1s 86us/sample - loss: 0.3354 - val_loss: 0.3704
+    11610/11610 [==============================] - 1s 79us/sample - loss: 0.3965 - val_loss: 0.5522
     Epoch 18/20
-    11610/11610 [==============================] - 1s 89us/sample - loss: 0.3325 - val_loss: 0.3644
+    11610/11610 [==============================] - 1s 86us/sample - loss: 0.4121 - val_loss: 0.3989
     Epoch 19/20
-    11610/11610 [==============================] - 1s 86us/sample - loss: 0.3291 - val_loss: 0.3626
+    11610/11610 [==============================] - 1s 80us/sample - loss: 0.3518 - val_loss: 0.3796
     Epoch 20/20
-    11610/11610 [==============================] - 1s 88us/sample - loss: 0.3265 - val_loss: 0.3682
+    11610/11610 [==============================] - 1s 80us/sample - loss: 0.3382 - val_loss: 0.3648
 
 
 
@@ -772,18 +772,18 @@ history = model.fit(X_train, y_train,
 model.summary()
 ```
 
-    Model: "sequential_1"
+    Model: "sequential_3"
     _________________________________________________________________
     Layer (type)                 Output Shape              Param #   
     =================================================================
-    dense_3 (Dense)              (None, 30)                270       
+    dense_21 (Dense)             (None, 30)                270       
     _________________________________________________________________
-    dense_4 (Dense)              (None, 50)                1550      
+    dense_22 (Dense)             (None, 100)               3100      
     _________________________________________________________________
-    dense_5 (Dense)              (None, 1)                 51        
+    dense_23 (Dense)             (None, 1)                 101       
     =================================================================
-    Total params: 1,871
-    Trainable params: 1,871
+    Total params: 3,471
+    Trainable params: 3,471
     Non-trainable params: 0
     _________________________________________________________________
 
@@ -806,7 +806,7 @@ model.evaluate(X_test, y_test, verbose=0)
 
 
 
-    0.34637213358583374
+    0.3462987078252689
 
 
 
@@ -816,7 +816,7 @@ y_pred = model.predict(X_test)
 plt.figure(figsize=(8, 5))
 plt.scatter(y_test, y_pred, color='b', s=10, alpha=0.2)
 plt.plot(np.linspace(0, 5, 10), np.linspace(0, 5, 10), 'k--')
-plt.title('Evaluation of the regression MLP')
+plt.title('Evaluation of the regression MLP', fontsize=14)
 plt.xlabel('Real', fontsize=12)
 plt.ylabel('Predicted', fontsize=12)
 plt.show()
@@ -827,6 +827,185 @@ plt.show()
 
 
 ### Building complex models using the functional API
+
+As an example of a more complex ANN topology, we will build a *Wide & Deep* neural network.
+This is where some or all of the input layers connect directly to the output layer.
+This allows the ANN to learn both simple and deep rules.
+This architecture is built below using Keras's *functional API*.
+
+
+```python
+input_ = keras.layers.Input(shape=X_train.shape[1:])
+hidden1 = keras.layers.Dense(30, activation='relu')(input_)
+hidden2 = keras.layers.Dense(100, activation='relu')(hidden1)
+concat = keras.layers.Concatenate()([input_, hidden2])
+output = keras.layers.Dense(1, activation='relu')(concat)
+model = keras.Model(inputs=[input_], outputs=[output])
+```
+
+Here is a line-by-line explanation:
+
+1. First, an `Input` object is created with the shape and data type specified.
+2. A dense layer with 30 neurons was created and connected to the input layer by passing it as input to a function.
+3. A dense layer with 30 neurons was created and connected to the first hidden layer.
+4. A `Concatenate` layer concatenated the input and second hidden layer.
+5. An output layer was made and given the concatenate layer.
+6. Finally, a Keras `Model` was created and given the input and output layers.
+
+This strings together the layers to make a network.
+A layer is connected to another by passing one as the input to a function call of the other.
+
+Next, everything is the same as before.
+
+
+```python
+model.compile(loss='mean_squared_error', optimizer='sgd')
+
+history = model.fit(X_train, y_train,
+                    epochs=20,
+                    validation_data=(X_valid, y_valid))
+
+pd.DataFrame(history.history).plot(figsize=(8, 5))
+plt.show()
+```
+
+    Train on 11610 samples, validate on 3870 samples
+    Epoch 1/20
+    11610/11610 [==============================] - 2s 147us/sample - loss: 1.0947 - val_loss: 0.6461
+    Epoch 2/20
+    11610/11610 [==============================] - 1s 94us/sample - loss: 0.5362 - val_loss: 0.4847
+    Epoch 3/20
+    11610/11610 [==============================] - 1s 96us/sample - loss: 0.4362 - val_loss: 0.4339
+    Epoch 4/20
+    11610/11610 [==============================] - 1s 94us/sample - loss: 0.4098 - val_loss: 0.4150
+    Epoch 5/20
+    11610/11610 [==============================] - 1s 95us/sample - loss: 0.3917 - val_loss: 0.3979
+    Epoch 6/20
+    11610/11610 [==============================] - 1s 101us/sample - loss: 0.3829 - val_loss: 0.4125
+    Epoch 7/20
+    11610/11610 [==============================] - 1s 95us/sample - loss: 0.3733 - val_loss: 0.3861
+    Epoch 8/20
+    11610/11610 [==============================] - 1s 95us/sample - loss: 0.3645 - val_loss: 0.3845
+    Epoch 9/20
+    11610/11610 [==============================] - 1s 96us/sample - loss: 0.3586 - val_loss: 0.3880
+    Epoch 10/20
+    11610/11610 [==============================] - 1s 96us/sample - loss: 0.3556 - val_loss: 0.3805
+    Epoch 11/20
+    11610/11610 [==============================] - 1s 98us/sample - loss: 0.3499 - val_loss: 0.3723
+    Epoch 12/20
+    11610/11610 [==============================] - 1s 106us/sample - loss: 0.3471 - val_loss: 0.3754
+    Epoch 13/20
+    11610/11610 [==============================] - 1s 101us/sample - loss: 0.3420 - val_loss: 0.3693
+    Epoch 14/20
+    11610/11610 [==============================] - 1s 101us/sample - loss: 0.3401 - val_loss: 0.3659
+    Epoch 15/20
+    11610/11610 [==============================] - 1s 105us/sample - loss: 0.3360 - val_loss: 0.3591
+    Epoch 16/20
+    11610/11610 [==============================] - 1s 98us/sample - loss: 0.3361 - val_loss: 0.3735
+    Epoch 17/20
+    11610/11610 [==============================] - 1s 97us/sample - loss: 0.3303 - val_loss: 0.3530
+    Epoch 18/20
+    11610/11610 [==============================] - 1s 115us/sample - loss: 0.3285 - val_loss: 0.3962
+    Epoch 19/20
+    11610/11610 [==============================] - 2s 133us/sample - loss: 0.3258 - val_loss: 0.3551
+    Epoch 20/20
+    11610/11610 [==============================] - 1s 125us/sample - loss: 0.3239 - val_loss: 0.3445
+
+
+
+![png](homl_ch10_Introduction-to-artificial-neural-networks-with-keras_files/homl_ch10_Introduction-to-artificial-neural-networks-with-keras_53_1.png)
+
+
+
+```python
+model.evaluate(X_test, y_test, verbose=0)
+```
+
+
+
+
+    0.33583534272142157
+
+
+
+
+```python
+y_pred_new = model.predict(X_test)
+plt.figure(figsize=(8, 5))
+plt.scatter(y_test, y_pred, color='b', s=10, alpha=0.2)
+plt.plot(np.linspace(0, 5, 10), np.linspace(0, 5, 10), 'k--')
+plt.title('Evaluation of the regression MLP (Wide & Deep)', fontsize=14)
+plt.xlabel('Real', fontsize=12)
+plt.ylabel('Predicted', fontsize=12)
+plt.show()
+```
+
+
+![png](homl_ch10_Introduction-to-artificial-neural-networks-with-keras_files/homl_ch10_Introduction-to-artificial-neural-networks-with-keras_55_0.png)
+
+
+
+```python
+plt.figure(figsize=(8, 5))
+plt.scatter(y_pred, y_pred_new, color='b', s=10, alpha=0.2)
+plt.plot(np.linspace(0, 5, 10), np.linspace(0, 5, 10), 'k--')
+plt.title('Comparison of the two models', fontsize=14)
+plt.xlabel('MLP regression', fontsize=12)
+plt.ylabel('Wide and Deep', fontsize=12)
+plt.show()
+```
+
+
+![png](homl_ch10_Introduction-to-artificial-neural-networks-with-keras_files/homl_ch10_Introduction-to-artificial-neural-networks-with-keras_56_0.png)
+
+
+It is also possible to have multiple inputs.
+This can be useful if you only want some inputs to go through the hidden layers.
+Below is an example where features 0 through 4 go through the wide path and 2 through 7 go through the hidden layers.
+
+
+```python
+# Two input layers.
+input_A = keras.layers.Input(shape=[5], name='wide_input')
+input_B = keras.layers.Input(shape=[6], name='deep_input')
+
+# Hidden layers.
+hidden1 = keras.layers.Dense(30, activation='relu')(input_B)
+hidden2 = keras.layers.Dense(100, activation='relu')(hidden1)
+
+# Concatenate.
+concat = keras.layers.concatenate([input_A, hidden2])
+
+# Output.
+output = keras.layers.Dense(1, activation='relu', name='output')(concat)
+
+# Make the model object.
+model = keras.Model(inputs=[input_A, input_B], outputs=[output])
+model.summary()
+```
+
+    Model: "model_6"
+    __________________________________________________________________________________________________
+    Layer (type)                    Output Shape         Param #     Connected to                     
+    ==================================================================================================
+    deep_input (InputLayer)         [(None, 6)]          0                                            
+    __________________________________________________________________________________________________
+    dense_29 (Dense)                (None, 30)           210         deep_input[0][0]                 
+    __________________________________________________________________________________________________
+    wide_input (InputLayer)         [(None, 5)]          0                                            
+    __________________________________________________________________________________________________
+    dense_30 (Dense)                (None, 100)          3100        dense_29[0][0]                   
+    __________________________________________________________________________________________________
+    concatenate_4 (Concatenate)     (None, 105)          0           wide_input[0][0]                 
+                                                                     dense_30[0][0]                   
+    __________________________________________________________________________________________________
+    output (Dense)                  (None, 1)            106         concatenate_4[0][0]              
+    ==================================================================================================
+    Total params: 3,416
+    Trainable params: 3,416
+    Non-trainable params: 0
+    __________________________________________________________________________________________________
+
 
 
 ```python
