@@ -346,3 +346,7 @@ I learned about creating and fitting ANNs with multiple inputs or outputs using 
 **Day 72 - January 01, 2020:**
 I finished learning about the main Keras APIs with a brief introduction to the Subclassing API.
 I then learned about saving a loading models and using Callbacks.
+
+**Day 73 - January 02, 2020:**
+I learned about using Tensorboard today.
+To do so, I also got some practive building ANNs using the Sequential API and saving the event history to a directory for TensorBoard.
