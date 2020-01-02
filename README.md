@@ -342,3 +342,7 @@ In the evening, I began learning about Keras's functional API by creating a Wide
 
 **Day 71 - December 31, 2019:**
 I learned about creating and fitting ANNs with multiple inputs or outputs using the funational API of Keras.
+
+**Day 72 - January 01, 2020:**
+I finished learning about the main Keras APIs with a brief introduction to the Subclassing API.
+I then learned about saving a loading models and using Callbacks.

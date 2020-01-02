@@ -441,11 +441,11 @@ The model can be inspected with the `summary()` method.
 model.summary()
 ```
 
-    Model: "sequential_5"
+    Model: "sequential_2"
     _________________________________________________________________
     Layer (type)                 Output Shape              Param #   
     =================================================================
-    flatten_4 (Flatten)          (None, 784)               0         
+    flatten_1 (Flatten)          (None, 784)               0         
     _________________________________________________________________
     dense_1 (Dense)              (None, 300)               235500    
     _________________________________________________________________
@@ -469,10 +469,10 @@ model.layers
 
 
 
-    [<tensorflow.python.keras.layers.core.Flatten at 0x1a5d276b10>,
-     <tensorflow.python.keras.layers.core.Dense at 0x1a5d276410>,
-     <tensorflow.python.keras.layers.core.Dense at 0x1a5d141090>,
-     <tensorflow.python.keras.layers.core.Dense at 0x1a5d3985d0>]
+    [<tensorflow.python.keras.layers.core.Flatten at 0x1a5cacf550>,
+     <tensorflow.python.keras.layers.core.Dense at 0x1a5c0a7790>,
+     <tensorflow.python.keras.layers.core.Dense at 0x1a5cad6e50>,
+     <tensorflow.python.keras.layers.core.Dense at 0x1a5cad6890>]
 
 
 
@@ -484,7 +484,7 @@ model.get_layer('dense_1')
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x1a5d276410>
+    <tensorflow.python.keras.layers.core.Dense at 0x1a5c0a7790>
 
 
 
@@ -501,19 +501,19 @@ weights
 
 
 
-    array([[ 0.0316055 ,  0.03785409,  0.01424924, ...,  0.05335559,
-             0.03587231, -0.05958051],
-           [ 0.02760936, -0.00760906, -0.00725891, ..., -0.01800857,
-             0.0004844 ,  0.02706798],
-           [ 0.00826715, -0.03997412, -0.04378692, ..., -0.02673616,
-            -0.0112099 , -0.02638585],
+    array([[ 0.03080886, -0.05333123, -0.05565906, ..., -0.02042927,
+             0.06373829, -0.04611184],
+           [-0.00015379, -0.0357279 ,  0.04347041, ...,  0.05682653,
+             0.03356642, -0.06567048],
+           [ 0.02849189,  0.06317663, -0.04996761, ..., -0.07197773,
+            -0.05356319,  0.03411862],
            ...,
-           [-0.03979227, -0.05836861, -0.06440987, ...,  0.02992193,
-             0.05634876,  0.01985031],
-           [ 0.00265782,  0.06890348,  0.03913575, ...,  0.00965305,
-            -0.00145537,  0.00975165],
-           [-0.04517608, -0.02456116, -0.06251057, ...,  0.07049152,
-            -0.068276  , -0.05999173]], dtype=float32)
+           [-0.02418977,  0.03684312, -0.05788426, ..., -0.02884386,
+            -0.03504391,  0.00044907],
+           [ 0.03757305,  0.01313937, -0.05386346, ...,  0.06802045,
+             0.06104603,  0.02287725],
+           [-0.07304647, -0.05812673, -0.03914445, ...,  0.04360647,
+             0.01374307, -0.0349627 ]], dtype=float32)
 
 
 
@@ -570,65 +570,65 @@ history = model.fit(X_train, y_train,
 
     Train on 55000 samples, validate on 5000 samples
     Epoch 1/30
-    55000/55000 [==============================] - 11s 205us/sample - loss: 0.7276 - accuracy: 0.7620 - val_loss: 0.5263 - val_accuracy: 0.8234
+    55000/55000 [==============================] - 9s 156us/sample - loss: 0.7248 - accuracy: 0.7689 - val_loss: 0.5255 - val_accuracy: 0.8208
     Epoch 2/30
-    55000/55000 [==============================] - 9s 173us/sample - loss: 0.4903 - accuracy: 0.8292 - val_loss: 0.4458 - val_accuracy: 0.8496
+    55000/55000 [==============================] - 8s 146us/sample - loss: 0.4870 - accuracy: 0.8310 - val_loss: 0.4507 - val_accuracy: 0.8460
     Epoch 3/30
-    55000/55000 [==============================] - 12s 210us/sample - loss: 0.4447 - accuracy: 0.8452 - val_loss: 0.4407 - val_accuracy: 0.8432
+    55000/55000 [==============================] - 8s 146us/sample - loss: 0.4415 - accuracy: 0.8463 - val_loss: 0.4204 - val_accuracy: 0.8572
     Epoch 4/30
-    55000/55000 [==============================] - 8s 150us/sample - loss: 0.4187 - accuracy: 0.8540 - val_loss: 0.4089 - val_accuracy: 0.8624
+    55000/55000 [==============================] - 8s 145us/sample - loss: 0.4141 - accuracy: 0.8552 - val_loss: 0.4106 - val_accuracy: 0.8532
     Epoch 5/30
-    55000/55000 [==============================] - 8s 145us/sample - loss: 0.3978 - accuracy: 0.8605 - val_loss: 0.4422 - val_accuracy: 0.8366
+    55000/55000 [==============================] - 8s 145us/sample - loss: 0.3944 - accuracy: 0.8615 - val_loss: 0.4445 - val_accuracy: 0.8454
     Epoch 6/30
-    55000/55000 [==============================] - 8s 148us/sample - loss: 0.3818 - accuracy: 0.8670 - val_loss: 0.3997 - val_accuracy: 0.8580
+    55000/55000 [==============================] - 8s 145us/sample - loss: 0.3794 - accuracy: 0.8660 - val_loss: 0.3852 - val_accuracy: 0.8672
     Epoch 7/30
-    55000/55000 [==============================] - 8s 149us/sample - loss: 0.3689 - accuracy: 0.8703 - val_loss: 0.3738 - val_accuracy: 0.8710
+    55000/55000 [==============================] - 10s 175us/sample - loss: 0.3658 - accuracy: 0.8720 - val_loss: 0.4213 - val_accuracy: 0.8442
     Epoch 8/30
-    55000/55000 [==============================] - 8s 153us/sample - loss: 0.3571 - accuracy: 0.8734 - val_loss: 0.3689 - val_accuracy: 0.8730
+    55000/55000 [==============================] - 10s 184us/sample - loss: 0.3552 - accuracy: 0.8742 - val_loss: 0.3804 - val_accuracy: 0.8640
     Epoch 9/30
-    55000/55000 [==============================] - 8s 153us/sample - loss: 0.3473 - accuracy: 0.8767 - val_loss: 0.3563 - val_accuracy: 0.8736
+    55000/55000 [==============================] - 9s 164us/sample - loss: 0.3442 - accuracy: 0.8776 - val_loss: 0.3554 - val_accuracy: 0.8698
     Epoch 10/30
-    55000/55000 [==============================] - 9s 158us/sample - loss: 0.3368 - accuracy: 0.8800 - val_loss: 0.3582 - val_accuracy: 0.8710
+    55000/55000 [==============================] - 8s 144us/sample - loss: 0.3347 - accuracy: 0.8813 - val_loss: 0.3455 - val_accuracy: 0.8776
     Epoch 11/30
-    55000/55000 [==============================] - 9s 157us/sample - loss: 0.3283 - accuracy: 0.8825 - val_loss: 0.3468 - val_accuracy: 0.8764
+    55000/55000 [==============================] - 8s 147us/sample - loss: 0.3252 - accuracy: 0.8831 - val_loss: 0.3448 - val_accuracy: 0.8722
     Epoch 12/30
-    55000/55000 [==============================] - 8s 154us/sample - loss: 0.3205 - accuracy: 0.8851 - val_loss: 0.3436 - val_accuracy: 0.8762
+    55000/55000 [==============================] - 8s 146us/sample - loss: 0.3178 - accuracy: 0.8871 - val_loss: 0.3654 - val_accuracy: 0.8674
     Epoch 13/30
-    55000/55000 [==============================] - 8s 154us/sample - loss: 0.3135 - accuracy: 0.8872 - val_loss: 0.3346 - val_accuracy: 0.8824
+    55000/55000 [==============================] - 8s 150us/sample - loss: 0.3113 - accuracy: 0.8891 - val_loss: 0.3944 - val_accuracy: 0.8586
     Epoch 14/30
-    55000/55000 [==============================] - 9s 157us/sample - loss: 0.3059 - accuracy: 0.8887 - val_loss: 0.3321 - val_accuracy: 0.8816
+    55000/55000 [==============================] - 9s 162us/sample - loss: 0.3039 - accuracy: 0.8902 - val_loss: 0.3275 - val_accuracy: 0.8826
     Epoch 15/30
-    55000/55000 [==============================] - 9s 155us/sample - loss: 0.2998 - accuracy: 0.8923 - val_loss: 0.3438 - val_accuracy: 0.8768
+    55000/55000 [==============================] - 8s 149us/sample - loss: 0.2979 - accuracy: 0.8925 - val_loss: 0.3279 - val_accuracy: 0.8844
     Epoch 16/30
-    55000/55000 [==============================] - 8s 155us/sample - loss: 0.2931 - accuracy: 0.8944 - val_loss: 0.3353 - val_accuracy: 0.8810
+    55000/55000 [==============================] - 8s 151us/sample - loss: 0.2918 - accuracy: 0.8954 - val_loss: 0.3278 - val_accuracy: 0.8818
     Epoch 17/30
-    55000/55000 [==============================] - 8s 148us/sample - loss: 0.2875 - accuracy: 0.8967 - val_loss: 0.3154 - val_accuracy: 0.8872
+    55000/55000 [==============================] - 8s 149us/sample - loss: 0.2855 - accuracy: 0.8967 - val_loss: 0.3227 - val_accuracy: 0.8866
     Epoch 18/30
-    55000/55000 [==============================] - 8s 154us/sample - loss: 0.2810 - accuracy: 0.8991 - val_loss: 0.3366 - val_accuracy: 0.8810
+    55000/55000 [==============================] - 8s 151us/sample - loss: 0.2802 - accuracy: 0.8975 - val_loss: 0.3209 - val_accuracy: 0.8830
     Epoch 19/30
-    55000/55000 [==============================] - 9s 157us/sample - loss: 0.2765 - accuracy: 0.9002 - val_loss: 0.3178 - val_accuracy: 0.8846
+    55000/55000 [==============================] - 8s 148us/sample - loss: 0.2752 - accuracy: 0.9007 - val_loss: 0.3117 - val_accuracy: 0.8864
     Epoch 20/30
-    55000/55000 [==============================] - 9s 157us/sample - loss: 0.2712 - accuracy: 0.9027 - val_loss: 0.3204 - val_accuracy: 0.8858
+    55000/55000 [==============================] - 8s 147us/sample - loss: 0.2701 - accuracy: 0.9032 - val_loss: 0.3188 - val_accuracy: 0.8844
     Epoch 21/30
-    55000/55000 [==============================] - 9s 157us/sample - loss: 0.2664 - accuracy: 0.9043 - val_loss: 0.3231 - val_accuracy: 0.8860
+    55000/55000 [==============================] - 8s 149us/sample - loss: 0.2648 - accuracy: 0.9040 - val_loss: 0.3263 - val_accuracy: 0.8782
     Epoch 22/30
-    55000/55000 [==============================] - 9s 159us/sample - loss: 0.2624 - accuracy: 0.9048 - val_loss: 0.3098 - val_accuracy: 0.8916
+    55000/55000 [==============================] - 8s 149us/sample - loss: 0.2599 - accuracy: 0.9056 - val_loss: 0.3154 - val_accuracy: 0.8872
     Epoch 23/30
-    55000/55000 [==============================] - 9s 158us/sample - loss: 0.2566 - accuracy: 0.9068 - val_loss: 0.3130 - val_accuracy: 0.8920
+    55000/55000 [==============================] - 8s 149us/sample - loss: 0.2555 - accuracy: 0.9080 - val_loss: 0.3128 - val_accuracy: 0.8904
     Epoch 24/30
-    55000/55000 [==============================] - 9s 158us/sample - loss: 0.2518 - accuracy: 0.9083 - val_loss: 0.3100 - val_accuracy: 0.8856
+    55000/55000 [==============================] - 8s 150us/sample - loss: 0.2520 - accuracy: 0.9087 - val_loss: 0.3251 - val_accuracy: 0.8830
     Epoch 25/30
-    55000/55000 [==============================] - 9s 160us/sample - loss: 0.2486 - accuracy: 0.9102 - val_loss: 0.3028 - val_accuracy: 0.8930
+    55000/55000 [==============================] - 8s 150us/sample - loss: 0.2472 - accuracy: 0.9102 - val_loss: 0.3101 - val_accuracy: 0.8912
     Epoch 26/30
-    55000/55000 [==============================] - 9s 159us/sample - loss: 0.2436 - accuracy: 0.9127 - val_loss: 0.3028 - val_accuracy: 0.8920
+    55000/55000 [==============================] - 8s 150us/sample - loss: 0.2437 - accuracy: 0.9122 - val_loss: 0.3004 - val_accuracy: 0.8880
     Epoch 27/30
-    55000/55000 [==============================] - 9s 156us/sample - loss: 0.2396 - accuracy: 0.9137 - val_loss: 0.3061 - val_accuracy: 0.8928
+    55000/55000 [==============================] - 8s 150us/sample - loss: 0.2388 - accuracy: 0.9131 - val_loss: 0.2948 - val_accuracy: 0.8924
     Epoch 28/30
-    55000/55000 [==============================] - 9s 159us/sample - loss: 0.2354 - accuracy: 0.9143 - val_loss: 0.3067 - val_accuracy: 0.8928
+    55000/55000 [==============================] - 8s 150us/sample - loss: 0.2354 - accuracy: 0.9150 - val_loss: 0.3074 - val_accuracy: 0.8894
     Epoch 29/30
-    55000/55000 [==============================] - 9s 158us/sample - loss: 0.2319 - accuracy: 0.9160 - val_loss: 0.3154 - val_accuracy: 0.8850
+    55000/55000 [==============================] - 8s 145us/sample - loss: 0.2317 - accuracy: 0.9168 - val_loss: 0.3061 - val_accuracy: 0.8934
     Epoch 30/30
-    55000/55000 [==============================] - 8s 154us/sample - loss: 0.2289 - accuracy: 0.9175 - val_loss: 0.3161 - val_accuracy: 0.8888
+    55000/55000 [==============================] - 8s 142us/sample - loss: 0.2279 - accuracy: 0.9174 - val_loss: 0.3017 - val_accuracy: 0.8942
 
 
 
@@ -652,7 +652,7 @@ model.evaluate(X_test_processed, y_test, verbose=0)
 
 
 
-    [0.34439084025621414, 0.88]
+    [0.33415108824968337, 0.881]
 
 
 
@@ -668,7 +668,7 @@ np.round(model.predict(X_new), 2)
 
 
 
-    array([[0.  , 0.  , 0.  , 0.  , 0.  , 0.02, 0.  , 0.01, 0.  , 0.97],
+    array([[0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.01, 0.  , 0.99],
            [0.  , 0.  , 1.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ],
            [0.  , 1.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]],
           dtype=float32)
@@ -737,45 +737,45 @@ history = model.fit(X_train, y_train,
 
     Train on 11610 samples, validate on 3870 samples
     Epoch 1/20
-    11610/11610 [==============================] - 2s 139us/sample - loss: 0.8768 - val_loss: 0.5428
+    11610/11610 [==============================] - 2s 133us/sample - loss: 0.8786 - val_loss: 0.5121
     Epoch 2/20
-    11610/11610 [==============================] - 1s 89us/sample - loss: 0.4568 - val_loss: 0.4310
+    11610/11610 [==============================] - 1s 89us/sample - loss: 0.4524 - val_loss: 0.4363
     Epoch 3/20
-    11610/11610 [==============================] - 1s 89us/sample - loss: 0.4191 - val_loss: 0.4303
+    11610/11610 [==============================] - 1s 77us/sample - loss: 0.4168 - val_loss: 0.4273
     Epoch 4/20
-    11610/11610 [==============================] - 1s 90us/sample - loss: 0.5505 - val_loss: 0.5068
+    11610/11610 [==============================] - 1s 80us/sample - loss: 0.5157 - val_loss: 0.4958
     Epoch 5/20
-    11610/11610 [==============================] - 1s 94us/sample - loss: 0.4449 - val_loss: 0.4401
+    11610/11610 [==============================] - 1s 91us/sample - loss: 0.4154 - val_loss: 0.4108
     Epoch 6/20
-    11610/11610 [==============================] - 1s 89us/sample - loss: 0.3979 - val_loss: 0.4169
+    11610/11610 [==============================] - 1s 90us/sample - loss: 0.3859 - val_loss: 0.4093
     Epoch 7/20
-    11610/11610 [==============================] - 1s 89us/sample - loss: 0.3796 - val_loss: 0.4067
+    11610/11610 [==============================] - 1s 89us/sample - loss: 0.3768 - val_loss: 0.3988
     Epoch 8/20
-    11610/11610 [==============================] - 1s 88us/sample - loss: 0.3702 - val_loss: 0.3919
+    11610/11610 [==============================] - 1s 90us/sample - loss: 0.3691 - val_loss: 0.3957
     Epoch 9/20
-    11610/11610 [==============================] - 1s 89us/sample - loss: 0.3605 - val_loss: 0.3848
+    11610/11610 [==============================] - 1s 90us/sample - loss: 0.3629 - val_loss: 0.3889
     Epoch 10/20
-    11610/11610 [==============================] - 1s 89us/sample - loss: 0.3522 - val_loss: 0.3801
+    11610/11610 [==============================] - 1s 89us/sample - loss: 0.3592 - val_loss: 0.3824
     Epoch 11/20
-    11610/11610 [==============================] - 1s 88us/sample - loss: 0.3477 - val_loss: 0.3747
+    11610/11610 [==============================] - 1s 85us/sample - loss: 0.3549 - val_loss: 0.3761
     Epoch 12/20
-    11610/11610 [==============================] - 1s 86us/sample - loss: 0.3430 - val_loss: 0.3631
+    11610/11610 [==============================] - 1s 89us/sample - loss: 0.3506 - val_loss: 0.3757
     Epoch 13/20
-    11610/11610 [==============================] - 1s 86us/sample - loss: 0.3385 - val_loss: 0.3653
+    11610/11610 [==============================] - 1s 84us/sample - loss: 0.3467 - val_loss: 0.3792
     Epoch 14/20
-    11610/11610 [==============================] - 1s 85us/sample - loss: 0.3343 - val_loss: 0.3575
+    11610/11610 [==============================] - 1s 85us/sample - loss: 0.3455 - val_loss: 0.3826
     Epoch 15/20
-    11610/11610 [==============================] - 1s 85us/sample - loss: 0.3299 - val_loss: 0.3673
+    11610/11610 [==============================] - 1s 85us/sample - loss: 0.3428 - val_loss: 0.3676
     Epoch 16/20
-    11610/11610 [==============================] - 1s 90us/sample - loss: 0.3328 - val_loss: 0.3774
+    11610/11610 [==============================] - 1s 85us/sample - loss: 0.3435 - val_loss: 0.3603
     Epoch 17/20
-    11610/11610 [==============================] - 1s 85us/sample - loss: 0.3243 - val_loss: 0.3480
+    11610/11610 [==============================] - 1s 84us/sample - loss: 0.3358 - val_loss: 0.3690
     Epoch 18/20
-    11610/11610 [==============================] - 1s 86us/sample - loss: 0.3215 - val_loss: 0.3494
+    11610/11610 [==============================] - 1s 89us/sample - loss: 0.3342 - val_loss: 0.3621
     Epoch 19/20
-    11610/11610 [==============================] - 1s 86us/sample - loss: 0.3208 - val_loss: 0.3454
+    11610/11610 [==============================] - 1s 77us/sample - loss: 0.3299 - val_loss: 0.3607
     Epoch 20/20
-    11610/11610 [==============================] - 1s 85us/sample - loss: 0.3155 - val_loss: 0.3423
+    11610/11610 [==============================] - 1s 84us/sample - loss: 0.3309 - val_loss: 0.3592
 
 
 
@@ -783,15 +783,15 @@ history = model.fit(X_train, y_train,
 model.summary()
 ```
 
-    Model: "sequential_6"
+    Model: "sequential_3"
     _________________________________________________________________
     Layer (type)                 Output Shape              Param #   
     =================================================================
-    dense_19 (Dense)             (None, 30)                270       
+    dense_27 (Dense)             (None, 30)                270       
     _________________________________________________________________
-    dense_20 (Dense)             (None, 100)               3100      
+    dense_28 (Dense)             (None, 100)               3100      
     _________________________________________________________________
-    dense_21 (Dense)             (None, 1)                 101       
+    dense_29 (Dense)             (None, 1)                 101       
     =================================================================
     Total params: 3,471
     Trainable params: 3,471
@@ -817,7 +817,7 @@ model.evaluate(X_test, y_test, verbose=0)
 
 
 
-    0.32709958502488545
+    0.3401941142571989
 
 
 
@@ -882,45 +882,45 @@ plt.show()
 
     Train on 11610 samples, validate on 3870 samples
     Epoch 1/20
-    11610/11610 [==============================] - 2s 152us/sample - loss: 0.8164 - val_loss: 0.5035
+    11610/11610 [==============================] - 2s 159us/sample - loss: 0.9070 - val_loss: 0.4935
     Epoch 2/20
-    11610/11610 [==============================] - 1s 98us/sample - loss: 0.4466 - val_loss: 0.4419
+    11610/11610 [==============================] - 1s 99us/sample - loss: 0.4466 - val_loss: 0.4392
     Epoch 3/20
-    11610/11610 [==============================] - 1s 97us/sample - loss: 0.4170 - val_loss: 0.4270
+    11610/11610 [==============================] - 1s 97us/sample - loss: 0.4163 - val_loss: 0.4266
     Epoch 4/20
-    11610/11610 [==============================] - 1s 105us/sample - loss: 0.4013 - val_loss: 0.5051
+    11610/11610 [==============================] - 1s 107us/sample - loss: 0.4034 - val_loss: 0.4161
     Epoch 5/20
-    11610/11610 [==============================] - 1s 99us/sample - loss: 0.5224 - val_loss: 0.4491
+    11610/11610 [==============================] - 1s 100us/sample - loss: 0.3941 - val_loss: 0.4122
     Epoch 6/20
-    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3978 - val_loss: 0.4101
+    11610/11610 [==============================] - 1s 97us/sample - loss: 0.3898 - val_loss: 0.4042
     Epoch 7/20
-    11610/11610 [==============================] - 1s 105us/sample - loss: 0.3849 - val_loss: 0.4103
+    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3831 - val_loss: 0.4079
     Epoch 8/20
-    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3788 - val_loss: 0.4083
+    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3794 - val_loss: 0.4012
     Epoch 9/20
-    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3718 - val_loss: 0.4048
+    11610/11610 [==============================] - 1s 103us/sample - loss: 0.3747 - val_loss: 0.3934
     Epoch 10/20
-    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3673 - val_loss: 0.3954
+    11610/11610 [==============================] - 1s 104us/sample - loss: 0.3714 - val_loss: 0.3980
     Epoch 11/20
-    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3649 - val_loss: 0.3911
+    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3695 - val_loss: 0.3872
     Epoch 12/20
-    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3603 - val_loss: 0.3855
+    11610/11610 [==============================] - 1s 97us/sample - loss: 0.3667 - val_loss: 0.3859
     Epoch 13/20
-    11610/11610 [==============================] - 1s 103us/sample - loss: 0.3583 - val_loss: 0.3822
+    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3610 - val_loss: 0.4051
     Epoch 14/20
-    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3546 - val_loss: 0.3876
+    11610/11610 [==============================] - 1s 100us/sample - loss: 0.3587 - val_loss: 0.3918
     Epoch 15/20
-    11610/11610 [==============================] - 1s 100us/sample - loss: 0.3548 - val_loss: 0.3858
+    11610/11610 [==============================] - 1s 100us/sample - loss: 0.3660 - val_loss: 0.4032
     Epoch 16/20
-    11610/11610 [==============================] - 1s 95us/sample - loss: 0.3489 - val_loss: 0.3978
+    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3592 - val_loss: 0.3847
     Epoch 17/20
-    11610/11610 [==============================] - 1s 98us/sample - loss: 0.3458 - val_loss: 0.3714
+    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3507 - val_loss: 0.3772
     Epoch 18/20
-    11610/11610 [==============================] - 1s 104us/sample - loss: 0.3449 - val_loss: 0.3721
+    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3471 - val_loss: 0.3688
     Epoch 19/20
-    11610/11610 [==============================] - 1s 101us/sample - loss: 0.3429 - val_loss: 0.3754
+    11610/11610 [==============================] - 1s 104us/sample - loss: 0.3441 - val_loss: 0.3655
     Epoch 20/20
-    11610/11610 [==============================] - 1s 98us/sample - loss: 0.3374 - val_loss: 0.3664
+    11610/11610 [==============================] - 1s 100us/sample - loss: 0.3410 - val_loss: 0.3771
 
 
 
@@ -935,7 +935,7 @@ model.evaluate(X_test, y_test, verbose=0)
 
 
 
-    0.35167020106500435
+    0.3660215558931809
 
 
 
@@ -995,22 +995,22 @@ model = keras.Model(inputs=[input_A, input_B], outputs=[output])
 model.summary()
 ```
 
-    Model: "model_5"
+    Model: "model_13"
     __________________________________________________________________________________________________
     Layer (type)                    Output Shape         Param #     Connected to                     
     ==================================================================================================
     deep_input (InputLayer)         [(None, 6)]          0                                            
     __________________________________________________________________________________________________
-    dense_25 (Dense)                (None, 30)           210         deep_input[0][0]                 
+    dense_33 (Dense)                (None, 30)           210         deep_input[0][0]                 
     __________________________________________________________________________________________________
     wide_input (InputLayer)         [(None, 5)]          0                                            
     __________________________________________________________________________________________________
-    dense_26 (Dense)                (None, 100)          3100        dense_25[0][0]                   
+    dense_34 (Dense)                (None, 100)          3100        dense_33[0][0]                   
     __________________________________________________________________________________________________
-    concatenate_5 (Concatenate)     (None, 105)          0           wide_input[0][0]                 
-                                                                     dense_26[0][0]                   
+    concatenate_8 (Concatenate)     (None, 105)          0           wide_input[0][0]                 
+                                                                     dense_34[0][0]                   
     __________________________________________________________________________________________________
-    output (Dense)                  (None, 1)            106         concatenate_5[0][0]              
+    output (Dense)                  (None, 1)            106         concatenate_8[0][0]              
     ==================================================================================================
     Total params: 3,416
     Trainable params: 3,416
@@ -1042,45 +1042,45 @@ history = model.fit(split_input_matrices(X_train),
 
     Train on 11610 samples, validate on 3870 samples
     Epoch 1/20
-    11610/11610 [==============================] - 2s 156us/sample - loss: 1.7940 - val_loss: 0.8289
+    11610/11610 [==============================] - 2s 150us/sample - loss: 2.3573 - val_loss: 1.0254
     Epoch 2/20
-    11610/11610 [==============================] - 1s 97us/sample - loss: 0.7432 - val_loss: 0.6778
+    11610/11610 [==============================] - 2s 142us/sample - loss: 0.8709 - val_loss: 0.7388
     Epoch 3/20
-    11610/11610 [==============================] - 1s 96us/sample - loss: 0.6408 - val_loss: 0.6271
+    11610/11610 [==============================] - 2s 133us/sample - loss: 0.7052 - val_loss: 0.6821
     Epoch 4/20
-    11610/11610 [==============================] - 1s 96us/sample - loss: 0.6046 - val_loss: 0.6001
+    11610/11610 [==============================] - 1s 109us/sample - loss: 0.6591 - val_loss: 0.6504
     Epoch 5/20
-    11610/11610 [==============================] - 1s 96us/sample - loss: 0.5823 - val_loss: 0.5827
+    11610/11610 [==============================] - 1s 118us/sample - loss: 0.6303 - val_loss: 0.6262
     Epoch 6/20
-    11610/11610 [==============================] - 1s 90us/sample - loss: 0.5648 - val_loss: 0.5679
+    11610/11610 [==============================] - 1s 103us/sample - loss: 0.6062 - val_loss: 0.6063
     Epoch 7/20
-    11610/11610 [==============================] - 1s 85us/sample - loss: 0.5504 - val_loss: 0.5554
+    11610/11610 [==============================] - 1s 111us/sample - loss: 0.5848 - val_loss: 0.5863
     Epoch 8/20
-    11610/11610 [==============================] - 1s 99us/sample - loss: 0.5387 - val_loss: 0.5435
+    11610/11610 [==============================] - 1s 105us/sample - loss: 0.5671 - val_loss: 0.5689
     Epoch 9/20
-    11610/11610 [==============================] - 1s 96us/sample - loss: 0.5288 - val_loss: 0.5363
+    11610/11610 [==============================] - 1s 106us/sample - loss: 0.5520 - val_loss: 0.5589
     Epoch 10/20
-    11610/11610 [==============================] - 1s 105us/sample - loss: 0.5183 - val_loss: 0.5237
+    11610/11610 [==============================] - 1s 122us/sample - loss: 0.5396 - val_loss: 0.5550
     Epoch 11/20
-    11610/11610 [==============================] - 1s 96us/sample - loss: 0.5098 - val_loss: 0.5251
+    11610/11610 [==============================] - 1s 119us/sample - loss: 0.5279 - val_loss: 0.5381
     Epoch 12/20
-    11610/11610 [==============================] - 1s 96us/sample - loss: 0.5028 - val_loss: 0.5141
+    11610/11610 [==============================] - 1s 103us/sample - loss: 0.5170 - val_loss: 0.5254
     Epoch 13/20
-    11610/11610 [==============================] - 1s 95us/sample - loss: 0.4961 - val_loss: 0.5018
+    11610/11610 [==============================] - 1s 97us/sample - loss: 0.5086 - val_loss: 0.5167
     Epoch 14/20
-    11610/11610 [==============================] - 1s 96us/sample - loss: 0.4905 - val_loss: 0.4985
+    11610/11610 [==============================] - 1s 97us/sample - loss: 0.4994 - val_loss: 0.5067
     Epoch 15/20
-    11610/11610 [==============================] - 1s 98us/sample - loss: 0.4847 - val_loss: 0.4929
+    11610/11610 [==============================] - 1s 96us/sample - loss: 0.4916 - val_loss: 0.4993
     Epoch 16/20
-    11610/11610 [==============================] - 1s 96us/sample - loss: 0.4800 - val_loss: 0.4872
+    11610/11610 [==============================] - 1s 96us/sample - loss: 0.4851 - val_loss: 0.4917
     Epoch 17/20
-    11610/11610 [==============================] - 1s 95us/sample - loss: 0.4752 - val_loss: 0.4839
+    11610/11610 [==============================] - 1s 97us/sample - loss: 0.4798 - val_loss: 0.4868
     Epoch 18/20
-    11610/11610 [==============================] - 1s 100us/sample - loss: 0.4705 - val_loss: 0.4788
+    11610/11610 [==============================] - 1s 106us/sample - loss: 0.4732 - val_loss: 0.4803
     Epoch 19/20
-    11610/11610 [==============================] - 1s 96us/sample - loss: 0.4671 - val_loss: 0.4749
+    11610/11610 [==============================] - 1s 85us/sample - loss: 0.4683 - val_loss: 0.4977
     Epoch 20/20
-    11610/11610 [==============================] - 1s 111us/sample - loss: 0.4641 - val_loss: 0.4726
+    11610/11610 [==============================] - 1s 90us/sample - loss: 0.4642 - val_loss: 0.4800
 
 
 
@@ -1091,7 +1091,7 @@ model.evaluate(split_input_matrices(X_test), y_test, verbose=0)
 
 
 
-    0.488090944243956
+    0.49082014066304347
 
 
 
@@ -1130,24 +1130,24 @@ model = keras.Model(inputs=[input_A, input_B], outputs=[output, aux_output])
 model.summary()
 ```
 
-    Model: "model_6"
+    Model: "model_14"
     __________________________________________________________________________________________________
     Layer (type)                    Output Shape         Param #     Connected to                     
     ==================================================================================================
     deep_input (InputLayer)         [(None, 6)]          0                                            
     __________________________________________________________________________________________________
-    dense_27 (Dense)                (None, 30)           210         deep_input[0][0]                 
+    dense_35 (Dense)                (None, 30)           210         deep_input[0][0]                 
     __________________________________________________________________________________________________
     wide_input (InputLayer)         [(None, 5)]          0                                            
     __________________________________________________________________________________________________
-    dense_28 (Dense)                (None, 100)          3100        dense_27[0][0]                   
+    dense_36 (Dense)                (None, 100)          3100        dense_35[0][0]                   
     __________________________________________________________________________________________________
-    concatenate_6 (Concatenate)     (None, 105)          0           wide_input[0][0]                 
-                                                                     dense_28[0][0]                   
+    concatenate_9 (Concatenate)     (None, 105)          0           wide_input[0][0]                 
+                                                                     dense_36[0][0]                   
     __________________________________________________________________________________________________
-    output (Dense)                  (None, 1)            106         concatenate_6[0][0]              
+    output (Dense)                  (None, 1)            106         concatenate_9[0][0]              
     __________________________________________________________________________________________________
-    aux_output (Dense)              (None, 1)            101         dense_28[0][0]                   
+    aux_output (Dense)              (None, 1)            101         dense_36[0][0]                   
     ==================================================================================================
     Total params: 3,517
     Trainable params: 3,517
@@ -1180,45 +1180,45 @@ history = model.fit(split_input_matrices(X_train),
 
     Train on 11610 samples, validate on 3870 samples
     Epoch 1/20
-    11610/11610 [==============================] - 2s 204us/sample - loss: 0.9768 - output_loss: 0.8486 - aux_output_loss: 2.1288 - val_loss: 0.6062 - val_output_loss: 0.5343 - val_aux_output_loss: 1.2543
+    11610/11610 [==============================] - 2s 201us/sample - loss: 0.9165 - output_loss: 0.7785 - aux_output_loss: 2.1560 - val_loss: 0.5947 - val_output_loss: 0.5234 - val_aux_output_loss: 1.2376
     Epoch 2/20
-    11610/11610 [==============================] - 1s 115us/sample - loss: 0.5879 - output_loss: 0.5199 - aux_output_loss: 1.1992 - val_loss: 0.5454 - val_output_loss: 0.4900 - val_aux_output_loss: 1.0455
+    11610/11610 [==============================] - 1s 113us/sample - loss: 0.6496 - output_loss: 0.5853 - aux_output_loss: 1.2267 - val_loss: 0.5385 - val_output_loss: 0.4791 - val_aux_output_loss: 1.0730
     Epoch 3/20
-    11610/11610 [==============================] - 1s 111us/sample - loss: 0.5299 - output_loss: 0.4790 - aux_output_loss: 0.9873 - val_loss: 0.5138 - val_output_loss: 0.4720 - val_aux_output_loss: 0.8902
+    11610/11610 [==============================] - 1s 114us/sample - loss: 0.5199 - output_loss: 0.4639 - aux_output_loss: 1.0257 - val_loss: 0.4970 - val_output_loss: 0.4492 - val_aux_output_loss: 0.9279
     Epoch 4/20
-    11610/11610 [==============================] - 1s 113us/sample - loss: 0.4945 - output_loss: 0.4561 - aux_output_loss: 0.8401 - val_loss: 0.4920 - val_output_loss: 0.4593 - val_aux_output_loss: 0.7860
+    11610/11610 [==============================] - 1s 113us/sample - loss: 0.4937 - output_loss: 0.4495 - aux_output_loss: 0.8898 - val_loss: 0.4763 - val_output_loss: 0.4374 - val_aux_output_loss: 0.8272
     Epoch 5/20
-    11610/11610 [==============================] - 1s 113us/sample - loss: 0.4687 - output_loss: 0.4383 - aux_output_loss: 0.7415 - val_loss: 0.4729 - val_output_loss: 0.4456 - val_aux_output_loss: 0.7189
+    11610/11610 [==============================] - 1s 118us/sample - loss: 0.4624 - output_loss: 0.4260 - aux_output_loss: 0.7886 - val_loss: 0.5046 - val_output_loss: 0.4789 - val_aux_output_loss: 0.7362
     Epoch 6/20
-    11610/11610 [==============================] - 1s 122us/sample - loss: 0.4548 - output_loss: 0.4294 - aux_output_loss: 0.6840 - val_loss: 0.4574 - val_output_loss: 0.4315 - val_aux_output_loss: 0.6917
+    11610/11610 [==============================] - 1s 113us/sample - loss: 0.4469 - output_loss: 0.4172 - aux_output_loss: 0.7146 - val_loss: 0.4433 - val_output_loss: 0.4152 - val_aux_output_loss: 0.6966
     Epoch 7/20
-    11610/11610 [==============================] - 1s 99us/sample - loss: 0.4424 - output_loss: 0.4198 - aux_output_loss: 0.6465 - val_loss: 0.4458 - val_output_loss: 0.4233 - val_aux_output_loss: 0.6483
+    11610/11610 [==============================] - 1s 113us/sample - loss: 0.4317 - output_loss: 0.4061 - aux_output_loss: 0.6638 - val_loss: 0.4351 - val_output_loss: 0.4109 - val_aux_output_loss: 0.6529
     Epoch 8/20
-    11610/11610 [==============================] - 1s 113us/sample - loss: 0.4287 - output_loss: 0.4078 - aux_output_loss: 0.6158 - val_loss: 0.4472 - val_output_loss: 0.4206 - val_aux_output_loss: 0.6872
+    11610/11610 [==============================] - 1s 113us/sample - loss: 0.4202 - output_loss: 0.3973 - aux_output_loss: 0.6256 - val_loss: 0.4242 - val_output_loss: 0.4014 - val_aux_output_loss: 0.6305
     Epoch 9/20
-    11610/11610 [==============================] - 1s 112us/sample - loss: 0.4231 - output_loss: 0.4036 - aux_output_loss: 0.5982 - val_loss: 0.4330 - val_output_loss: 0.4132 - val_aux_output_loss: 0.6114
+    11610/11610 [==============================] - 1s 114us/sample - loss: 0.4117 - output_loss: 0.3908 - aux_output_loss: 0.5998 - val_loss: 0.4210 - val_output_loss: 0.4007 - val_aux_output_loss: 0.6039
     Epoch 10/20
-    11610/11610 [==============================] - 1s 119us/sample - loss: 0.4153 - output_loss: 0.3969 - aux_output_loss: 0.5812 - val_loss: 0.4268 - val_output_loss: 0.4062 - val_aux_output_loss: 0.6125
+    11610/11610 [==============================] - 1s 114us/sample - loss: 0.4016 - output_loss: 0.3820 - aux_output_loss: 0.5777 - val_loss: 0.4065 - val_output_loss: 0.3860 - val_aux_output_loss: 0.5913
     Epoch 11/20
-    11610/11610 [==============================] - 1s 104us/sample - loss: 0.4265 - output_loss: 0.4104 - aux_output_loss: 0.5697 - val_loss: 0.4254 - val_output_loss: 0.4081 - val_aux_output_loss: 0.5815
+    11610/11610 [==============================] - 1s 115us/sample - loss: 0.3996 - output_loss: 0.3818 - aux_output_loss: 0.5612 - val_loss: 0.3993 - val_output_loss: 0.3805 - val_aux_output_loss: 0.5681
     Epoch 12/20
-    11610/11610 [==============================] - 1s 112us/sample - loss: 0.4127 - output_loss: 0.3970 - aux_output_loss: 0.5526 - val_loss: 0.4326 - val_output_loss: 0.4128 - val_aux_output_loss: 0.6108
+    11610/11610 [==============================] - 1s 115us/sample - loss: 0.3873 - output_loss: 0.3697 - aux_output_loss: 0.5458 - val_loss: 0.4182 - val_output_loss: 0.4014 - val_aux_output_loss: 0.5695
     Epoch 13/20
-    11610/11610 [==============================] - 1s 113us/sample - loss: 0.4014 - output_loss: 0.3852 - aux_output_loss: 0.5459 - val_loss: 0.4086 - val_output_loss: 0.3904 - val_aux_output_loss: 0.5726
+    11610/11610 [==============================] - 1s 120us/sample - loss: 0.3824 - output_loss: 0.3660 - aux_output_loss: 0.5327 - val_loss: 0.3899 - val_output_loss: 0.3725 - val_aux_output_loss: 0.5461
     Epoch 14/20
-    11610/11610 [==============================] - 1s 112us/sample - loss: 0.3892 - output_loss: 0.3728 - aux_output_loss: 0.5361 - val_loss: 0.3993 - val_output_loss: 0.3812 - val_aux_output_loss: 0.5628
+    11610/11610 [==============================] - 1s 113us/sample - loss: 0.3775 - output_loss: 0.3614 - aux_output_loss: 0.5225 - val_loss: 0.3846 - val_output_loss: 0.3670 - val_aux_output_loss: 0.5428
     Epoch 15/20
-    11610/11610 [==============================] - 1s 113us/sample - loss: 0.3861 - output_loss: 0.3702 - aux_output_loss: 0.5284 - val_loss: 0.3988 - val_output_loss: 0.3800 - val_aux_output_loss: 0.5677
+    11610/11610 [==============================] - 1s 115us/sample - loss: 0.3705 - output_loss: 0.3545 - aux_output_loss: 0.5130 - val_loss: 0.3763 - val_output_loss: 0.3599 - val_aux_output_loss: 0.5240
     Epoch 16/20
-    11610/11610 [==============================] - 1s 114us/sample - loss: 0.3777 - output_loss: 0.3621 - aux_output_loss: 0.5168 - val_loss: 0.3905 - val_output_loss: 0.3721 - val_aux_output_loss: 0.5558
+    11610/11610 [==============================] - 1s 114us/sample - loss: 0.3676 - output_loss: 0.3523 - aux_output_loss: 0.5047 - val_loss: 0.3716 - val_output_loss: 0.3553 - val_aux_output_loss: 0.5181
     Epoch 17/20
-    11610/11610 [==============================] - 1s 106us/sample - loss: 0.3786 - output_loss: 0.3639 - aux_output_loss: 0.5119 - val_loss: 0.3855 - val_output_loss: 0.3685 - val_aux_output_loss: 0.5381
+    11610/11610 [==============================] - 1s 114us/sample - loss: 0.3643 - output_loss: 0.3496 - aux_output_loss: 0.4958 - val_loss: 0.3692 - val_output_loss: 0.3529 - val_aux_output_loss: 0.5157
     Epoch 18/20
-    11610/11610 [==============================] - 1s 100us/sample - loss: 0.3731 - output_loss: 0.3586 - aux_output_loss: 0.5034 - val_loss: 0.3877 - val_output_loss: 0.3716 - val_aux_output_loss: 0.5324
+    11610/11610 [==============================] - 1s 115us/sample - loss: 0.3589 - output_loss: 0.3445 - aux_output_loss: 0.4888 - val_loss: 0.3648 - val_output_loss: 0.3497 - val_aux_output_loss: 0.5016
     Epoch 19/20
-    11610/11610 [==============================] - 1s 114us/sample - loss: 0.3664 - output_loss: 0.3521 - aux_output_loss: 0.4946 - val_loss: 0.3777 - val_output_loss: 0.3600 - val_aux_output_loss: 0.5377
+    11610/11610 [==============================] - 1s 115us/sample - loss: 0.3541 - output_loss: 0.3402 - aux_output_loss: 0.4786 - val_loss: 0.3841 - val_output_loss: 0.3697 - val_aux_output_loss: 0.5138
     Epoch 20/20
-    11610/11610 [==============================] - 1s 113us/sample - loss: 0.3611 - output_loss: 0.3470 - aux_output_loss: 0.4882 - val_loss: 0.3807 - val_output_loss: 0.3634 - val_aux_output_loss: 0.5371
+    11610/11610 [==============================] - 1s 115us/sample - loss: 0.3525 - output_loss: 0.3392 - aux_output_loss: 0.4734 - val_loss: 0.3690 - val_output_loss: 0.3541 - val_aux_output_loss: 0.5036
 
 
 
@@ -1274,6 +1274,441 @@ plt.show()
 
 ![png](homl_ch10_Introduction-to-artificial-neural-networks-with-keras_files/homl_ch10_Introduction-to-artificial-neural-networks-with-keras_74_0.png)
 
+
+### Using the subclassing API to build dynamic models
+
+The Sequential and Functional APIs are declariative and, thus, have a static model graph.
+This has many advantages because TF can display and analyze the graph.
+However, this means it has limited flebibility.
+
+The Subclassing API adds limitless flexibility.
+The main steps are to subclass the `Model` class, create the layers in the constructor, and use them to perform any computations in the `call()` method.
+The `call()` method can do anything the programming likes, including using for-loops or logical branching.
+
+Below is an implementation of the *Wide & Deep* model from above using the Subclassing API.
+
+
+```python
+class WideAndDeep(keras.Model):
+    """
+    The 'Wide & Deep' ANN using the subclassing Keras API.
+    """
+
+    def __init__(self, units=30, activation='relu', **kwargs):
+        super().__init__(**kwargs)  # handles standard argumentas such as `name`
+        self.hidden1 = keras.layers.Dense(units, activation=activation)
+        self.hidden2 = keras.layers.Dense(units, activation=activation)
+        self.main_output = keras.layers.Dense(1)
+        self.aut_output = keras.layers.Dense(1)
+
+    def call(self, inputs):
+        input_A, input_B = inputs
+        hidden1 = self.hidden1(input_B)
+        hidden2 = self.hidden2(hidden1)
+        concat = keras.layers.concatenate([input_A, hidden2])
+        main_output = self.main_output(concat)
+        aux_output = self.aut_output(hidden2)
+        return main_output, aux_output
+
+
+# Create the model object, compile, and fit.
+model = WideAndDeep()
+model.compile(loss=['mse', 'mse'],
+              loss_weights=[0.9, 0.1],
+              optimizer='sgd')
+
+history = model.fit(split_input_matrices(X_train),
+                    (y_train, y_train),
+                    epochs=20,
+                    validation_data=(
+                        split_input_matrices(X_valid),
+                        (y_valid, y_valid)
+))
+
+# Plot the progress of the training.
+pd.DataFrame(history.history).plot(figsize=(8, 5))
+plt.show()
+```
+
+    Train on 11610 samples, validate on 3870 samples
+    Epoch 1/20
+    11610/11610 [==============================] - 2s 197us/sample - loss: 0.9392 - output_1_loss: 0.8232 - output_2_loss: 1.9822 - val_loss: 0.6092 - val_output_1_loss: 0.5484 - val_output_2_loss: 1.1576
+    Epoch 2/20
+    11610/11610 [==============================] - 1s 117us/sample - loss: 0.5874 - output_1_loss: 0.5349 - output_2_loss: 1.0604 - val_loss: 0.5272 - val_output_1_loss: 0.4832 - val_output_2_loss: 0.9241
+    Epoch 3/20
+    11610/11610 [==============================] - 1s 111us/sample - loss: 0.5023 - output_1_loss: 0.4608 - output_2_loss: 0.8755 - val_loss: 0.4959 - val_output_1_loss: 0.4630 - val_output_2_loss: 0.7931
+    Epoch 4/20
+    11610/11610 [==============================] - 1s 110us/sample - loss: 0.4804 - output_1_loss: 0.4479 - output_2_loss: 0.7726 - val_loss: 0.4725 - val_output_1_loss: 0.4459 - val_output_2_loss: 0.7131
+    Epoch 5/20
+    11610/11610 [==============================] - 1s 111us/sample - loss: 0.4684 - output_1_loss: 0.4420 - output_2_loss: 0.7062 - val_loss: 0.4592 - val_output_1_loss: 0.4358 - val_output_2_loss: 0.6710
+    Epoch 6/20
+    11610/11610 [==============================] - 1s 115us/sample - loss: 0.4482 - output_1_loss: 0.4242 - output_2_loss: 0.6638 - val_loss: 0.4496 - val_output_1_loss: 0.4277 - val_output_2_loss: 0.6471
+    Epoch 7/20
+    11610/11610 [==============================] - 1s 108us/sample - loss: 0.4505 - output_1_loss: 0.4290 - output_2_loss: 0.6431 - val_loss: 0.4381 - val_output_1_loss: 0.4174 - val_output_2_loss: 0.6252
+    Epoch 8/20
+    11610/11610 [==============================] - 1s 111us/sample - loss: 0.4313 - output_1_loss: 0.4104 - output_2_loss: 0.6185 - val_loss: 0.4397 - val_output_1_loss: 0.4166 - val_output_2_loss: 0.6469
+    Epoch 9/20
+    11610/11610 [==============================] - 1s 110us/sample - loss: 0.4236 - output_1_loss: 0.4032 - output_2_loss: 0.6071 - val_loss: 0.4316 - val_output_1_loss: 0.4117 - val_output_2_loss: 0.6109
+    Epoch 10/20
+    11610/11610 [==============================] - 1s 111us/sample - loss: 0.4177 - output_1_loss: 0.3982 - output_2_loss: 0.5940 - val_loss: 0.4244 - val_output_1_loss: 0.4049 - val_output_2_loss: 0.6005
+    Epoch 11/20
+    11610/11610 [==============================] - 1s 110us/sample - loss: 0.4145 - output_1_loss: 0.3955 - output_2_loss: 0.5849 - val_loss: 0.4248 - val_output_1_loss: 0.4026 - val_output_2_loss: 0.6250
+    Epoch 12/20
+    11610/11610 [==============================] - 1s 114us/sample - loss: 0.4089 - output_1_loss: 0.3900 - output_2_loss: 0.5783 - val_loss: 0.4216 - val_output_1_loss: 0.4017 - val_output_2_loss: 0.6007
+    Epoch 13/20
+    11610/11610 [==============================] - 1s 110us/sample - loss: 0.4455 - output_1_loss: 0.4292 - output_2_loss: 0.5933 - val_loss: 0.4223 - val_output_1_loss: 0.4035 - val_output_2_loss: 0.5917
+    Epoch 14/20
+    11610/11610 [==============================] - 2s 144us/sample - loss: 0.4026 - output_1_loss: 0.3830 - output_2_loss: 0.5787 - val_loss: 0.4220 - val_output_1_loss: 0.3942 - val_output_2_loss: 0.6726
+    Epoch 15/20
+    11610/11610 [==============================] - 1s 112us/sample - loss: 0.4269 - output_1_loss: 0.4113 - output_2_loss: 0.5688 - val_loss: 0.4233 - val_output_1_loss: 0.4039 - val_output_2_loss: 0.5987
+    Epoch 16/20
+    11610/11610 [==============================] - 1s 114us/sample - loss: 0.3920 - output_1_loss: 0.3738 - output_2_loss: 0.5544 - val_loss: 0.4117 - val_output_1_loss: 0.3942 - val_output_2_loss: 0.5699
+    Epoch 17/20
+    11610/11610 [==============================] - 1s 112us/sample - loss: 0.3885 - output_1_loss: 0.3712 - output_2_loss: 0.5451 - val_loss: 0.3994 - val_output_1_loss: 0.3814 - val_output_2_loss: 0.5614
+    Epoch 18/20
+    11610/11610 [==============================] - 1s 111us/sample - loss: 0.3919 - output_1_loss: 0.3751 - output_2_loss: 0.5420 - val_loss: 0.4093 - val_output_1_loss: 0.3932 - val_output_2_loss: 0.5542
+    Epoch 19/20
+    11610/11610 [==============================] - 1s 112us/sample - loss: 0.3809 - output_1_loss: 0.3642 - output_2_loss: 0.5316 - val_loss: 0.3902 - val_output_1_loss: 0.3726 - val_output_2_loss: 0.5485
+    Epoch 20/20
+    11610/11610 [==============================] - 1s 112us/sample - loss: 0.3761 - output_1_loss: 0.3596 - output_2_loss: 0.5248 - val_loss: 0.3962 - val_output_1_loss: 0.3790 - val_output_2_loss: 0.5510
+
+
+
+![png](homl_ch10_Introduction-to-artificial-neural-networks-with-keras_files/homl_ch10_Introduction-to-artificial-neural-networks-with-keras_76_1.png)
+
+
+In general, it is safer and easier to use the Sequential and Functional Keras APIs.
+
+### Saving and Restoring a Model
+
+Saving a model created using the Sequential or Functional APIs is simple and shown below.
+
+
+```python
+# ** An example model built using the functional API ** #
+input_ = keras.layers.Input(shape=X_train.shape[1:])
+hidden1 = keras.layers.Dense(30, activation='relu')(input_)
+hidden2 = keras.layers.Dense(100, activation='relu')(hidden1)
+concat = keras.layers.Concatenate()([input_, hidden2])
+output = keras.layers.Dense(1, activation='relu')(concat)
+model = keras.Model(inputs=[input_], outputs=[output])
+
+model.compile(loss='mean_squared_error', optimizer='sgd')
+
+history = model.fit(X_train, y_train,
+                    epochs=20,
+                    validation_data=(X_valid, y_valid))
+
+model.summary()
+```
+
+    Train on 11610 samples, validate on 3870 samples
+    Epoch 1/20
+    11610/11610 [==============================] - 2s 179us/sample - loss: 0.7129 - val_loss: 0.5697
+    Epoch 2/20
+    11610/11610 [==============================] - 1s 119us/sample - loss: 0.4762 - val_loss: 0.4574
+    Epoch 3/20
+    11610/11610 [==============================] - 1s 112us/sample - loss: 0.4357 - val_loss: 0.4820
+    Epoch 4/20
+    11610/11610 [==============================] - 1s 112us/sample - loss: 0.4173 - val_loss: 0.4295
+    Epoch 5/20
+    11610/11610 [==============================] - 1s 104us/sample - loss: 0.3996 - val_loss: 0.4175
+    Epoch 6/20
+    11610/11610 [==============================] - 1s 112us/sample - loss: 0.3865 - val_loss: 0.4050
+    Epoch 7/20
+    11610/11610 [==============================] - 1s 101us/sample - loss: 0.3827 - val_loss: 0.4087
+    Epoch 8/20
+    11610/11610 [==============================] - 1s 106us/sample - loss: 0.3761 - val_loss: 0.4142
+    Epoch 9/20
+    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3713 - val_loss: 0.4009
+    Epoch 10/20
+    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3653 - val_loss: 0.3849
+    Epoch 11/20
+    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3584 - val_loss: 0.3861
+    Epoch 12/20
+    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3648 - val_loss: 0.3963
+    Epoch 13/20
+    11610/11610 [==============================] - 1s 100us/sample - loss: 0.3699 - val_loss: 0.4188
+    Epoch 14/20
+    11610/11610 [==============================] - 1s 114us/sample - loss: 0.3651 - val_loss: 0.3818
+    Epoch 15/20
+    11610/11610 [==============================] - 1s 114us/sample - loss: 0.4463 - val_loss: 0.5439
+    Epoch 16/20
+    11610/11610 [==============================] - 1s 98us/sample - loss: 0.4228 - val_loss: 0.4195
+    Epoch 17/20
+    11610/11610 [==============================] - 1s 100us/sample - loss: 0.3691 - val_loss: 0.3968
+    Epoch 18/20
+    11610/11610 [==============================] - 1s 89us/sample - loss: 0.3492 - val_loss: 0.3799
+    Epoch 19/20
+    11610/11610 [==============================] - 1s 89us/sample - loss: 0.3449 - val_loss: 0.3670
+    Epoch 20/20
+    11610/11610 [==============================] - 1s 88us/sample - loss: 0.3383 - val_loss: 0.3690
+    Model: "model_15"
+    __________________________________________________________________________________________________
+    Layer (type)                    Output Shape         Param #     Connected to                     
+    ==================================================================================================
+    input_4 (InputLayer)            [(None, 8)]          0                                            
+    __________________________________________________________________________________________________
+    dense_41 (Dense)                (None, 30)           270         input_4[0][0]                    
+    __________________________________________________________________________________________________
+    dense_42 (Dense)                (None, 100)          3100        dense_41[0][0]                   
+    __________________________________________________________________________________________________
+    concatenate_10 (Concatenate)    (None, 108)          0           input_4[0][0]                    
+                                                                     dense_42[0][0]                   
+    __________________________________________________________________________________________________
+    dense_43 (Dense)                (None, 1)            109         concatenate_10[0][0]             
+    ==================================================================================================
+    Total params: 3,479
+    Trainable params: 3,479
+    Non-trainable params: 0
+    __________________________________________________________________________________________________
+
+
+
+```python
+import pathlib
+
+# Save the model.
+assets_path = pathlib.Path('assets/ch10')
+model.save(assets_path.joinpath('my_keras_model.h5'))
+```
+
+Then, the model can be loaded using the `load()` method.
+
+
+```python
+model = keras.models.load_model(assets_path.joinpath('my_keras_model.h5'))
+```
+
+The process is not very easy if the model was built with the Subclassing API.
+The programmer would have to save and load the model parameters with `save_weights()` and `load_weights()` explcitly, and then recreate the model manually.
+
+### Using Callbacks
+
+The `fit()` method accepts a `callback` argument that is a list of `callback` objects that get called during each round (the point at which they get called can be specified, too).
+They are useful for when a model may take a long time to train and you want to save intermediates such that they can be re-loaded if the computer crashes midway.
+Another useful case is to set `save_bast_only=True` for a `ModelCheckpoint` callback object to that only the best model on the validation data is saved.
+This can help prevent overfitting by essentially implementing early-stopping.
+
+
+```python
+# Create the model.
+model = keras.Model(inputs=[input_], outputs=[output])
+
+# Compile the model.
+model.compile(loss='mean_squared_error', optimizer='sgd')
+
+# Add a checkpoint to save the model on each round of training.
+# The model is only saved if it improves upon the previous on the
+#   validation data set.
+checkpoint_path = assets_path.joinpath('my_keras_model_chkpt.h5')
+checkpoint_cb = keras.callbacks.ModelCheckpoint(checkpoint_path.as_posix(),
+                                                save_best_only=True)
+
+# Fit the model.
+history = model.fit(X_train, y_train,
+                    epochs=20,
+                    validation_data=(X_valid, y_valid),
+                    callbacks=[checkpoint_cb])
+```
+
+    Train on 11610 samples, validate on 3870 samples
+    Epoch 1/20
+    11610/11610 [==============================] - 2s 155us/sample - loss: 0.3366 - val_loss: 0.3632
+    Epoch 2/20
+    11610/11610 [==============================] - 1s 100us/sample - loss: 0.3319 - val_loss: 0.3582
+    Epoch 3/20
+    11610/11610 [==============================] - 1s 101us/sample - loss: 0.3273 - val_loss: 0.3570
+    Epoch 4/20
+    11610/11610 [==============================] - 1s 101us/sample - loss: 0.3247 - val_loss: 0.3569
+    Epoch 5/20
+    11610/11610 [==============================] - 1s 104us/sample - loss: 0.3242 - val_loss: 0.3771
+    Epoch 6/20
+    11610/11610 [==============================] - 1s 103us/sample - loss: 0.3314 - val_loss: 0.3570
+    Epoch 7/20
+    11610/11610 [==============================] - 1s 109us/sample - loss: 0.3191 - val_loss: 0.3445
+    Epoch 8/20
+    11610/11610 [==============================] - 1s 111us/sample - loss: 0.3149 - val_loss: 0.3478
+    Epoch 9/20
+    11610/11610 [==============================] - 1s 119us/sample - loss: 0.3135 - val_loss: 0.3384
+    Epoch 10/20
+    11610/11610 [==============================] - 1s 119us/sample - loss: 0.3126 - val_loss: 0.3379
+    Epoch 11/20
+    11610/11610 [==============================] - 1s 101us/sample - loss: 0.3089 - val_loss: 0.3372
+    Epoch 12/20
+    11610/11610 [==============================] - 1s 111us/sample - loss: 0.3061 - val_loss: 0.3575
+    Epoch 13/20
+    11610/11610 [==============================] - 1s 103us/sample - loss: 0.3046 - val_loss: 0.3361
+    Epoch 14/20
+    11610/11610 [==============================] - 1s 89us/sample - loss: 0.3042 - val_loss: 0.3424
+    Epoch 15/20
+    11610/11610 [==============================] - 1s 102us/sample - loss: 0.3013 - val_loss: 0.3534
+    Epoch 16/20
+    11610/11610 [==============================] - 1s 110us/sample - loss: 0.3013 - val_loss: 0.3327
+    Epoch 17/20
+    11610/11610 [==============================] - 1s 109us/sample - loss: 0.3008 - val_loss: 0.3287
+    Epoch 18/20
+    11610/11610 [==============================] - 1s 111us/sample - loss: 0.2990 - val_loss: 0.3294
+    Epoch 19/20
+    11610/11610 [==============================] - 1s 111us/sample - loss: 0.2962 - val_loss: 0.3294
+    Epoch 20/20
+    11610/11610 [==============================] - 1s 111us/sample - loss: 0.2946 - val_loss: 0.3841
+
+
+Alternatively, the `EarlyStopping` callback can be used.
+A common implementation is to use both `ModelCheckpoint` and `EarlyStopping` together, the first to save intermediate models in case of a crash, the latter to prevent unnecessary time spent on training.
+The number of epochs can also be increased because early-stopping will prevent overfitting and excessive training..
+
+
+```python
+# Two input layers.
+input_A = keras.layers.Input(shape=[5], name='wide_input')
+input_B = keras.layers.Input(shape=[6], name='deep_input')
+
+# Hidden layers.
+hidden1 = keras.layers.Dense(30, activation='relu')(input_B)
+hidden2 = keras.layers.Dense(100, activation='relu')(hidden1)
+
+# Concatenate.
+concat = keras.layers.concatenate([input_A, hidden2])
+
+# Output.
+output = keras.layers.Dense(1, name='output')(concat)
+aux_output = keras.layers.Dense(1, name='aux_output')(hidden2)
+
+# Make the model object.
+model = keras.Model(inputs=[input_A, input_B], outputs=[output, aux_output])
+
+
+# Add a checkpoint to save the model on each round of training.
+# The model is only saved if it improves upon the previous on the
+#   validation data set.
+checkpoint_path = assets_path.joinpath('my_keras_model_chkpt.h5')
+checkpoint_cb = keras.callbacks.ModelCheckpoint(checkpoint_path.as_posix(),
+                                                save_best_only=True)
+
+# Implement easly stopping after no improvement for 5 epochs.
+early_stopping_cb = keras.callbacks.EarlyStopping(patience=5,
+                                                  restore_best_weights=True)
+
+model.compile(loss=['mse', 'mse'],
+              loss_weights=[0.9, 0.1],
+              optimizer='sgd')
+
+history = model.fit(split_input_matrices(X_train),
+                    (y_train, y_train),
+                    epochs=100,
+                    validation_data=(
+                        split_input_matrices(X_valid),
+                        (y_valid, y_valid)
+                    ),
+                    callbacks=[checkpoint_cb, early_stopping_cb])
+```
+
+    Train on 11610 samples, validate on 3870 samples
+    Epoch 1/100
+    11610/11610 [==============================] - 5s 402us/sample - loss: 0.9559 - output_loss: 0.8157 - aux_output_loss: 2.2145 - val_loss: 0.6139 - val_output_loss: 0.5482 - val_aux_output_loss: 1.2056
+    Epoch 2/100
+    11610/11610 [==============================] - 2s 132us/sample - loss: 0.5532 - output_loss: 0.4910 - aux_output_loss: 1.1149 - val_loss: 0.5143 - val_output_loss: 0.4654 - val_aux_output_loss: 0.9546
+    Epoch 3/100
+    11610/11610 [==============================] - 2s 136us/sample - loss: 0.5072 - output_loss: 0.4632 - aux_output_loss: 0.9021 - val_loss: 0.4834 - val_output_loss: 0.4475 - val_aux_output_loss: 0.8071
+    Epoch 4/100
+    11610/11610 [==============================] - 2s 149us/sample - loss: 0.4784 - output_loss: 0.4453 - aux_output_loss: 0.7757 - val_loss: 0.4641 - val_output_loss: 0.4355 - val_aux_output_loss: 0.7218
+    Epoch 5/100
+    11610/11610 [==============================] - 2s 146us/sample - loss: 0.5238 - output_loss: 0.5008 - aux_output_loss: 0.7312 - val_loss: 0.4528 - val_output_loss: 0.4250 - val_aux_output_loss: 0.7039
+    Epoch 6/100
+    11610/11610 [==============================] - 2s 138us/sample - loss: 0.4447 - output_loss: 0.4208 - aux_output_loss: 0.6598 - val_loss: 0.4436 - val_output_loss: 0.4207 - val_aux_output_loss: 0.6502
+    Epoch 7/100
+    11610/11610 [==============================] - 2s 138us/sample - loss: 0.4277 - output_loss: 0.4055 - aux_output_loss: 0.6272 - val_loss: 0.4435 - val_output_loss: 0.4222 - val_aux_output_loss: 0.6352
+    Epoch 8/100
+    11610/11610 [==============================] - 2s 140us/sample - loss: 0.4207 - output_loss: 0.4000 - aux_output_loss: 0.6088 - val_loss: 0.4234 - val_output_loss: 0.4019 - val_aux_output_loss: 0.6181
+    Epoch 9/100
+    11610/11610 [==============================] - 2s 138us/sample - loss: 0.4103 - output_loss: 0.3904 - aux_output_loss: 0.5891 - val_loss: 0.4479 - val_output_loss: 0.4303 - val_aux_output_loss: 0.6064
+    Epoch 10/100
+    11610/11610 [==============================] - 2s 140us/sample - loss: 0.4062 - output_loss: 0.3871 - aux_output_loss: 0.5796 - val_loss: 0.4048 - val_output_loss: 0.3850 - val_aux_output_loss: 0.5832
+    Epoch 11/100
+    11610/11610 [==============================] - 2s 141us/sample - loss: 0.3977 - output_loss: 0.3794 - aux_output_loss: 0.5624 - val_loss: 0.4050 - val_output_loss: 0.3865 - val_aux_output_loss: 0.5725
+    Epoch 12/100
+    11610/11610 [==============================] - 2s 142us/sample - loss: 0.3896 - output_loss: 0.3716 - aux_output_loss: 0.5522 - val_loss: 0.4009 - val_output_loss: 0.3830 - val_aux_output_loss: 0.5626
+    Epoch 13/100
+    11610/11610 [==============================] - 2s 141us/sample - loss: 0.3829 - output_loss: 0.3654 - aux_output_loss: 0.5397 - val_loss: 0.4045 - val_output_loss: 0.3861 - val_aux_output_loss: 0.5708
+    Epoch 14/100
+    11610/11610 [==============================] - 2s 147us/sample - loss: 0.3910 - output_loss: 0.3752 - aux_output_loss: 0.5334 - val_loss: 0.3879 - val_output_loss: 0.3688 - val_aux_output_loss: 0.5600
+    Epoch 15/100
+    11610/11610 [==============================] - 2s 171us/sample - loss: 0.3840 - output_loss: 0.3681 - aux_output_loss: 0.5272 - val_loss: 0.3887 - val_output_loss: 0.3722 - val_aux_output_loss: 0.5375
+    Epoch 16/100
+    11610/11610 [==============================] - 2s 138us/sample - loss: 0.3827 - output_loss: 0.3679 - aux_output_loss: 0.5150 - val_loss: 0.3823 - val_output_loss: 0.3656 - val_aux_output_loss: 0.5321
+    Epoch 17/100
+    11610/11610 [==============================] - 2s 138us/sample - loss: 0.3674 - output_loss: 0.3517 - aux_output_loss: 0.5077 - val_loss: 0.3852 - val_output_loss: 0.3696 - val_aux_output_loss: 0.5262
+    Epoch 18/100
+    11610/11610 [==============================] - 2s 143us/sample - loss: 0.3638 - output_loss: 0.3490 - aux_output_loss: 0.4987 - val_loss: 0.3719 - val_output_loss: 0.3560 - val_aux_output_loss: 0.5150
+    Epoch 19/100
+    11610/11610 [==============================] - 2s 139us/sample - loss: 0.3597 - output_loss: 0.3452 - aux_output_loss: 0.4910 - val_loss: 0.3663 - val_output_loss: 0.3500 - val_aux_output_loss: 0.5126
+    Epoch 20/100
+    11610/11610 [==============================] - 2s 140us/sample - loss: 0.3556 - output_loss: 0.3415 - aux_output_loss: 0.4832 - val_loss: 0.3667 - val_output_loss: 0.3517 - val_aux_output_loss: 0.5018
+    Epoch 21/100
+    11610/11610 [==============================] - 2s 142us/sample - loss: 0.3541 - output_loss: 0.3403 - aux_output_loss: 0.4781 - val_loss: 0.3734 - val_output_loss: 0.3579 - val_aux_output_loss: 0.5134
+    Epoch 22/100
+    11610/11610 [==============================] - 2s 143us/sample - loss: 0.3502 - output_loss: 0.3367 - aux_output_loss: 0.4719 - val_loss: 0.3616 - val_output_loss: 0.3471 - val_aux_output_loss: 0.4920
+    Epoch 23/100
+    11610/11610 [==============================] - 2s 160us/sample - loss: 0.3498 - output_loss: 0.3366 - aux_output_loss: 0.4678 - val_loss: 0.3595 - val_output_loss: 0.3451 - val_aux_output_loss: 0.4890
+    Epoch 24/100
+    11610/11610 [==============================] - 2s 175us/sample - loss: 0.3472 - output_loss: 0.3344 - aux_output_loss: 0.4629 - val_loss: 0.3855 - val_output_loss: 0.3719 - val_aux_output_loss: 0.5080
+    Epoch 25/100
+    11610/11610 [==============================] - 2s 170us/sample - loss: 0.3460 - output_loss: 0.3335 - aux_output_loss: 0.4590 - val_loss: 0.3805 - val_output_loss: 0.3663 - val_aux_output_loss: 0.5085
+    Epoch 26/100
+    11610/11610 [==============================] - 2s 153us/sample - loss: 0.3441 - output_loss: 0.3318 - aux_output_loss: 0.4555 - val_loss: 0.3575 - val_output_loss: 0.3443 - val_aux_output_loss: 0.4768
+    Epoch 27/100
+    11610/11610 [==============================] - 2s 143us/sample - loss: 0.3413 - output_loss: 0.3292 - aux_output_loss: 0.4498 - val_loss: 0.3588 - val_output_loss: 0.3453 - val_aux_output_loss: 0.4808
+    Epoch 28/100
+    11610/11610 [==============================] - 2s 149us/sample - loss: 0.3422 - output_loss: 0.3304 - aux_output_loss: 0.4478 - val_loss: 0.3571 - val_output_loss: 0.3439 - val_aux_output_loss: 0.4763
+    Epoch 29/100
+    11610/11610 [==============================] - 2s 141us/sample - loss: 0.3383 - output_loss: 0.3266 - aux_output_loss: 0.4426 - val_loss: 0.3750 - val_output_loss: 0.3625 - val_aux_output_loss: 0.4873
+    Epoch 30/100
+    11610/11610 [==============================] - 2s 144us/sample - loss: 0.3364 - output_loss: 0.3250 - aux_output_loss: 0.4394 - val_loss: 0.3540 - val_output_loss: 0.3412 - val_aux_output_loss: 0.4693
+    Epoch 31/100
+    11610/11610 [==============================] - 2s 143us/sample - loss: 0.3376 - output_loss: 0.3266 - aux_output_loss: 0.4384 - val_loss: 0.3497 - val_output_loss: 0.3372 - val_aux_output_loss: 0.4628
+    Epoch 32/100
+    11610/11610 [==============================] - 2s 141us/sample - loss: 0.3337 - output_loss: 0.3225 - aux_output_loss: 0.4344 - val_loss: 0.3639 - val_output_loss: 0.3520 - val_aux_output_loss: 0.4709
+    Epoch 33/100
+    11610/11610 [==============================] - 2s 147us/sample - loss: 0.3331 - output_loss: 0.3222 - aux_output_loss: 0.4317 - val_loss: 0.3498 - val_output_loss: 0.3374 - val_aux_output_loss: 0.4624
+    Epoch 34/100
+    11610/11610 [==============================] - 2s 144us/sample - loss: 0.3341 - output_loss: 0.3235 - aux_output_loss: 0.4294 - val_loss: 0.3496 - val_output_loss: 0.3373 - val_aux_output_loss: 0.4599
+    Epoch 35/100
+    11610/11610 [==============================] - 2s 143us/sample - loss: 0.3308 - output_loss: 0.3200 - aux_output_loss: 0.4269 - val_loss: 0.3436 - val_output_loss: 0.3316 - val_aux_output_loss: 0.4513
+    Epoch 36/100
+    11610/11610 [==============================] - 2s 137us/sample - loss: 0.3316 - output_loss: 0.3215 - aux_output_loss: 0.4252 - val_loss: 0.3600 - val_output_loss: 0.3486 - val_aux_output_loss: 0.4626
+    Epoch 37/100
+    11610/11610 [==============================] - 1s 122us/sample - loss: 0.3305 - output_loss: 0.3203 - aux_output_loss: 0.4218 - val_loss: 0.3542 - val_output_loss: 0.3419 - val_aux_output_loss: 0.4645
+    Epoch 38/100
+    11610/11610 [==============================] - 1s 107us/sample - loss: 0.3315 - output_loss: 0.3213 - aux_output_loss: 0.4236 - val_loss: 0.3548 - val_output_loss: 0.3431 - val_aux_output_loss: 0.4604
+    Epoch 39/100
+    11610/11610 [==============================] - 1s 102us/sample - loss: 0.3297 - output_loss: 0.3198 - aux_output_loss: 0.4186 - val_loss: 0.3467 - val_output_loss: 0.3350 - val_aux_output_loss: 0.4524
+    Epoch 40/100
+    11610/11610 [==============================] - 1s 99us/sample - loss: 0.3256 - output_loss: 0.3155 - aux_output_loss: 0.4159 - val_loss: 0.3436 - val_output_loss: 0.3324 - val_aux_output_loss: 0.4451
+
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8, 5))
+plt.show()
+```
+
+
+![png](homl_ch10_Introduction-to-artificial-neural-networks-with-keras_files/homl_ch10_Introduction-to-artificial-neural-networks-with-keras_86_0.png)
+
+
+It is also possible to implement custom callbacks by subclassing `Callback` and defining methods with names such as `on_epoch_begin()`, `on_train_begin()`, and more.
+Below is an example that logs the validation over training error on each epoch to detect overfitting.
+
+
+```python
+class PrintValidationTrainingRatioCallback(keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs):
+        print(f'\nval/train: {logs["val_loss"] / logs["loss"]}')
+```
+
+### Using Tensorboard for Visualization
 
 
 ```python
