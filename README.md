@@ -350,3 +350,6 @@ I then learned about saving a loading models and using Callbacks.
 **Day 73 - January 02, 2020:**
 I learned about using Tensorboard today.
 To do so, I also got some practive building ANNs using the Sequential API and saving the event history to a directory for TensorBoard.
+
+**Day 74 - January 03, 2020:**
+I practiced using Grid Search and Randomized Search with CV to tune a Keras model's hyperparameters.
