@@ -353,3 +353,7 @@ To do so, I also got some practive building ANNs using the Sequential API and sa
 
 **Day 74 - January 03, 2020:**
 I practiced using Grid Search and Randomized Search with CV to tune a Keras model's hyperparameters.
+
+**Day 75 - January 04, 2020:**
+I finished the introduction chapter to ANNs with TF and Keras.
+I have begun Chapter 11 on training DNNs.
