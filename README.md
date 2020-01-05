@@ -357,3 +357,7 @@ I practiced using Grid Search and Randomized Search with CV to tune a Keras mode
 **Day 75 - January 04, 2020:**
 I finished the introduction chapter to ANNs with TF and Keras.
 I have begun Chapter 11 on training DNNs.
+
+**Day 76 - January 05, 2020:**
+I learned about various activation functions including leaky ReLU and some variants.
+We also covered Batch Normalization which I need to look further into to full understand.
