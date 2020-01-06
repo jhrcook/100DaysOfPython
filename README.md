@@ -361,3 +361,6 @@ I have begun Chapter 11 on training DNNs.
 **Day 76 - January 05, 2020:**
 I learned about various activation functions including leaky ReLU and some variants.
 We also covered Batch Normalization which I need to look further into to full understand.
+
+**Day 77 - January 06, 2020:**
+I learned about transfer learning today and how to accomplish it with Keras.

@@ -68,7 +68,7 @@ keras.layers.Dense(10, activation='relu', kernel_initializer='he_normal')
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x64456a7d0>
+    <tensorflow.python.keras.layers.core.Dense at 0x64087f590>
 
 
 
@@ -86,7 +86,7 @@ keras.layers.Dense(10, activation='sigmoid', kernel_initializer=he_avg_init)
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x6445d9890>
+    <tensorflow.python.keras.layers.core.Dense at 0x640892fd0>
 
 
 
@@ -164,7 +164,7 @@ keras.layers.Dense(10, activation='selu', kernel_initializer='lecun_normal')
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x64e12f950>
+    <tensorflow.python.keras.layers.core.Dense at 0x6408c2810>
 
 
 
@@ -192,37 +192,8 @@ It is added just before or after each hidden layer's activation function and as 
 
 
 ```python
-from sklearn.model_selection import train_test_split
-
-fashion_mnist = keras.datasets.fashion_mnist
-(X_train_full, y_train_full), (X_test, y_test) = fashion_mnist.load_data()
-
-class_names = ["T-shirt/top", "Trouser", "Pullover", "Dress", "Coat", "Sandal", 
-               "Shirt", "Sneaker", "Bag", "Ankle boot"]
-
-X_train, X_valid, y_train, y_valid = train_test_split(X_train_full,
-                                                      y_train_full,
-                                                      test_size=5000,
-                                                      random_state=0)
-
-fig = plt.figure(figsize=(12, 6))
-for i in range(40):
-    plt.subplot(4, 10, i+1)
-    plt.imshow(X_train[i, :, :])
-    plt.title(class_names[y_train[i]])
-    plt.axis('off')
-
-plt.show()
-```
-
-
-![png](homl_ch11_Training-deep-neural-networks_files/homl_ch11_Training-deep-neural-networks_16_0.png)
-
-
-
-```python
-model = keras.models.Sequential([
-    keras.layers.Flatten(input_shape = X_train.shape[1:]),
+model_1 = keras.models.Sequential([
+    keras.layers.Flatten(input_shape = [28, 28]),
     keras.layers.BatchNormalization(),
     keras.layers.Dense(300, activation='elu', kernel_initializer='he_normal'),
     keras.layers.BatchNormalization(),
@@ -231,152 +202,31 @@ model = keras.models.Sequential([
     keras.layers.Dense(10, activation='softmax'),
 ])
 
-model.summary()
+model_1.summary()
 ```
 
-    Model: "sequential_11"
+    Model: "sequential_1"
     _________________________________________________________________
     Layer (type)                 Output Shape              Param #   
     =================================================================
-    flatten_9 (Flatten)          (None, 784)               0         
+    flatten (Flatten)            (None, 784)               0         
     _________________________________________________________________
-    batch_normalization_33 (Batc (None, 784)               3136      
+    batch_normalization (BatchNo (None, 784)               3136      
     _________________________________________________________________
-    dense_40 (Dense)             (None, 300)               235500    
+    dense_5 (Dense)              (None, 300)               235500    
     _________________________________________________________________
-    batch_normalization_34 (Batc (None, 300)               1200      
+    batch_normalization_1 (Batch (None, 300)               1200      
     _________________________________________________________________
-    dense_41 (Dense)             (None, 100)               30100     
+    dense_6 (Dense)              (None, 100)               30100     
     _________________________________________________________________
-    batch_normalization_35 (Batc (None, 100)               400       
+    batch_normalization_2 (Batch (None, 100)               400       
     _________________________________________________________________
-    dense_42 (Dense)             (None, 10)                1010      
+    dense_7 (Dense)              (None, 10)                1010      
     =================================================================
     Total params: 271,346
     Trainable params: 268,978
     Non-trainable params: 2,368
     _________________________________________________________________
-
-
-
-```python
-model.compile(
-    loss='sparse_categorical_crossentropy',
-    optimizer='sgd',
-    metrics=['accuracy']
-)
-```
-
-
-```python
-from pathlib import Path
-root_logdir = Path('tf_logs_ch11')
-tf_logdir = root_logdir.joinpath('fashionMNIST_BNexample').as_posix()
-
-!rm -rf $tf_logdir
-
-# Callback for Tensorboard.
-tensorboard_cb = keras.callbacks.TensorBoard(tf_logdir)
-
-history = model.fit(
-    X_train, y_train,
-    epochs=200,
-    validation_split=0.2,
-    callbacks=[keras.callbacks.EarlyStopping(patience=5), tensorboard_cb]
-)
-```
-
-    libc++abi.dylib: terminating with uncaught exception of type std::runtime_error: Couldn't close file
-    Train on 44000 samples, validate on 11000 samples
-    Epoch 1/200
-    44000/44000 [==============================] - 20s 453us/sample - loss: 0.5747 - accuracy: 0.7993 - val_loss: 0.4489 - val_accuracy: 0.8395
-    Epoch 2/200
-    44000/44000 [==============================] - 16s 369us/sample - loss: 0.4361 - accuracy: 0.8455 - val_loss: 0.4148 - val_accuracy: 0.8537
-    Epoch 3/200
-    44000/44000 [==============================] - 16s 363us/sample - loss: 0.4023 - accuracy: 0.8576 - val_loss: 0.3951 - val_accuracy: 0.8590
-    Epoch 4/200
-    44000/44000 [==============================] - 16s 360us/sample - loss: 0.3767 - accuracy: 0.8661 - val_loss: 0.3903 - val_accuracy: 0.8607
-    Epoch 5/200
-    44000/44000 [==============================] - 16s 368us/sample - loss: 0.3583 - accuracy: 0.8720 - val_loss: 0.3782 - val_accuracy: 0.8686
-    Epoch 6/200
-    44000/44000 [==============================] - 16s 359us/sample - loss: 0.3446 - accuracy: 0.8763 - val_loss: 0.3637 - val_accuracy: 0.8658
-    Epoch 7/200
-    44000/44000 [==============================] - 16s 367us/sample - loss: 0.3287 - accuracy: 0.8819 - val_loss: 0.3755 - val_accuracy: 0.8711
-    Epoch 8/200
-    44000/44000 [==============================] - 16s 355us/sample - loss: 0.3176 - accuracy: 0.8849 - val_loss: 0.3661 - val_accuracy: 0.8678
-    Epoch 9/200
-    44000/44000 [==============================] - 15s 351us/sample - loss: 0.3076 - accuracy: 0.8888 - val_loss: 0.3575 - val_accuracy: 0.8724
-    Epoch 10/200
-    44000/44000 [==============================] - 19s 432us/sample - loss: 0.2997 - accuracy: 0.8924 - val_loss: 0.3567 - val_accuracy: 0.8724
-    Epoch 11/200
-    44000/44000 [==============================] - 26s 596us/sample - loss: 0.2902 - accuracy: 0.8956 - val_loss: 0.3488 - val_accuracy: 0.8735
-    Epoch 12/200
-    44000/44000 [==============================] - 28s 645us/sample - loss: 0.2828 - accuracy: 0.8970 - val_loss: 0.3643 - val_accuracy: 0.8766
-    Epoch 13/200
-    44000/44000 [==============================] - 17s 393us/sample - loss: 0.2748 - accuracy: 0.9003 - val_loss: 0.3501 - val_accuracy: 0.8774
-    Epoch 14/200
-    44000/44000 [==============================] - 17s 381us/sample - loss: 0.2684 - accuracy: 0.9022 - val_loss: 0.3642 - val_accuracy: 0.8765
-    Epoch 15/200
-    44000/44000 [==============================] - 17s 382us/sample - loss: 0.2623 - accuracy: 0.9045 - val_loss: 0.3486 - val_accuracy: 0.8779
-    Epoch 16/200
-    44000/44000 [==============================] - 18s 402us/sample - loss: 0.2546 - accuracy: 0.9073 - val_loss: 0.3530 - val_accuracy: 0.8809
-    Epoch 17/200
-    44000/44000 [==============================] - 18s 410us/sample - loss: 0.2490 - accuracy: 0.9089 - val_loss: 0.3423 - val_accuracy: 0.8832
-    Epoch 18/200
-    44000/44000 [==============================] - 16s 373us/sample - loss: 0.2430 - accuracy: 0.9125 - val_loss: 0.3456 - val_accuracy: 0.8807
-    Epoch 19/200
-    44000/44000 [==============================] - 16s 357us/sample - loss: 0.2377 - accuracy: 0.9134 - val_loss: 0.3457 - val_accuracy: 0.8778
-    Epoch 20/200
-    44000/44000 [==============================] - 16s 362us/sample - loss: 0.2314 - accuracy: 0.9162 - val_loss: 0.3503 - val_accuracy: 0.8798
-    Epoch 21/200
-    44000/44000 [==============================] - 15s 348us/sample - loss: 0.2265 - accuracy: 0.9157 - val_loss: 0.3524 - val_accuracy: 0.8799
-    Epoch 22/200
-    44000/44000 [==============================] - 16s 358us/sample - loss: 0.2215 - accuracy: 0.9187 - val_loss: 0.3515 - val_accuracy: 0.8837
-
-
-
-```python
-%reload_ext tensorboard
-%tensorboard --logdir=./tf_logs_ch11 --port=6006
-```
-
-
-    Reusing TensorBoard on port 6006 (pid 77939), started 0:16:59 ago. (Use '!kill 77939' to kill it.)
-
-
-
-
-<iframe id="tensorboard-frame-49c8be49dfb3fbd7" width="100%" height="800" frameborder="0">
-</iframe>
-<script>
-  (function() {
-    const frame = document.getElementById("tensorboard-frame-49c8be49dfb3fbd7");
-    const url = new URL("/", window.location);
-    url.port = 6006;
-    frame.src = url;
-  })();
-</script>
-
-
-
-
-```python
-model_loss, model_accuracy = model.evaluate(X_test, y_test, verbose=0)
-print(f'loss: {model_loss}\n accuracy: {model_accuracy}')
-```
-
-    loss: 0.37072580535411837
-     accuracy: 0.8797000050544739
-
-
-
-```python
-pd.DataFrame(history.history).plot(figsize=(8, 5))
-plt.show()
-```
-
-
-![png](homl_ch11_Training-deep-neural-networks_files/homl_ch11_Training-deep-neural-networks_22_0.png)
 
 
 There is some disagreement over whether the BN layer should be added before or after the activation functions.
@@ -385,13 +235,273 @@ The activation functions must be separated from the hidden layers and added sepa
 
 
 ```python
-# Add example of BN before activation layer.
+model_2 = keras.models.Sequential([
+    keras.layers.Flatten(input_shape=[28, 28]),
+    keras.layers.BatchNormalization(),
+    keras.layers.Dense(300, kernel_initializer='he_normal', use_bias=False),
+    keras.layers.BatchNormalization(),
+    keras.layers.Activation('elu'),
+    keras.layers.Dense(100, kernel_initializer='he_normal', use_bias=False),
+    keras.layers.BatchNormalization(),
+    keras.layers.Activation('elu'),
+    keras.layers.Dense(10, activation='softmax')
+])
+
+model_2.summary()
 ```
+
+    Model: "sequential_2"
+    _________________________________________________________________
+    Layer (type)                 Output Shape              Param #   
+    =================================================================
+    flatten_1 (Flatten)          (None, 784)               0         
+    _________________________________________________________________
+    batch_normalization_3 (Batch (None, 784)               3136      
+    _________________________________________________________________
+    dense_8 (Dense)              (None, 300)               235200    
+    _________________________________________________________________
+    batch_normalization_4 (Batch (None, 300)               1200      
+    _________________________________________________________________
+    activation (Activation)      (None, 300)               0         
+    _________________________________________________________________
+    dense_9 (Dense)              (None, 100)               30000     
+    _________________________________________________________________
+    batch_normalization_5 (Batch (None, 100)               400       
+    _________________________________________________________________
+    activation_1 (Activation)    (None, 100)               0         
+    _________________________________________________________________
+    dense_10 (Dense)             (None, 10)                1010      
+    =================================================================
+    Total params: 270,946
+    Trainable params: 268,578
+    Non-trainable params: 2,368
+    _________________________________________________________________
+
+
+The "non-trainable" parameters the running averages for the means and standard deviations of each BN layer because they are not trained by the back-propagation.
+Below are the parameters for the first BN layer.
 
 
 ```python
-
+[(var.name, var.trainable) for var in model_1.layers[1].variables]
 ```
+
+
+
+
+    [('batch_normalization/gamma:0', True),
+     ('batch_normalization/beta:0', True),
+     ('batch_normalization/moving_mean:0', False),
+     ('batch_normalization/moving_variance:0', False)]
+
+
+
+Generally, the default hyperparamters for BN are good enough.
+The two that may be worth changing are `momentum` and `axis`.
+The momentum determines how much the newly computed batch means and standard deviations ($\textbf{v}$) should contribute to the running parameter averages weights ($\hat{\textbf{v}}$):
+
+$\hat{\textbf{v}} \leftarrow \hat{\textbf{v}} \times \text{momentum} + \textbf{v} \times (1 - \text{momentum})$
+
+The axis argument determines on which axis or axes the normalization occurs.
+The default is the last axis, which for flat input data is good, but is not likely applicable for input data matrices with greater than two dimensions.
+
+### Gradient clipping
+
+The maximum and minimum gradient can be set to prevent exploding gradients.
+Two parameters in `keras.optimizers.SGD()` can be set to do this.
+The first, `clipvalue`, sets the minimum and maximum values and then just reduces any gradient over/under the values to the maximum/minimum value.
+Thus, if `clipvalue=1.0` then the maximum and minimum gradients are [-1.0, 1.0] and a gradient of [0.7, 1.1] is clipped to [0.7, 1.0].
+The main problem with setting the `clipvalue` is that is changes the *direction* of the gradient.
+This is resolved by setting `clipnorm` which scales the gradient such that all the individual values fit within the limit, thus not changing the direction, just the magnitude of the gradient.
+For example if `clipnorm=1.0` then the vector [0.9, 100.0] becomes [0.00899964, 0.9999595] instead of [0.9, 1.0] with `clipvalue=1.0`.
+
+### Using pretrained layers
+
+The author advises that, "It is generally not a good idea to train a very large DNN from scratch," (HOML, pp. 345).
+Instead, a pretrained DNN can be downloaded and most of the layers reused.
+This is called *transfer learning*.
+The upsides are that is will speed up training considerably and requires less training data.
+
+In general, it is best to begin by retraining the upper layers while "freezing" the lower layers because they are more likely to have learned generalizable patterns.
+The more similar the new task is to the one for the original model, the more layers can be reused.
+Here is a process that will be generally advisable for *transfer learning*:
+
+1. Freeze all of the reused layers, train, and validate. This would only be training the output layer that is custom for the problem at hand.
+2. Unfreeze the top one or two layers, train, and validate. This lets back propagation train the last one or two layers in the network, leaving most of them untouched. 
+3. If you have a lot of training data, you can unfreeze more layers. It is advisable to reduce the learning rate, though.
+4. Finally, try experimenting with adding additional layers or replacing the last few layers of the original model.
+
+### Transfer learning with Keras
+
+Below is an example of training `model_B` on top of `model_A`.
+First, `model_A` is created, trained, and saved to file.
+
+
+```python
+from sklearn.model_selection import train_test_split
+import pathlib
+
+# Pepare data.
+fashion_mnist = keras.datasets.fashion_mnist
+(X_train_full, y_train_full), (X_test, y_test) = fashion_mnist.load_data()
+
+class_names = ["T-shirt/top", "Trouser", "Pullover", "Dress", "Coat", "Sandal", 
+               "Shirt", "Sneaker", "Bag", "Ankle boot"]
+
+# Split into training and validation data.
+X_train, X_valid, y_train, y_valid = train_test_split(X_train_full,
+                                                      y_train_full,
+                                                      test_size=0.2,
+                                                      random_state=0)
+
+# Construct model A
+model_A = keras.models.Sequential([
+    keras.layers.Flatten(input_shape = X_train.shape[1:]),
+    keras.layers.Dense(300, activation='elu', kernel_initializer='he_normal'),
+    keras.layers.Dense(200, activation='elu', kernel_initializer='he_normal'),
+    keras.layers.Dense(100, activation='elu', kernel_initializer='he_normal'),
+    keras.layers.Dense(50, activation='elu', kernel_initializer='he_normal'),
+    keras.layers.Dense(50, activation='elu', kernel_initializer='he_normal'),
+    keras.layers.Dense(50, activation='elu', kernel_initializer='he_normal'),
+    keras.layers.Dense(10, activation='softmax'),
+])
+
+# Compile model A
+model_A.compile(
+    loss='sparse_categorical_crossentropy',
+    optimizer=keras.optimizers.SGD(learning_rate=1e-4),
+    metrics=['accuracy']
+)
+
+# Train model A (only a few epochs)
+history_A = model_A.fit(
+    X_train, y_train,
+    epochs=3,
+    validation_split=0.2,
+    verbose=1
+)
+
+# Save model to file.
+model_A_path = pathlib.Path("assets/ch06/ch11/model_A.h5")
+model_A.save(model_A_path.as_posix())
+```
+
+    Train on 38400 samples, validate on 9600 samples
+    Epoch 1/3
+    38400/38400 [==============================] - 11s 274us/sample - loss: 3.0827 - accuracy: 0.6362 - val_loss: 1.3387 - val_accuracy: 0.7029
+    Epoch 2/3
+    38400/38400 [==============================] - 11s 276us/sample - loss: 1.0870 - accuracy: 0.7237 - val_loss: 1.0211 - val_accuracy: 0.7318
+    Epoch 3/3
+    38400/38400 [==============================] - 9s 247us/sample - loss: 0.8561 - accuracy: 0.7509 - val_loss: 0.9036 - val_accuracy: 0.7479
+
+
+Now the transfer learning can begin.
+First, model A is read in from file.
+Then `model_B_on_A` consists of all but the last layer of model A and a new layer is added for model B.
+The goal of model B is to classify the fashion image as shirt (positive) or sandal (negative). 
+
+
+```python
+# Get training data for just Shirts and Sandals.
+train_idx = [(y==0 or y==5) for y in y_train]
+X_train_B = X_train[train_idx, :, :]
+y_train_B = y_train[train_idx]
+y_train_B = (np.array(y_train_B) == 5)
+
+model_A = keras.models.load_model(model_A_path.as_posix())
+model_B_on_A = keras.models.Sequential(model_A.layers[:-1])
+model_B_on_A.add(keras.layers.Dense(1, activation='sigmoid'))
+```
+
+However, the training of `model_B_on_A` will change the layers in `model_A`.
+If this is not wanted, then model A must be cloned and the weights copied.
+An example of this is shown below.
+
+
+```python
+# Clone the model.
+model_A_clone = keras.models.clone_model(model_A)
+
+# Copy the weights (not does by `clone_model()` method.)
+model_A_clone.set_weights(model_A.get_weights())
+```
+
+Now we can train `model_B_on_A`.
+However, we want to freeze the layers from model A for the first few epochs.
+It is important to remember to recompile the model after layers are (un)frozen.
+
+
+```python
+# Freeze original layers for first training rounds.
+for layer in model_B_on_A.layers[:-1]:
+    layer.trainable = False
+
+# Recompile the model with only the top layer to be trained.
+model_B_on_A.compile(loss='binary_crossentropy',
+                     optimizer=keras.optimizers.SGD(learning_rate=1e-3),
+                     metrics=['accuracy'])
+
+# Train the top layer.
+history = model_B_on_A.fit(X_train_B, y_train_B, epochs=4, validation_split=0.2)
+```
+
+    Train on 7676 samples, validate on 1920 samples
+    Epoch 1/4
+    7676/7676 [==============================] - 3s 415us/sample - loss: 0.2337 - accuracy: 0.9807 - val_loss: 0.0821 - val_accuracy: 0.9849
+    Epoch 2/4
+    7676/7676 [==============================] - 2s 220us/sample - loss: 0.0544 - accuracy: 0.9887 - val_loss: 0.0773 - val_accuracy: 0.9854
+    Epoch 3/4
+    7676/7676 [==============================] - 2s 198us/sample - loss: 0.0510 - accuracy: 0.9898 - val_loss: 0.0660 - val_accuracy: 0.9875
+    Epoch 4/4
+    7676/7676 [==============================] - 2s 199us/sample - loss: 0.0487 - accuracy: 0.9898 - val_loss: 0.0626 - val_accuracy: 0.9870
+
+
+Then the lower layers can be unfrozen, the model recompiled, and additional rounds of training run.
+Note that the learning rate is reduced by an order of magnitude.
+
+
+```python
+for layer in model_B_on_A.layers:
+    layer.trainable = True
+
+model_B_on_A.compile(loss='binary_crossentropy',
+                     optimizer=keras.optimizers.SGD(learning_rate=1e-4),
+                     metrics=['accuracy'])
+
+history = model_B_on_A.fit(X_train_B, y_train_B, epochs=4, validation_split=0.2)
+```
+
+    Train on 7676 samples, validate on 1920 samples
+    Epoch 1/4
+    7676/7676 [==============================] - 3s 426us/sample - loss: 0.0434 - accuracy: 0.9914 - val_loss: 0.0548 - val_accuracy: 0.9880
+    Epoch 2/4
+    7676/7676 [==============================] - 2s 266us/sample - loss: 0.0346 - accuracy: 0.9932 - val_loss: 0.0462 - val_accuracy: 0.9901
+    Epoch 3/4
+    7676/7676 [==============================] - 2s 273us/sample - loss: 0.0279 - accuracy: 0.9941 - val_loss: 0.0417 - val_accuracy: 0.9906
+    Epoch 4/4
+    7676/7676 [==============================] - 2s 265us/sample - loss: 0.0235 - accuracy: 0.9954 - val_loss: 0.0382 - val_accuracy: 0.9906
+
+
+
+```python
+test_idx = [(y==0 or y==5) for y in y_test]
+X_test_B = X_test[test_idx, :, :]
+y_test_B = (np.array(y_test[test_idx]) == 5)
+
+test_loss, test_accuracy = model_B_on_A.evaluate(X_test_B, y_test_B, verbose=0)
+
+print(f'    test loss: {np.round(test_loss, 3)}')
+print(f'test accuracy: {np.round(test_accuracy * 100, 3)}%')
+```
+
+        test loss: 0.023
+    test accuracy: 99.45%
+
+
+**In general, transfer learning is only useful for *very* deep networks, specifically convolutional neural networks (CNN, Chapter 14).**
+This is likely because shallow networks do not learn generalizable patterns in the lower layers while CNNs do.
+
+### Unsupervised pretraining
 
 
 ```python
