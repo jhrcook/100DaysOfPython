@@ -364,3 +364,7 @@ We also covered Batch Normalization which I need to look further into to full un
 
 **Day 77 - January 06, 2020:**
 I learned about transfer learning today and how to accomplish it with Keras.
+
+**Day 78 - January 07, 2020:**
+We went over various optimizers to extend my tool-kit beyond SGD.
+We covered momentum optimization, Nesterov accelerated gradient, RMSProp, Adam, and a few others.

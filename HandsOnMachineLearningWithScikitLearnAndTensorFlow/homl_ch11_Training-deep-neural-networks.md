@@ -68,7 +68,7 @@ keras.layers.Dense(10, activation='relu', kernel_initializer='he_normal')
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x64087f590>
+    <tensorflow.python.keras.layers.core.Dense at 0x64a70f610>
 
 
 
@@ -86,7 +86,7 @@ keras.layers.Dense(10, activation='sigmoid', kernel_initializer=he_avg_init)
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x640892fd0>
+    <tensorflow.python.keras.layers.core.Dense at 0x64a722f50>
 
 
 
@@ -164,7 +164,7 @@ keras.layers.Dense(10, activation='selu', kernel_initializer='lecun_normal')
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x6408c2810>
+    <tensorflow.python.keras.layers.core.Dense at 0x64a7528d0>
 
 
 
@@ -388,11 +388,11 @@ model_A.save(model_A_path.as_posix())
 
     Train on 38400 samples, validate on 9600 samples
     Epoch 1/3
-    38400/38400 [==============================] - 11s 274us/sample - loss: 3.0827 - accuracy: 0.6362 - val_loss: 1.3387 - val_accuracy: 0.7029
+    38400/38400 [==============================] - 11s 278us/sample - loss: 3.0595 - accuracy: 0.6258 - val_loss: 1.6717 - val_accuracy: 0.6363
     Epoch 2/3
-    38400/38400 [==============================] - 11s 276us/sample - loss: 1.0870 - accuracy: 0.7237 - val_loss: 1.0211 - val_accuracy: 0.7318
+    38400/38400 [==============================] - 11s 279us/sample - loss: 1.0081 - accuracy: 0.7214 - val_loss: 0.9413 - val_accuracy: 0.7306
     Epoch 3/3
-    38400/38400 [==============================] - 9s 247us/sample - loss: 0.8561 - accuracy: 0.7509 - val_loss: 0.9036 - val_accuracy: 0.7479
+    38400/38400 [==============================] - 9s 247us/sample - loss: 0.7983 - accuracy: 0.7527 - val_loss: 0.8466 - val_accuracy: 0.7380
 
 
 Now the transfer learning can begin.
@@ -447,13 +447,13 @@ history = model_B_on_A.fit(X_train_B, y_train_B, epochs=4, validation_split=0.2)
 
     Train on 7676 samples, validate on 1920 samples
     Epoch 1/4
-    7676/7676 [==============================] - 3s 415us/sample - loss: 0.2337 - accuracy: 0.9807 - val_loss: 0.0821 - val_accuracy: 0.9849
+    7676/7676 [==============================] - 3s 340us/sample - loss: 0.1201 - accuracy: 0.9815 - val_loss: 0.0413 - val_accuracy: 0.9901
     Epoch 2/4
-    7676/7676 [==============================] - 2s 220us/sample - loss: 0.0544 - accuracy: 0.9887 - val_loss: 0.0773 - val_accuracy: 0.9854
+    7676/7676 [==============================] - 1s 194us/sample - loss: 0.0421 - accuracy: 0.9891 - val_loss: 0.0395 - val_accuracy: 0.9880
     Epoch 3/4
-    7676/7676 [==============================] - 2s 198us/sample - loss: 0.0510 - accuracy: 0.9898 - val_loss: 0.0660 - val_accuracy: 0.9875
+    7676/7676 [==============================] - 2s 257us/sample - loss: 0.0394 - accuracy: 0.9885 - val_loss: 0.0390 - val_accuracy: 0.9875
     Epoch 4/4
-    7676/7676 [==============================] - 2s 199us/sample - loss: 0.0487 - accuracy: 0.9898 - val_loss: 0.0626 - val_accuracy: 0.9870
+    7676/7676 [==============================] - 2s 214us/sample - loss: 0.0383 - accuracy: 0.9900 - val_loss: 0.0379 - val_accuracy: 0.9891
 
 
 Then the lower layers can be unfrozen, the model recompiled, and additional rounds of training run.
@@ -473,13 +473,13 @@ history = model_B_on_A.fit(X_train_B, y_train_B, epochs=4, validation_split=0.2)
 
     Train on 7676 samples, validate on 1920 samples
     Epoch 1/4
-    7676/7676 [==============================] - 3s 426us/sample - loss: 0.0434 - accuracy: 0.9914 - val_loss: 0.0548 - val_accuracy: 0.9880
+    7676/7676 [==============================] - 3s 445us/sample - loss: 0.0333 - accuracy: 0.9905 - val_loss: 0.0286 - val_accuracy: 0.9927
     Epoch 2/4
-    7676/7676 [==============================] - 2s 266us/sample - loss: 0.0346 - accuracy: 0.9932 - val_loss: 0.0462 - val_accuracy: 0.9901
+    7676/7676 [==============================] - 2s 265us/sample - loss: 0.0237 - accuracy: 0.9927 - val_loss: 0.0257 - val_accuracy: 0.9943
     Epoch 3/4
-    7676/7676 [==============================] - 2s 273us/sample - loss: 0.0279 - accuracy: 0.9941 - val_loss: 0.0417 - val_accuracy: 0.9906
+    7676/7676 [==============================] - 2s 264us/sample - loss: 0.0190 - accuracy: 0.9943 - val_loss: 0.0231 - val_accuracy: 0.9937
     Epoch 4/4
-    7676/7676 [==============================] - 2s 265us/sample - loss: 0.0235 - accuracy: 0.9954 - val_loss: 0.0382 - val_accuracy: 0.9906
+    7676/7676 [==============================] - 2s 264us/sample - loss: 0.0155 - accuracy: 0.9953 - val_loss: 0.0220 - val_accuracy: 0.9943
 
 
 
@@ -494,14 +494,179 @@ print(f'    test loss: {np.round(test_loss, 3)}')
 print(f'test accuracy: {np.round(test_accuracy * 100, 3)}%')
 ```
 
-        test loss: 0.023
-    test accuracy: 99.45%
+        test loss: 0.056
+    test accuracy: 99.15%
 
 
 **In general, transfer learning is only useful for *very* deep networks, specifically convolutional neural networks (CNN, Chapter 14).**
 This is likely because shallow networks do not learn generalizable patterns in the lower layers while CNNs do.
 
 ### Unsupervised pretraining
+
+If there is little labeled data and no previously trained model you can use with transfer learning, unlabeled data can be used for *unsupervised pretraining*.
+This is where an unsupervised model, often an autoencoder or generative adversarial network (GAN; Chapter 17) are trained on the unlabeled data and then the layers of the model are used as the lower layers for a DNN.
+
+### Pretraining on auxiliary data
+
+Another alternative for when there is little labeled data is to train a DNN on a related task where there is plenty of data, and then use the trained lower layers for another DNN for your desired task.
+
+## Fast optimizers
+
+Another way to reduce the amount of time required for training is to use a better optimizer than SGD.
+Below are some of the most common options.
+
+### Momentum optimization
+
+If a ball is rolling down a hill with a constant slope, it will speed up over time even though the gradient has not changed.
+This is the intuition behind *momentum optimization*.
+At each iteration, the local gradient is subtracted from the *momentum vector* $\textbf{m}$ and updates the weights by adding the momentum vector.
+This way, the gradient acts  more as acceleration than as the speed.
+Below are the equations for calculating the momentum vector and then the parameter weights where $\beta$ is the momentum, a parameter to limit the momentum vector, and $\eta$ is  the learning rate, and $J(\theta)$ is the cost function for the current value of the networks parameters $\theta$.
+
+$
+\textbf{m} \leftarrow \beta \textbf{m} -  \eta \nabla_{\theta} J(\theta) \\
+\theta \leftarrow \theta + \textbf{m}
+$
+
+To use the momentum optimization in keras, set the `momentum` parameter in the the `SGD` optimizer.
+
+
+```python
+keras.optimizers.SGD(learning_rate=1e-3, momentum=0.9)
+```
+
+
+
+
+    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a5c58eb10>
+
+
+
+### Nesterov accelerated gradient
+
+The *Nesterov accelerated gradient* (NAG) is a slight enhancement of momentum optimization.
+It measures the gradient not at the current location in the parameter space, but slightly ahead at $\theta + \beta \textbf{m}$:
+
+$
+\textbf{m} \leftarrow \beta \textbf{m} -  \eta \nabla_{\theta} J(\theta + \beta \textbf{m}) \\
+\theta \leftarrow \theta + \textbf{m}
+$
+
+It generally helps by slightly adjusting the current direction of the momentum vector towards the minima.
+It is trivial to implement in keras, and because it is usually faster than momentum optimization, it is recommended to apply:
+
+
+```python
+keras.optimizers.SGD(learning_rate=1e-3, momentum=0.9, nesterov=True)
+```
+
+
+
+
+    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a5d1de550>
+
+
+
+### AdaGrad
+
+AdaGrad uses an *adaptive learning rate* strategy to scale (decay) the learning rate faster for steeper dimensions.
+It is very simillar to SGD, but divides the loss for each parameter by the square of the gradient (with an additional smoothing value $\epsilon$):
+
+$
+\textbf{s} \leftarrow \textbf{s} + \nabla_\theta J(\theta) \otimes \nabla_\theta J(\theta)  \\
+\theta \leftarrow \theta - \eta \nabla_\theta J(\theta) \oslash \sqrt{\textbf{s} + \epsilon}
+$
+
+**AdaGrad scales the learning rate too quickly for training DNNs - do NOT use it.**
+
+
+```python
+keras.optimizers.Adagrad(learning_rate=1e-3, epsilon=1e-7)
+```
+
+
+
+
+    <tensorflow.python.keras.optimizer_v2.adagrad.Adagrad at 0x1a5d3c1450>
+
+
+
+(The default behaviour of many optimizers is to use `keras.backend.epsilon()` of `epsilon`.
+It is effectively a global variable that can be set using `keras.backend.set_epsilon()`.
+If the default value for `epsilon` is `None`, then it is likely using this value.)
+
+### RMSProp
+
+This is simillar to AdaGrad, but fixes the issue of decaying the gradient too quickly by accumulating only the more recent gradients, where $\beta$ is  the decay rate (the memory):
+
+$
+\textbf{s} \leftarrow \beta \textbf{s} + (1 - \beta) \nabla_\theta J(\theta) \otimes \nabla_\theta J(\theta)  \\
+\theta \leftarrow \theta - \eta \nabla_\theta J(\theta) \oslash \sqrt{\textbf{s} + \epsilon}
+$
+
+$\beta$ is another hyperparameter to tune, though the default value of 0.9 is usually sufficient.
+
+
+```python
+keras.optimizers.RMSprop(learning_rate=1e-3, rho=0.9)
+```
+
+
+
+
+    <tensorflow.python.keras.optimizer_v2.rmsprop.RMSprop at 0x1a5d503d50>
+
+
+
+### Adam and  Nadam  Optimization
+
+The *adaptive moment estimation* (Adam) optimizer uses a combination of momentum optimization and RMSProp (the simillarities are quite obvious in the algorithm on pp. 356 of *HOML*.
+There are three hyperparameters to set, though the defaults (used below) are usually sufficient.
+
+
+```python
+keras.optimizers.Adam(learning_rate=1e-3, 
+                      beta_1=0.9, 
+                      beta_2=0.999, 
+                      epsilon=1e-7)
+```
+
+
+
+
+    <tensorflow.python.keras.optimizer_v2.adam.Adam at 0x1a5cf32c90>
+
+
+
+There are two optimizers derived from Adam that the author touched upon.
+*AdaMax* is a reworking of the Adam algorithm to make it a bit more stable.
+Still, Adam tends to perform better.
+*Nadam* is Adam with the Nesterov trick.
+It usually converges faster and is generally recommended to try it out.
+
+
+```python
+# AdaMax optimizer (default arguments)
+keras.optimizers.Adamax(learning_rate=0.001,
+                        beta_1=0.9,
+                        beta_2=0.999,
+                        epsilon=1e-07)
+
+# Nadam optimizer (default arguments)
+keras.optimizers.Nadam(learning_rate=0.001,
+                       beta_1=0.9,
+                       beta_2=0.999,
+                       epsilon=1e-07)
+```
+
+
+
+
+    <tensorflow.python.keras.optimizer_v2.nadam.Nadam at 0x1a5d1c0650>
+
+
+
+### Learning Rate Scheduling
 
 
 ```python
