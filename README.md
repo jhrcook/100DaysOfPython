@@ -368,3 +368,7 @@ I learned about transfer learning today and how to accomplish it with Keras.
 **Day 78 - January 07, 2020:**
 We went over various optimizers to extend my tool-kit beyond SGD.
 We covered momentum optimization, Nesterov accelerated gradient, RMSProp, Adam, and a few others.
+
+**Day 79 - January 08, 2020:**
+I learned about the theory and how to implement learning rate schedulers.
+I also began the section on regularization.

@@ -68,7 +68,7 @@ keras.layers.Dense(10, activation='relu', kernel_initializer='he_normal')
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x64a70f610>
+    <tensorflow.python.keras.layers.core.Dense at 0x642993c50>
 
 
 
@@ -86,7 +86,7 @@ keras.layers.Dense(10, activation='sigmoid', kernel_initializer=he_avg_init)
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x64a722f50>
+    <tensorflow.python.keras.layers.core.Dense at 0x6429d7e90>
 
 
 
@@ -164,7 +164,7 @@ keras.layers.Dense(10, activation='selu', kernel_initializer='lecun_normal')
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x64a7528d0>
+    <tensorflow.python.keras.layers.core.Dense at 0x642a09590>
 
 
 
@@ -388,11 +388,11 @@ model_A.save(model_A_path.as_posix())
 
     Train on 38400 samples, validate on 9600 samples
     Epoch 1/3
-    38400/38400 [==============================] - 11s 278us/sample - loss: 3.0595 - accuracy: 0.6258 - val_loss: 1.6717 - val_accuracy: 0.6363
+    38400/38400 [==============================] - 11s 284us/sample - loss: 3.6792 - accuracy: 0.6599 - val_loss: 1.4006 - val_accuracy: 0.7105
     Epoch 2/3
-    38400/38400 [==============================] - 11s 279us/sample - loss: 1.0081 - accuracy: 0.7214 - val_loss: 0.9413 - val_accuracy: 0.7306
+    38400/38400 [==============================] - 10s 254us/sample - loss: 1.1440 - accuracy: 0.7265 - val_loss: 1.0446 - val_accuracy: 0.7365
     Epoch 3/3
-    38400/38400 [==============================] - 9s 247us/sample - loss: 0.7983 - accuracy: 0.7527 - val_loss: 0.8466 - val_accuracy: 0.7380
+    38400/38400 [==============================] - 10s 254us/sample - loss: 0.8715 - accuracy: 0.7540 - val_loss: 0.9083 - val_accuracy: 0.7368
 
 
 Now the transfer learning can begin.
@@ -447,13 +447,13 @@ history = model_B_on_A.fit(X_train_B, y_train_B, epochs=4, validation_split=0.2)
 
     Train on 7676 samples, validate on 1920 samples
     Epoch 1/4
-    7676/7676 [==============================] - 3s 340us/sample - loss: 0.1201 - accuracy: 0.9815 - val_loss: 0.0413 - val_accuracy: 0.9901
+    7676/7676 [==============================] - 3s 350us/sample - loss: 0.4199 - accuracy: 0.9491 - val_loss: 0.0441 - val_accuracy: 0.9875
     Epoch 2/4
-    7676/7676 [==============================] - 1s 194us/sample - loss: 0.0421 - accuracy: 0.9891 - val_loss: 0.0395 - val_accuracy: 0.9880
+    7676/7676 [==============================] - 2s 199us/sample - loss: 0.0622 - accuracy: 0.9875 - val_loss: 0.0360 - val_accuracy: 0.9901
     Epoch 3/4
-    7676/7676 [==============================] - 2s 257us/sample - loss: 0.0394 - accuracy: 0.9885 - val_loss: 0.0390 - val_accuracy: 0.9875
+    7676/7676 [==============================] - 2s 199us/sample - loss: 0.0554 - accuracy: 0.9889 - val_loss: 0.0336 - val_accuracy: 0.9901
     Epoch 4/4
-    7676/7676 [==============================] - 2s 214us/sample - loss: 0.0383 - accuracy: 0.9900 - val_loss: 0.0379 - val_accuracy: 0.9891
+    7676/7676 [==============================] - 2s 213us/sample - loss: 0.0520 - accuracy: 0.9902 - val_loss: 0.0308 - val_accuracy: 0.9922
 
 
 Then the lower layers can be unfrozen, the model recompiled, and additional rounds of training run.
@@ -473,13 +473,13 @@ history = model_B_on_A.fit(X_train_B, y_train_B, epochs=4, validation_split=0.2)
 
     Train on 7676 samples, validate on 1920 samples
     Epoch 1/4
-    7676/7676 [==============================] - 3s 445us/sample - loss: 0.0333 - accuracy: 0.9905 - val_loss: 0.0286 - val_accuracy: 0.9927
+    7676/7676 [==============================] - 3s 439us/sample - loss: 0.0452 - accuracy: 0.9914 - val_loss: 0.0262 - val_accuracy: 0.9927
     Epoch 2/4
-    7676/7676 [==============================] - 2s 265us/sample - loss: 0.0237 - accuracy: 0.9927 - val_loss: 0.0257 - val_accuracy: 0.9943
+    7676/7676 [==============================] - 2s 292us/sample - loss: 0.0298 - accuracy: 0.9937 - val_loss: 0.0251 - val_accuracy: 0.9927
     Epoch 3/4
-    7676/7676 [==============================] - 2s 264us/sample - loss: 0.0190 - accuracy: 0.9943 - val_loss: 0.0231 - val_accuracy: 0.9937
+    7676/7676 [==============================] - 2s 270us/sample - loss: 0.0219 - accuracy: 0.9952 - val_loss: 0.0243 - val_accuracy: 0.9927
     Epoch 4/4
-    7676/7676 [==============================] - 2s 264us/sample - loss: 0.0155 - accuracy: 0.9953 - val_loss: 0.0220 - val_accuracy: 0.9943
+    7676/7676 [==============================] - 2s 271us/sample - loss: 0.0168 - accuracy: 0.9965 - val_loss: 0.0238 - val_accuracy: 0.9932
 
 
 
@@ -494,8 +494,8 @@ print(f'    test loss: {np.round(test_loss, 3)}')
 print(f'test accuracy: {np.round(test_accuracy * 100, 3)}%')
 ```
 
-        test loss: 0.056
-    test accuracy: 99.15%
+        test loss: 0.029
+    test accuracy: 99.25%
 
 
 **In general, transfer learning is only useful for *very* deep networks, specifically convolutional neural networks (CNN, Chapter 14).**
@@ -538,7 +538,7 @@ keras.optimizers.SGD(learning_rate=1e-3, momentum=0.9)
 
 
 
-    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a5c58eb10>
+    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a54af4cd0>
 
 
 
@@ -563,7 +563,7 @@ keras.optimizers.SGD(learning_rate=1e-3, momentum=0.9, nesterov=True)
 
 
 
-    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a5d1de550>
+    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a5548ef90>
 
 
 
@@ -587,7 +587,7 @@ keras.optimizers.Adagrad(learning_rate=1e-3, epsilon=1e-7)
 
 
 
-    <tensorflow.python.keras.optimizer_v2.adagrad.Adagrad at 0x1a5d3c1450>
+    <tensorflow.python.keras.optimizer_v2.adagrad.Adagrad at 0x1a551ca1d0>
 
 
 
@@ -614,7 +614,7 @@ keras.optimizers.RMSprop(learning_rate=1e-3, rho=0.9)
 
 
 
-    <tensorflow.python.keras.optimizer_v2.rmsprop.RMSprop at 0x1a5d503d50>
+    <tensorflow.python.keras.optimizer_v2.rmsprop.RMSprop at 0x1a5563c6d0>
 
 
 
@@ -634,7 +634,7 @@ keras.optimizers.Adam(learning_rate=1e-3,
 
 
 
-    <tensorflow.python.keras.optimizer_v2.adam.Adam at 0x1a5cf32c90>
+    <tensorflow.python.keras.optimizer_v2.adam.Adam at 0x1a54ad1950>
 
 
 
@@ -662,11 +662,147 @@ keras.optimizers.Nadam(learning_rate=0.001,
 
 
 
-    <tensorflow.python.keras.optimizer_v2.nadam.Nadam at 0x1a5d1c0650>
+    <tensorflow.python.keras.optimizer_v2.nadam.Nadam at 0x1a552449d0>
 
 
 
 ### Learning Rate Scheduling
+
+A dynamic learning rate, one that changes during the training, is usually better than a static learning rate.
+Here are some of the more popular *learning schedules*.
+
+* **Power scheduling**: The learning rate is a function of the iteration number $t$: $\eta(t) = \eta_0 / (1 + t/s)^c$ where $s$, $c$, and $\eta_0$ are all hyperparameters to tune. This equation drops the learning rate quickly at first, but then the changes are smaller.
+* **Exponential scheduling**: Set the learning rate to $\eta(t) = \eta_0 0.1^{t/s}$. This equation reduces the learning rate by a factor of 10 every $s$ steps.
+* **Piecewise constant scheduling**: Assign specific learning rates to each range of training iterations.
+* **Performance scheduling**: Measure the validation error every $N$ steps and reduce the learning rate by a factor of  $\gamma$ when the error stops dropping.
+* **Icycle scheduling**: This is a more complicated schedule that raises the learning rate linearly during the first half of training, and then reduces it linearly in the second half. It does the opposite for the momentum.
+
+Implementing these in keras is pretty easy.
+First, power  scheduling can be accomplished using the `decay` argument in the `SGD` optimizer class. (The $c$ hyperparameter is automatically set to 1.)
+
+
+```python
+keras.optimizers.SGD(learning_rate=1e-2, momentum=0.9, decay=1e-4)
+```
+
+
+
+
+    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x64246eb50>
+
+
+
+Implementing exponential scheduling is fairly straightforward, too.
+First, a function that takes the iteration number and returns the learning rate must be defined.
+Then, a `LearningRateScheduler` callback is made an provided the function.
+The callback is then passed to the `fit()` method.
+
+Here, the function `exponential_decay()` takes the initial learning rate and $s$ hyperparameter value and returns another function that implements the exponential decay scheduler for a given epoch.
+
+
+```python
+def exponential_decay(lr0, s):
+    """Return a LR scheduling function with the desired hyperparameters."""
+    return lambda epoch: lr0 * 0.1**(epoch / s)
+
+# Learning rate scheduling function with initial learning rate and s.
+exponential_decay_fn = exponential_decay(lr0=0.01, s=20)
+
+# A learning rate scheduler callback to implement the exponential scheduler.
+lr_scheduler = keras.callbacks.LearningRateScheduler(exponential_decay_fn)
+
+# Pass `lr_scheduler` to the `fit()` method for training.
+```
+
+If needed, the schedule function can take the current learning rate as a second argument.
+
+The *performance scheduler* can be implemented using the `ReduceLROnPlateau` callback.
+It multiplies the current learning rate by a desired factor after a certain number of epochs without improvement.
+
+
+```python
+keras.callbacks.ReduceLROnPlateau(factor=0.5, patience=5)
+```
+
+
+
+
+    <tensorflow.python.keras.callbacks.ReduceLROnPlateau at 0x1a5547a0d0>
+
+
+
+TensorFlow's implementation of Keras offers the ability to define a learning rate schedule using an object in `keras.optimizers.schedules` and then pass it to an optimizer.
+**This approach updates the learing rate at each step rather than at each epoch.**
+Below is an example of exponential decay where the number of steps is the total number of training steps in 20 epochs and a batch size of 32.
+
+
+```python
+# Training hyperparameters.
+n_epochs = 20
+batch_size = 32
+
+# Learning rate scheduler.
+s = n_epochs * len(X_train) // batch_size
+learning_rate = keras.optimizers.schedules.ExponentialDecay(0.01, s, 0.1)
+
+# SGD using the exponential LR scheduler.
+optimizer =  keras.optimizers.SGD(learning_rate)
+```
+
+## Avoiding overfitting through regularization
+
+We have already covered two powerful techniques that act like regularization: early stopping and Batch Normalization.
+
+### $\ell_1$ and $\ell_2$ regularization
+
+Both $\ell_1$ and $\ell_2$ can easily be used to constrain a layer's weights. 
+$\ell_1$ forces more weights to 0 and thus creates more sparse networks.
+Here is an example of a dense layer that applies $\ell_2$ regularization to its connection weights with a regularization factor of 0.01 (how strong of a penalty to use):
+
+
+```python
+keras.layers.Dense(100,
+                   activation='elu',
+                   kernel_initializer='he_normal',
+                   kernel_regularizer=keras.regularizers.l2(0.01))
+```
+
+
+
+
+    <tensorflow.python.keras.layers.core.Dense at 0x6430f5dd0>
+
+
+
+However, defining this for each layer of a network would become repetitive.
+One way around this would be to implement a for-loop.
+Alternatively, Python's `functools.partial()`, a function that can create a thin wrapper for any callable, can be used to create a proto-layer with desireable defaults.
+
+
+```python
+from functools import partial
+
+# A wrapper around a Dense layer with L2-regularization.
+RegularizedDense = partial(
+    keras.layers.Dense,
+    activation='elu',
+    kernel_initializer='he_normal',
+    kernel_regularizer=keras.regularizers.l2(0.01)
+)
+
+# A sequential model.
+model = keras.models.Sequential([
+    keras.layers.Flatten(input_shape=[28, 28]),
+    RegularizedDense(300),
+    RegularizedDense(100),
+    RegularizedDense(10, 
+                     activation='softmax', 
+                     kernel_initializer='glorot_uniform'),
+])
+```
+
+### Dropout
+
 
 
 ```python
