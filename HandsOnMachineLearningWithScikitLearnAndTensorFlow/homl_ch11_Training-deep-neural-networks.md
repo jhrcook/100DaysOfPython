@@ -68,7 +68,7 @@ keras.layers.Dense(10, activation='relu', kernel_initializer='he_normal')
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x642993c50>
+    <tensorflow.python.keras.layers.core.Dense at 0x644f50550>
 
 
 
@@ -86,7 +86,7 @@ keras.layers.Dense(10, activation='sigmoid', kernel_initializer=he_avg_init)
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x6429d7e90>
+    <tensorflow.python.keras.layers.core.Dense at 0x6450ecc90>
 
 
 
@@ -164,7 +164,7 @@ keras.layers.Dense(10, activation='selu', kernel_initializer='lecun_normal')
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x642a09590>
+    <tensorflow.python.keras.layers.core.Dense at 0x6450fea50>
 
 
 
@@ -388,11 +388,11 @@ model_A.save(model_A_path.as_posix())
 
     Train on 38400 samples, validate on 9600 samples
     Epoch 1/3
-    38400/38400 [==============================] - 11s 284us/sample - loss: 3.6792 - accuracy: 0.6599 - val_loss: 1.4006 - val_accuracy: 0.7105
+    38400/38400 [==============================] - 11s 290us/sample - loss: 3.1552 - accuracy: 0.6259 - val_loss: 1.2860 - val_accuracy: 0.6743
     Epoch 2/3
-    38400/38400 [==============================] - 10s 254us/sample - loss: 1.1440 - accuracy: 0.7265 - val_loss: 1.0446 - val_accuracy: 0.7365
+    38400/38400 [==============================] - 12s 309us/sample - loss: 1.0561 - accuracy: 0.7038 - val_loss: 0.9858 - val_accuracy: 0.7094
     Epoch 3/3
-    38400/38400 [==============================] - 10s 254us/sample - loss: 0.8715 - accuracy: 0.7540 - val_loss: 0.9083 - val_accuracy: 0.7368
+    38400/38400 [==============================] - 11s 298us/sample - loss: 0.8433 - accuracy: 0.7348 - val_loss: 0.8872 - val_accuracy: 0.7329
 
 
 Now the transfer learning can begin.
@@ -447,13 +447,13 @@ history = model_B_on_A.fit(X_train_B, y_train_B, epochs=4, validation_split=0.2)
 
     Train on 7676 samples, validate on 1920 samples
     Epoch 1/4
-    7676/7676 [==============================] - 3s 350us/sample - loss: 0.4199 - accuracy: 0.9491 - val_loss: 0.0441 - val_accuracy: 0.9875
+    7676/7676 [==============================] - 3s 345us/sample - loss: 0.1703 - accuracy: 0.9586 - val_loss: 0.0930 - val_accuracy: 0.9781
     Epoch 2/4
-    7676/7676 [==============================] - 2s 199us/sample - loss: 0.0622 - accuracy: 0.9875 - val_loss: 0.0360 - val_accuracy: 0.9901
+    7676/7676 [==============================] - 2s 200us/sample - loss: 0.0939 - accuracy: 0.9795 - val_loss: 0.0646 - val_accuracy: 0.9812
     Epoch 3/4
-    7676/7676 [==============================] - 2s 199us/sample - loss: 0.0554 - accuracy: 0.9889 - val_loss: 0.0336 - val_accuracy: 0.9901
+    7676/7676 [==============================] - 2s 204us/sample - loss: 0.0795 - accuracy: 0.9822 - val_loss: 0.0575 - val_accuracy: 0.9823
     Epoch 4/4
-    7676/7676 [==============================] - 2s 213us/sample - loss: 0.0520 - accuracy: 0.9902 - val_loss: 0.0308 - val_accuracy: 0.9922
+    7676/7676 [==============================] - 2s 203us/sample - loss: 0.0729 - accuracy: 0.9827 - val_loss: 0.0607 - val_accuracy: 0.9859
 
 
 Then the lower layers can be unfrozen, the model recompiled, and additional rounds of training run.
@@ -473,13 +473,13 @@ history = model_B_on_A.fit(X_train_B, y_train_B, epochs=4, validation_split=0.2)
 
     Train on 7676 samples, validate on 1920 samples
     Epoch 1/4
-    7676/7676 [==============================] - 3s 439us/sample - loss: 0.0452 - accuracy: 0.9914 - val_loss: 0.0262 - val_accuracy: 0.9927
+    7676/7676 [==============================] - 3s 443us/sample - loss: 0.0583 - accuracy: 0.9876 - val_loss: 0.0315 - val_accuracy: 0.9911
     Epoch 2/4
-    7676/7676 [==============================] - 2s 292us/sample - loss: 0.0298 - accuracy: 0.9937 - val_loss: 0.0251 - val_accuracy: 0.9927
+    7676/7676 [==============================] - 2s 271us/sample - loss: 0.0376 - accuracy: 0.9914 - val_loss: 0.0247 - val_accuracy: 0.9927
     Epoch 3/4
-    7676/7676 [==============================] - 2s 270us/sample - loss: 0.0219 - accuracy: 0.9952 - val_loss: 0.0243 - val_accuracy: 0.9927
+    7676/7676 [==============================] - 2s 276us/sample - loss: 0.0282 - accuracy: 0.9935 - val_loss: 0.0252 - val_accuracy: 0.9922
     Epoch 4/4
-    7676/7676 [==============================] - 2s 271us/sample - loss: 0.0168 - accuracy: 0.9965 - val_loss: 0.0238 - val_accuracy: 0.9932
+    7676/7676 [==============================] - 2s 273us/sample - loss: 0.0228 - accuracy: 0.9950 - val_loss: 0.0193 - val_accuracy: 0.9937
 
 
 
@@ -494,7 +494,7 @@ print(f'    test loss: {np.round(test_loss, 3)}')
 print(f'test accuracy: {np.round(test_accuracy * 100, 3)}%')
 ```
 
-        test loss: 0.029
+        test loss: 0.039
     test accuracy: 99.25%
 
 
@@ -538,7 +538,7 @@ keras.optimizers.SGD(learning_rate=1e-3, momentum=0.9)
 
 
 
-    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a54af4cd0>
+    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a56f3ef90>
 
 
 
@@ -563,7 +563,7 @@ keras.optimizers.SGD(learning_rate=1e-3, momentum=0.9, nesterov=True)
 
 
 
-    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a5548ef90>
+    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a57b8b310>
 
 
 
@@ -587,7 +587,7 @@ keras.optimizers.Adagrad(learning_rate=1e-3, epsilon=1e-7)
 
 
 
-    <tensorflow.python.keras.optimizer_v2.adagrad.Adagrad at 0x1a551ca1d0>
+    <tensorflow.python.keras.optimizer_v2.adagrad.Adagrad at 0x1a57d4bb90>
 
 
 
@@ -614,7 +614,7 @@ keras.optimizers.RMSprop(learning_rate=1e-3, rho=0.9)
 
 
 
-    <tensorflow.python.keras.optimizer_v2.rmsprop.RMSprop at 0x1a5563c6d0>
+    <tensorflow.python.keras.optimizer_v2.rmsprop.RMSprop at 0x1a57ebf5d0>
 
 
 
@@ -634,7 +634,7 @@ keras.optimizers.Adam(learning_rate=1e-3,
 
 
 
-    <tensorflow.python.keras.optimizer_v2.adam.Adam at 0x1a54ad1950>
+    <tensorflow.python.keras.optimizer_v2.adam.Adam at 0x1a57ebfd10>
 
 
 
@@ -662,7 +662,7 @@ keras.optimizers.Nadam(learning_rate=0.001,
 
 
 
-    <tensorflow.python.keras.optimizer_v2.nadam.Nadam at 0x1a552449d0>
+    <tensorflow.python.keras.optimizer_v2.nadam.Nadam at 0x1a57d36250>
 
 
 
@@ -688,7 +688,7 @@ keras.optimizers.SGD(learning_rate=1e-2, momentum=0.9, decay=1e-4)
 
 
 
-    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x64246eb50>
+    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x644b63d90>
 
 
 
@@ -727,7 +727,7 @@ keras.callbacks.ReduceLROnPlateau(factor=0.5, patience=5)
 
 
 
-    <tensorflow.python.keras.callbacks.ReduceLROnPlateau at 0x1a5547a0d0>
+    <tensorflow.python.keras.callbacks.ReduceLROnPlateau at 0x1a57d57e10>
 
 
 
@@ -770,7 +770,7 @@ keras.layers.Dense(100,
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x6430f5dd0>
+    <tensorflow.python.keras.layers.core.Dense at 0x1a5793de10>
 
 
 
@@ -803,6 +803,267 @@ model = keras.models.Sequential([
 
 ### Dropout
 
+*Dropout* is the process of removing some neurons randomly during training and it has  proven to  be a very powerful regularization technique.
+At each training step, each neuron - except for output neurons - has a probability $p$ of being ignored - all of its inputs and outputs are set to 0.
+Thus, because each neuron can be either present or absent, there are effectively $2^N$ neural networks being trained and averaged together.
+The intuition as to why this works is that the neurons cannot rely on just one or two of its neighbors, but must diversify, thus regularizing its input weights.
+Note that dropout is only present during training and not testing or production use of the ANN.
+Thus there is a step to compensate each input (or output) weight for the increased number of neurons.
+
+In Keras, adding dropout to an ANN is done with a `keras.layers.Dropout()` layer.
+Note that the input nodes can dropout, but not the output nodes.
+
+
+```python
+dropout_rate = 0.2
+
+model = keras.models.Sequential([
+    keras.layers.Flatten(input_shape=[28, 28]),
+    keras.layers.Dropout(rate=dropout_rate),
+    keras.layers.Dense(300, activation='elu', kernel_initializer='he_normal'),
+    keras.layers.Dropout(rate=dropout_rate),
+    keras.layers.Dense(100, activation='elu', kernel_initializer='he_normal'),
+    keras.layers.Dropout(rate=dropout_rate),
+    keras.layers.Dense(10, activation='softmax')
+])
+model.summary()
+```
+
+    Model: "sequential_6"
+    _________________________________________________________________
+    Layer (type)                 Output Shape              Param #   
+    =================================================================
+    flatten_4 (Flatten)          (None, 784)               0         
+    _________________________________________________________________
+    dropout (Dropout)            (None, 784)               0         
+    _________________________________________________________________
+    dense_23 (Dense)             (None, 300)               235500    
+    _________________________________________________________________
+    dropout_1 (Dropout)          (None, 300)               0         
+    _________________________________________________________________
+    dense_24 (Dense)             (None, 100)               30100     
+    _________________________________________________________________
+    dropout_2 (Dropout)          (None, 100)               0         
+    _________________________________________________________________
+    dense_25 (Dense)             (None, 10)                1010      
+    =================================================================
+    Total params: 266,610
+    Trainable params: 266,610
+    Non-trainable params: 0
+    _________________________________________________________________
+
+
+If the model is overfitting, then try increasing the dropout rate.
+The opposite is recommended for underfitting the training data.
+It can also help to increase the dropout rate for larger layers.
+Finally, many state-of-the-art networks only use dropout on the final hidden layer - this may be worth trying if the model is underfitting the training data severely.
+
+### Monte Carlo (MC) Dropout
+
+The dropout implemented during training can be used to increase the accuracy and confidence predictions for a neural network during testing and production.
+It effectively uses the dropout as Monte Carlo simulation, and gets multiple predictions on each instance, combining them all into a more robust and insightful prediction.
+
+Below is an example of using this process on the Fashion MNIST data.
+First, the model created above is trained.
+
+
+```python
+# Compile using SGD with faster options.
+# optimizer = keras.optimizers.SGD(learning_rate=1e-2, nesterov=True)
+optimizer = keras.optimizers.Adam(learning_rate=1e-3)
+model.compile(
+    loss='sparse_categorical_crossentropy',
+    optimizer=optimizer,
+    metrics=['accuracy']
+)
+
+# Fit on Fashion MNIST training data.
+history = model.fit(X_train,
+                    y_train,
+                    validation_split=0.2,
+                    callbacks=[keras.callbacks.EarlyStopping(patience=5)],
+                    epochs=20)
+```
+
+    Train on 38400 samples, validate on 9600 samples
+    Epoch 1/20
+    38400/38400 [==============================] - 15s 391us/sample - loss: 4.5875 - accuracy: 0.3413 - val_loss: 1.3344 - val_accuracy: 0.4289
+    Epoch 2/20
+    38400/38400 [==============================] - 14s 370us/sample - loss: 1.5698 - accuracy: 0.4093 - val_loss: 1.1722 - val_accuracy: 0.5146
+    Epoch 3/20
+    38400/38400 [==============================] - 14s 374us/sample - loss: 1.3145 - accuracy: 0.4990 - val_loss: 0.9734 - val_accuracy: 0.6032
+    Epoch 4/20
+    38400/38400 [==============================] - 14s 371us/sample - loss: 1.1557 - accuracy: 0.5529 - val_loss: 0.8541 - val_accuracy: 0.6404
+    Epoch 5/20
+    38400/38400 [==============================] - 15s 380us/sample - loss: 1.0513 - accuracy: 0.5899 - val_loss: 0.8229 - val_accuracy: 0.6477
+    Epoch 6/20
+    38400/38400 [==============================] - 14s 369us/sample - loss: 1.0017 - accuracy: 0.6051 - val_loss: 0.8110 - val_accuracy: 0.6833
+    Epoch 7/20
+    38400/38400 [==============================] - 17s 439us/sample - loss: 0.9648 - accuracy: 0.6220 - val_loss: 0.8120 - val_accuracy: 0.6797
+    Epoch 8/20
+    38400/38400 [==============================] - 15s 383us/sample - loss: 0.9030 - accuracy: 0.6413 - val_loss: 0.6999 - val_accuracy: 0.7224
+    Epoch 9/20
+    38400/38400 [==============================] - 15s 386us/sample - loss: 0.8349 - accuracy: 0.6727 - val_loss: 0.6851 - val_accuracy: 0.7357
+    Epoch 10/20
+    38400/38400 [==============================] - 15s 387us/sample - loss: 0.7958 - accuracy: 0.6904 - val_loss: 0.6459 - val_accuracy: 0.7374
+    Epoch 11/20
+    38400/38400 [==============================] - 15s 398us/sample - loss: 0.7403 - accuracy: 0.7073 - val_loss: 0.6300 - val_accuracy: 0.7569
+    Epoch 12/20
+    38400/38400 [==============================] - 15s 390us/sample - loss: 0.7084 - accuracy: 0.7202 - val_loss: 0.6036 - val_accuracy: 0.7660
+    Epoch 13/20
+    38400/38400 [==============================] - 15s 393us/sample - loss: 0.6961 - accuracy: 0.7242 - val_loss: 0.6304 - val_accuracy: 0.7565
+    Epoch 14/20
+    38400/38400 [==============================] - 15s 392us/sample - loss: 0.6828 - accuracy: 0.7327 - val_loss: 0.5619 - val_accuracy: 0.7957
+    Epoch 15/20
+    38400/38400 [==============================] - 15s 402us/sample - loss: 0.6606 - accuracy: 0.7546 - val_loss: 0.5504 - val_accuracy: 0.8086
+    Epoch 16/20
+    38400/38400 [==============================] - 15s 399us/sample - loss: 0.6397 - accuracy: 0.7624 - val_loss: 0.5407 - val_accuracy: 0.8051
+    Epoch 17/20
+    38400/38400 [==============================] - 15s 397us/sample - loss: 0.6285 - accuracy: 0.7684 - val_loss: 0.5215 - val_accuracy: 0.8094
+    Epoch 18/20
+    38400/38400 [==============================] - 15s 392us/sample - loss: 0.6307 - accuracy: 0.7685 - val_loss: 0.5347 - val_accuracy: 0.8135
+    Epoch 19/20
+    38400/38400 [==============================] - 15s 396us/sample - loss: 0.6310 - accuracy: 0.7696 - val_loss: 0.5482 - val_accuracy: 0.8087
+    Epoch 20/20
+    38400/38400 [==============================] - 15s 393us/sample - loss: 0.6429 - accuracy: 0.7720 - val_loss: 0.5024 - val_accuracy: 0.8357
+
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8, 5))
+plt.axis([0, 19, 0.3, 1])
+plt.show()
+```
+
+
+![png](homl_ch11_Training-deep-neural-networks_files/homl_ch11_Training-deep-neural-networks_60_0.png)
+
+
+MC Dropout calls for making many predictions on the same test data and then averaging across each prediction.
+Below, we make 100 predictions and then average along the first axis (`axis=0`).
+
+
+```python
+y_probas = np.stack([model(X_valid.astype(np.float32), training=True) for sample in range(100)])
+y_probas.shape
+```
+
+
+
+
+    (100, 12000, 10)
+
+
+
+
+```python
+y_proba = y_probas.mean(axis=0)
+y_proba.shape
+```
+
+
+
+
+    (12000, 10)
+
+
+
+Below, we show the image of the first training data followed by the prediction probabilities made by the trained model and the prediction probabilities estimated using MC Dropout.
+
+
+```python
+i = 0
+plt.imshow(X_valid[i, :, :])
+plt.grid(False)
+plt.title(f'real label: {y_valid[i]} ({class_names[y_valid[i]]})')
+plt.show()
+```
+
+
+![png](homl_ch11_Training-deep-neural-networks_files/homl_ch11_Training-deep-neural-networks_65_0.png)
+
+
+
+```python
+# Prediction prbobabilities from the model.
+np.round(model.predict_proba(X_valid[i:i+1, :, :]), 2)
+```
+
+
+
+
+    array([[1., 0., 0., 0., 0., 0., 0., 0., 0., 0.]], dtype=float32)
+
+
+
+
+```python
+# Prediction probabilities using MC Dropout.
+np.round(y_proba[i], 2)
+```
+
+
+
+
+    array([0.98, 0.  , 0.  , 0.01, 0.  , 0.  , 0.01, 0.  , 0.  , 0.  ],
+          dtype=float32)
+
+
+
+As shown above, the model indicates certainty of its choice, while the MC Dropout shows that it isn't 100% confident.
+While the difference in this example isn't great, testing instances 2 and 3 show that there can be a significant reduction in the confidence of the model.
+
+
+```python
+print(list(np.round(model.predict_proba(X_valid[1:2, :, :]), 2).ravel()))
+print(list(np.round(y_proba[1], 2)))
+```
+
+    [0.04, 0.0, 0.61, 0.03, 0.16, 0.01, 0.14, 0.01, 0.01, 0.0]
+    [0.05, 0.0, 0.56, 0.03, 0.15, 0.01, 0.18, 0.01, 0.02, 0.0]
+
+
+
+```python
+print(list(np.round(model.predict_proba(X_valid[2:3, :, :]), 2).ravel()))
+print(list(np.round(y_proba[2], 2)))
+print(f'real label: {y_valid[2]}')
+```
+
+    [0.67, 0.0, 0.01, 0.0, 0.0, 0.0, 0.31, 0.0, 0.0, 0.0]
+    [0.64, 0.0, 0.03, 0.02, 0.01, 0.0, 0.29, 0.0, 0.01, 0.0]
+    real label: 6
+
+
+A useful trick to to take the standard deviation across all of the prediction probabilities.
+This can provide a better model for the prediction certainty.
+
+
+```python
+# Calculate the standard deviation of prediction values for each instance.
+y_std = y_probas.std(axis=0)
+
+# Show the prediction probs and the stadnard deviations for a test instance.
+print('predictions:', list(np.round(y_proba[1], 2)))
+print('  std. dev.:', list(np.round(y_std[1], 2)))
+```
+
+    predictions: [0.05, 0.0, 0.56, 0.03, 0.15, 0.01, 0.18, 0.01, 0.02, 0.0]
+      std. dev.: [0.03, 0.0, 0.11, 0.01, 0.03, 0.0, 0.07, 0.0, 0.02, 0.0]
+
+
+In practice, it is not generally advisable to get the model predictions by passing `training=True` because other layers may react to the parameter (e.g. Batch Normalization).
+Thus it is preferable to subclass `Dropout` and override the `call()` method.
+
+
+```python
+class MCDropout(keras.layers.Dropout):
+    """A Monte Carlo Dropout layer."""
+    def call(self, inputs):
+        return super().call(inputs, training=True)
+```
+
+### Max-Norm Regularization
 
 
 ```python

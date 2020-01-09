@@ -372,3 +372,6 @@ We covered momentum optimization, Nesterov accelerated gradient, RMSProp, Adam, 
 **Day 79 - January 08, 2020:**
 I learned about the theory and how to implement learning rate schedulers.
 I also began the section on regularization.
+
+**Day 80 - January 09, 2020:**
+I learned about Dropout regularization and hoow to perform and use Monte Carlo Dropout to obtain between prediction probabilities.
