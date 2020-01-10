@@ -68,7 +68,7 @@ keras.layers.Dense(10, activation='relu', kernel_initializer='he_normal')
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x644f50550>
+    <tensorflow.python.keras.layers.core.Dense at 0x645f449d0>
 
 
 
@@ -86,7 +86,7 @@ keras.layers.Dense(10, activation='sigmoid', kernel_initializer=he_avg_init)
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x6450ecc90>
+    <tensorflow.python.keras.layers.core.Dense at 0x645f89e10>
 
 
 
@@ -164,7 +164,7 @@ keras.layers.Dense(10, activation='selu', kernel_initializer='lecun_normal')
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x6450fea50>
+    <tensorflow.python.keras.layers.core.Dense at 0x645fb7dd0>
 
 
 
@@ -388,11 +388,11 @@ model_A.save(model_A_path.as_posix())
 
     Train on 38400 samples, validate on 9600 samples
     Epoch 1/3
-    38400/38400 [==============================] - 11s 290us/sample - loss: 3.1552 - accuracy: 0.6259 - val_loss: 1.2860 - val_accuracy: 0.6743
+    38400/38400 [==============================] - 11s 287us/sample - loss: 3.8162 - accuracy: 0.6508 - val_loss: 1.5785 - val_accuracy: 0.7147
     Epoch 2/3
-    38400/38400 [==============================] - 12s 309us/sample - loss: 1.0561 - accuracy: 0.7038 - val_loss: 0.9858 - val_accuracy: 0.7094
+    38400/38400 [==============================] - 11s 292us/sample - loss: 1.1808 - accuracy: 0.7355 - val_loss: 1.1638 - val_accuracy: 0.7268
     Epoch 3/3
-    38400/38400 [==============================] - 11s 298us/sample - loss: 0.8433 - accuracy: 0.7348 - val_loss: 0.8872 - val_accuracy: 0.7329
+    38400/38400 [==============================] - 10s 250us/sample - loss: 0.8811 - accuracy: 0.7607 - val_loss: 0.9389 - val_accuracy: 0.7489
 
 
 Now the transfer learning can begin.
@@ -447,13 +447,13 @@ history = model_B_on_A.fit(X_train_B, y_train_B, epochs=4, validation_split=0.2)
 
     Train on 7676 samples, validate on 1920 samples
     Epoch 1/4
-    7676/7676 [==============================] - 3s 345us/sample - loss: 0.1703 - accuracy: 0.9586 - val_loss: 0.0930 - val_accuracy: 0.9781
+    7676/7676 [==============================] - 3s 348us/sample - loss: 0.3131 - accuracy: 0.9620 - val_loss: 0.1412 - val_accuracy: 0.9797
     Epoch 2/4
-    7676/7676 [==============================] - 2s 200us/sample - loss: 0.0939 - accuracy: 0.9795 - val_loss: 0.0646 - val_accuracy: 0.9812
+    7676/7676 [==============================] - 2s 200us/sample - loss: 0.1102 - accuracy: 0.9845 - val_loss: 0.1013 - val_accuracy: 0.9844
     Epoch 3/4
-    7676/7676 [==============================] - 2s 204us/sample - loss: 0.0795 - accuracy: 0.9822 - val_loss: 0.0575 - val_accuracy: 0.9823
+    7676/7676 [==============================] - 2s 199us/sample - loss: 0.0876 - accuracy: 0.9875 - val_loss: 0.0811 - val_accuracy: 0.9870
     Epoch 4/4
-    7676/7676 [==============================] - 2s 203us/sample - loss: 0.0729 - accuracy: 0.9827 - val_loss: 0.0607 - val_accuracy: 0.9859
+    7676/7676 [==============================] - 2s 203us/sample - loss: 0.0757 - accuracy: 0.9889 - val_loss: 0.0702 - val_accuracy: 0.9865
 
 
 Then the lower layers can be unfrozen, the model recompiled, and additional rounds of training run.
@@ -473,13 +473,13 @@ history = model_B_on_A.fit(X_train_B, y_train_B, epochs=4, validation_split=0.2)
 
     Train on 7676 samples, validate on 1920 samples
     Epoch 1/4
-    7676/7676 [==============================] - 3s 443us/sample - loss: 0.0583 - accuracy: 0.9876 - val_loss: 0.0315 - val_accuracy: 0.9911
+    7676/7676 [==============================] - 3s 438us/sample - loss: 0.0600 - accuracy: 0.9914 - val_loss: 0.0482 - val_accuracy: 0.9906
     Epoch 2/4
-    7676/7676 [==============================] - 2s 271us/sample - loss: 0.0376 - accuracy: 0.9914 - val_loss: 0.0247 - val_accuracy: 0.9927
+    7676/7676 [==============================] - 2s 272us/sample - loss: 0.0326 - accuracy: 0.9944 - val_loss: 0.0329 - val_accuracy: 0.9927
     Epoch 3/4
-    7676/7676 [==============================] - 2s 276us/sample - loss: 0.0282 - accuracy: 0.9935 - val_loss: 0.0252 - val_accuracy: 0.9922
+    7676/7676 [==============================] - 2s 272us/sample - loss: 0.0169 - accuracy: 0.9962 - val_loss: 0.0290 - val_accuracy: 0.9932
     Epoch 4/4
-    7676/7676 [==============================] - 2s 273us/sample - loss: 0.0228 - accuracy: 0.9950 - val_loss: 0.0193 - val_accuracy: 0.9937
+    7676/7676 [==============================] - 2s 272us/sample - loss: 0.0093 - accuracy: 0.9971 - val_loss: 0.0275 - val_accuracy: 0.9943
 
 
 
@@ -494,7 +494,7 @@ print(f'    test loss: {np.round(test_loss, 3)}')
 print(f'test accuracy: {np.round(test_accuracy * 100, 3)}%')
 ```
 
-        test loss: 0.039
+        test loss: 0.081
     test accuracy: 99.25%
 
 
@@ -538,7 +538,7 @@ keras.optimizers.SGD(learning_rate=1e-3, momentum=0.9)
 
 
 
-    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a56f3ef90>
+    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a57df6fd0>
 
 
 
@@ -563,7 +563,7 @@ keras.optimizers.SGD(learning_rate=1e-3, momentum=0.9, nesterov=True)
 
 
 
-    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a57b8b310>
+    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a58a47690>
 
 
 
@@ -587,7 +587,7 @@ keras.optimizers.Adagrad(learning_rate=1e-3, epsilon=1e-7)
 
 
 
-    <tensorflow.python.keras.optimizer_v2.adagrad.Adagrad at 0x1a57d4bb90>
+    <tensorflow.python.keras.optimizer_v2.adagrad.Adagrad at 0x1a58a44d50>
 
 
 
@@ -614,7 +614,7 @@ keras.optimizers.RMSprop(learning_rate=1e-3, rho=0.9)
 
 
 
-    <tensorflow.python.keras.optimizer_v2.rmsprop.RMSprop at 0x1a57ebf5d0>
+    <tensorflow.python.keras.optimizer_v2.rmsprop.RMSprop at 0x1a58d69d10>
 
 
 
@@ -634,7 +634,7 @@ keras.optimizers.Adam(learning_rate=1e-3,
 
 
 
-    <tensorflow.python.keras.optimizer_v2.adam.Adam at 0x1a57ebfd10>
+    <tensorflow.python.keras.optimizer_v2.adam.Adam at 0x1a58a483d0>
 
 
 
@@ -662,7 +662,7 @@ keras.optimizers.Nadam(learning_rate=0.001,
 
 
 
-    <tensorflow.python.keras.optimizer_v2.nadam.Nadam at 0x1a57d36250>
+    <tensorflow.python.keras.optimizer_v2.nadam.Nadam at 0x1a58a44710>
 
 
 
@@ -688,7 +688,7 @@ keras.optimizers.SGD(learning_rate=1e-2, momentum=0.9, decay=1e-4)
 
 
 
-    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x644b63d90>
+    <tensorflow.python.keras.optimizer_v2.gradient_descent.SGD at 0x1a58a44e10>
 
 
 
@@ -727,7 +727,7 @@ keras.callbacks.ReduceLROnPlateau(factor=0.5, patience=5)
 
 
 
-    <tensorflow.python.keras.callbacks.ReduceLROnPlateau at 0x1a57d57e10>
+    <tensorflow.python.keras.callbacks.ReduceLROnPlateau at 0x1a58c32290>
 
 
 
@@ -770,7 +770,7 @@ keras.layers.Dense(100,
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x1a5793de10>
+    <tensorflow.python.keras.layers.core.Dense at 0x645a1f710>
 
 
 
@@ -887,45 +887,45 @@ history = model.fit(X_train,
 
     Train on 38400 samples, validate on 9600 samples
     Epoch 1/20
-    38400/38400 [==============================] - 15s 391us/sample - loss: 4.5875 - accuracy: 0.3413 - val_loss: 1.3344 - val_accuracy: 0.4289
+    38400/38400 [==============================] - 15s 393us/sample - loss: 6.3947 - accuracy: 0.4718 - val_loss: 0.9954 - val_accuracy: 0.6087
     Epoch 2/20
-    38400/38400 [==============================] - 14s 370us/sample - loss: 1.5698 - accuracy: 0.4093 - val_loss: 1.1722 - val_accuracy: 0.5146
+    38400/38400 [==============================] - 14s 373us/sample - loss: 1.2596 - accuracy: 0.5539 - val_loss: 0.9204 - val_accuracy: 0.6330
     Epoch 3/20
-    38400/38400 [==============================] - 14s 374us/sample - loss: 1.3145 - accuracy: 0.4990 - val_loss: 0.9734 - val_accuracy: 0.6032
+    38400/38400 [==============================] - 14s 374us/sample - loss: 1.0589 - accuracy: 0.6075 - val_loss: 0.7888 - val_accuracy: 0.7022
     Epoch 4/20
-    38400/38400 [==============================] - 14s 371us/sample - loss: 1.1557 - accuracy: 0.5529 - val_loss: 0.8541 - val_accuracy: 0.6404
+    38400/38400 [==============================] - 15s 378us/sample - loss: 0.9310 - accuracy: 0.6438 - val_loss: 0.7217 - val_accuracy: 0.7056
     Epoch 5/20
-    38400/38400 [==============================] - 15s 380us/sample - loss: 1.0513 - accuracy: 0.5899 - val_loss: 0.8229 - val_accuracy: 0.6477
+    38400/38400 [==============================] - 15s 391us/sample - loss: 0.8573 - accuracy: 0.6690 - val_loss: 0.6895 - val_accuracy: 0.7168
     Epoch 6/20
-    38400/38400 [==============================] - 14s 369us/sample - loss: 1.0017 - accuracy: 0.6051 - val_loss: 0.8110 - val_accuracy: 0.6833
+    38400/38400 [==============================] - 14s 376us/sample - loss: 0.8369 - accuracy: 0.6759 - val_loss: 0.6516 - val_accuracy: 0.7474
     Epoch 7/20
-    38400/38400 [==============================] - 17s 439us/sample - loss: 0.9648 - accuracy: 0.6220 - val_loss: 0.8120 - val_accuracy: 0.6797
+    38400/38400 [==============================] - 14s 375us/sample - loss: 0.7897 - accuracy: 0.6896 - val_loss: 0.6442 - val_accuracy: 0.7390
     Epoch 8/20
-    38400/38400 [==============================] - 15s 383us/sample - loss: 0.9030 - accuracy: 0.6413 - val_loss: 0.6999 - val_accuracy: 0.7224
+    38400/38400 [==============================] - 14s 375us/sample - loss: 0.7773 - accuracy: 0.6947 - val_loss: 0.6174 - val_accuracy: 0.7352
     Epoch 9/20
-    38400/38400 [==============================] - 15s 386us/sample - loss: 0.8349 - accuracy: 0.6727 - val_loss: 0.6851 - val_accuracy: 0.7357
+    38400/38400 [==============================] - 14s 374us/sample - loss: 0.7556 - accuracy: 0.7015 - val_loss: 0.6227 - val_accuracy: 0.7481
     Epoch 10/20
-    38400/38400 [==============================] - 15s 387us/sample - loss: 0.7958 - accuracy: 0.6904 - val_loss: 0.6459 - val_accuracy: 0.7374
+    38400/38400 [==============================] - 16s 428us/sample - loss: 0.7288 - accuracy: 0.7117 - val_loss: 0.5818 - val_accuracy: 0.7682
     Epoch 11/20
-    38400/38400 [==============================] - 15s 398us/sample - loss: 0.7403 - accuracy: 0.7073 - val_loss: 0.6300 - val_accuracy: 0.7569
+    38400/38400 [==============================] - 15s 385us/sample - loss: 0.7035 - accuracy: 0.7234 - val_loss: 0.6415 - val_accuracy: 0.7515
     Epoch 12/20
-    38400/38400 [==============================] - 15s 390us/sample - loss: 0.7084 - accuracy: 0.7202 - val_loss: 0.6036 - val_accuracy: 0.7660
+    38400/38400 [==============================] - 15s 390us/sample - loss: 0.6686 - accuracy: 0.7378 - val_loss: 0.5837 - val_accuracy: 0.7761
     Epoch 13/20
-    38400/38400 [==============================] - 15s 393us/sample - loss: 0.6961 - accuracy: 0.7242 - val_loss: 0.6304 - val_accuracy: 0.7565
+    38400/38400 [==============================] - 15s 386us/sample - loss: 0.6636 - accuracy: 0.7445 - val_loss: 0.5484 - val_accuracy: 0.8043
     Epoch 14/20
-    38400/38400 [==============================] - 15s 392us/sample - loss: 0.6828 - accuracy: 0.7327 - val_loss: 0.5619 - val_accuracy: 0.7957
+    38400/38400 [==============================] - 15s 388us/sample - loss: 0.6518 - accuracy: 0.7571 - val_loss: 0.5281 - val_accuracy: 0.8191
     Epoch 15/20
-    38400/38400 [==============================] - 15s 402us/sample - loss: 0.6606 - accuracy: 0.7546 - val_loss: 0.5504 - val_accuracy: 0.8086
+    38400/38400 [==============================] - 15s 398us/sample - loss: 0.6352 - accuracy: 0.7752 - val_loss: 0.5364 - val_accuracy: 0.8111
     Epoch 16/20
-    38400/38400 [==============================] - 15s 399us/sample - loss: 0.6397 - accuracy: 0.7624 - val_loss: 0.5407 - val_accuracy: 0.8051
+    38400/38400 [==============================] - 15s 389us/sample - loss: 0.6144 - accuracy: 0.7839 - val_loss: 0.5342 - val_accuracy: 0.8185
     Epoch 17/20
-    38400/38400 [==============================] - 15s 397us/sample - loss: 0.6285 - accuracy: 0.7684 - val_loss: 0.5215 - val_accuracy: 0.8094
+    38400/38400 [==============================] - 15s 387us/sample - loss: 0.6117 - accuracy: 0.7860 - val_loss: 0.4883 - val_accuracy: 0.8397
     Epoch 18/20
-    38400/38400 [==============================] - 15s 392us/sample - loss: 0.6307 - accuracy: 0.7685 - val_loss: 0.5347 - val_accuracy: 0.8135
+    38400/38400 [==============================] - 15s 390us/sample - loss: 0.5877 - accuracy: 0.7911 - val_loss: 0.4856 - val_accuracy: 0.8345
     Epoch 19/20
-    38400/38400 [==============================] - 15s 396us/sample - loss: 0.6310 - accuracy: 0.7696 - val_loss: 0.5482 - val_accuracy: 0.8087
+    38400/38400 [==============================] - 15s 388us/sample - loss: 0.5765 - accuracy: 0.7978 - val_loss: 0.4970 - val_accuracy: 0.8363
     Epoch 20/20
-    38400/38400 [==============================] - 15s 393us/sample - loss: 0.6429 - accuracy: 0.7720 - val_loss: 0.5024 - val_accuracy: 0.8357
+    38400/38400 [==============================] - 15s 393us/sample - loss: 0.5828 - accuracy: 0.7966 - val_loss: 0.5071 - val_accuracy: 0.8372
 
 
 
@@ -1005,7 +1005,7 @@ np.round(y_proba[i], 2)
 
 
 
-    array([0.98, 0.  , 0.  , 0.01, 0.  , 0.  , 0.01, 0.  , 0.  , 0.  ],
+    array([0.97, 0.  , 0.  , 0.01, 0.  , 0.  , 0.01, 0.  , 0.  , 0.  ],
           dtype=float32)
 
 
@@ -1019,8 +1019,8 @@ print(list(np.round(model.predict_proba(X_valid[1:2, :, :]), 2).ravel()))
 print(list(np.round(y_proba[1], 2)))
 ```
 
-    [0.04, 0.0, 0.61, 0.03, 0.16, 0.01, 0.14, 0.01, 0.01, 0.0]
-    [0.05, 0.0, 0.56, 0.03, 0.15, 0.01, 0.18, 0.01, 0.02, 0.0]
+    [0.02, 0.01, 0.61, 0.04, 0.18, 0.0, 0.11, 0.02, 0.01, 0.0]
+    [0.08, 0.01, 0.57, 0.07, 0.13, 0.0, 0.14, 0.01, 0.01, 0.0]
 
 
 
@@ -1030,8 +1030,8 @@ print(list(np.round(y_proba[2], 2)))
 print(f'real label: {y_valid[2]}')
 ```
 
-    [0.67, 0.0, 0.01, 0.0, 0.0, 0.0, 0.31, 0.0, 0.0, 0.0]
-    [0.64, 0.0, 0.03, 0.02, 0.01, 0.0, 0.29, 0.0, 0.01, 0.0]
+    [0.43, 0.0, 0.05, 0.04, 0.01, 0.0, 0.46, 0.0, 0.01, 0.0]
+    [0.4, 0.0, 0.1, 0.06, 0.03, 0.0, 0.4, 0.0, 0.01, 0.0]
     real label: 6
 
 
@@ -1048,8 +1048,8 @@ print('predictions:', list(np.round(y_proba[1], 2)))
 print('  std. dev.:', list(np.round(y_std[1], 2)))
 ```
 
-    predictions: [0.05, 0.0, 0.56, 0.03, 0.15, 0.01, 0.18, 0.01, 0.02, 0.0]
-      std. dev.: [0.03, 0.0, 0.11, 0.01, 0.03, 0.0, 0.07, 0.0, 0.02, 0.0]
+    predictions: [0.08, 0.01, 0.57, 0.07, 0.13, 0.0, 0.14, 0.01, 0.01, 0.0]
+      std. dev.: [0.11, 0.0, 0.24, 0.09, 0.07, 0.0, 0.09, 0.01, 0.0, 0.0]
 
 
 In practice, it is not generally advisable to get the model predictions by passing `training=True` because other layers may react to the parameter (e.g. Batch Normalization).
@@ -1063,7 +1063,270 @@ class MCDropout(keras.layers.Dropout):
         return super().call(inputs, training=True)
 ```
 
-### Max-Norm Regularization
+### Max-norm regularization
+
+*Max-norm regularization* is a regularization technique that constrains the weights $\textbf{w}$ of the incoming connections such that $|| \textbf{w} ||_2 \le r$ where $r$ is the *max-norm* hyperparameter and $||\cdot||_2$ is the $\ell_2$ norm.
+It is normally implemented by just  enforcing the rule after each training step: $\textbf{w} \leftarrow \textbf{w} \frac{r}{||\textbf{w}||_2}$.
+A smaller $r$ increases regularization, thus reducing overfitting.
+A layer can use max-norm regularization by adding the `max_norm()` constraint with a max value.
+(Note that the `axis` parameter may need to be changed for CNNs.) 
+
+
+```python
+keras.layers.Dense(100,
+                   activation='elu',
+                   kernel_initializer='he_normal',
+                   kernel_constraint=keras.constraints.max_norm(1.0))
+```
+
+
+
+
+    <tensorflow.python.keras.layers.core.Dense at 0x1a59a72e10>
+
+
+
+# Exercises
+
+**8. Practice training a deep neural network on the CIFAR10 image dataset.**
+
+**a.** Build a DNN with 20 hidden layers with 100 neurons each.
+Use He initialization and the ELU activation function.
+
+
+```python
+model = keras.models.Sequential()
+model.add(keras.layers.Flatten(input_shape=[32, 32, 3]))
+
+for i in range(20):
+    model.add(keras.layers.Dense(100, 
+                                 activation='elu', 
+                                 kernel_initializer='he_normal'))
+
+model.add(keras.layers.Dense(10, activation='softmax'))
+
+model.summary()
+```
+
+    Model: "sequential_7"
+    _________________________________________________________________
+    Layer (type)                 Output Shape              Param #   
+    =================================================================
+    flatten_5 (Flatten)          (None, 3072)              0         
+    _________________________________________________________________
+    dense_27 (Dense)             (None, 100)               307300    
+    _________________________________________________________________
+    dense_28 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_29 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_30 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_31 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_32 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_33 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_34 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_35 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_36 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_37 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_38 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_39 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_40 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_41 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_42 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_43 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_44 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_45 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_46 (Dense)             (None, 100)               10100     
+    _________________________________________________________________
+    dense_47 (Dense)             (None, 10)                1010      
+    =================================================================
+    Total params: 500,210
+    Trainable params: 500,210
+    Non-trainable params: 0
+    _________________________________________________________________
+
+
+**b.** Use Nadam optimization and early stopping to train the network.
+
+
+```python
+cifar_train, cifar_test = keras.datasets.cifar10.load_data()
+cifar_X_train, cifar_y_train = cifar_train
+```
+
+
+```python
+import shutil
+
+model.compile(loss='sparse_categorical_crossentropy',
+              optimizer=keras.optimizers.Nadam(learning_rate=0.001),
+              metrics=['accuracy'])
+
+# Path for TensorBoard logs.
+tb_log = pathlib.Path("tf_logs_ch11", "ex8_b_model1.h5")
+if tb_log.exists() and tb_log.is_dir():
+    shutil.rmtree(tb_log)
+
+history = model.fit(
+    cifar_X_train,
+    cifar_y_train,
+    epochs=100,
+    validation_split=0.2,
+    callbacks=[keras.callbacks.EarlyStopping(patience=5),
+               keras.callbacks.TensorBoard(log_dir=tb_log.as_posix())]
+)
+```
+
+    Train on 40000 samples, validate on 10000 samples
+    Epoch 1/100
+    40000/40000 [==============================] - 48s 1ms/sample - loss: 4.0974 - accuracy: 0.2074 - val_loss: 2.0897 - val_accuracy: 0.2404
+    Epoch 2/100
+    40000/40000 [==============================] - 42s 1ms/sample - loss: 1.9423 - accuracy: 0.2952 - val_loss: 1.8860 - val_accuracy: 0.3104
+    Epoch 3/100
+    40000/40000 [==============================] - 43s 1ms/sample - loss: 1.8884 - accuracy: 0.3152 - val_loss: 1.8202 - val_accuracy: 0.3346
+    Epoch 4/100
+    40000/40000 [==============================] - 49s 1ms/sample - loss: 1.8432 - accuracy: 0.3297 - val_loss: 1.8074 - val_accuracy: 0.3493
+    Epoch 5/100
+    40000/40000 [==============================] - 37s 930us/sample - loss: 1.8166 - accuracy: 0.3403 - val_loss: 1.7916 - val_accuracy: 0.3522
+    Epoch 6/100
+    40000/40000 [==============================] - 37s 925us/sample - loss: 1.7883 - accuracy: 0.3500 - val_loss: 1.7651 - val_accuracy: 0.3696
+    Epoch 7/100
+    40000/40000 [==============================] - 38s 941us/sample - loss: 1.7713 - accuracy: 0.3561 - val_loss: 1.7694 - val_accuracy: 0.3589
+    Epoch 8/100
+    40000/40000 [==============================] - 37s 924us/sample - loss: 1.7615 - accuracy: 0.3627 - val_loss: 1.8378 - val_accuracy: 0.3375
+    Epoch 9/100
+    40000/40000 [==============================] - 37s 922us/sample - loss: 1.7452 - accuracy: 0.3711 - val_loss: 1.7653 - val_accuracy: 0.3681
+    Epoch 10/100
+    40000/40000 [==============================] - 37s 924us/sample - loss: 1.7343 - accuracy: 0.3746 - val_loss: 1.7397 - val_accuracy: 0.3806
+    Epoch 11/100
+    40000/40000 [==============================] - 37s 932us/sample - loss: 1.7119 - accuracy: 0.3832 - val_loss: 1.7203 - val_accuracy: 0.3868
+    Epoch 12/100
+    40000/40000 [==============================] - 45s 1ms/sample - loss: 1.7009 - accuracy: 0.3868 - val_loss: 1.8156 - val_accuracy: 0.3523
+    Epoch 13/100
+    40000/40000 [==============================] - 38s 938us/sample - loss: 1.6879 - accuracy: 0.3930 - val_loss: 1.7436 - val_accuracy: 0.3768
+    Epoch 14/100
+    40000/40000 [==============================] - 37s 922us/sample - loss: 1.6806 - accuracy: 0.3964 - val_loss: 1.6854 - val_accuracy: 0.3902
+    Epoch 15/100
+    40000/40000 [==============================] - 38s 952us/sample - loss: 2.0031 - accuracy: 0.3102 - val_loss: 1.9797 - val_accuracy: 0.2541
+    Epoch 16/100
+    40000/40000 [==============================] - 43s 1ms/sample - loss: 1.9556 - accuracy: 0.2580 - val_loss: 1.9685 - val_accuracy: 0.2542
+    Epoch 17/100
+    40000/40000 [==============================] - 42s 1ms/sample - loss: 1.9062 - accuracy: 0.2852 - val_loss: 1.9536 - val_accuracy: 0.2705
+    Epoch 18/100
+    40000/40000 [==============================] - 41s 1ms/sample - loss: 1.8882 - accuracy: 0.2941 - val_loss: 1.8951 - val_accuracy: 0.2943
+    Epoch 19/100
+    40000/40000 [==============================] - 42s 1ms/sample - loss: 1.8785 - accuracy: 0.3044 - val_loss: 1.9030 - val_accuracy: 0.3037
+
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8, 5))
+plt.show()
+```
+
+
+![png](homl_ch11_Training-deep-neural-networks_files/homl_ch11_Training-deep-neural-networks_82_0.png)
+
+
+**c.** Add Batch Normalization.
+
+
+```python
+model2 = keras.models.Sequential()
+
+# Input layer to flatten the images.
+model2.add(keras.layers.Flatten(input_shape=[32, 32, 3]))
+
+# 20 hidden layers with 100 neurons each.
+for i in range(20):
+    model2.add(keras.layers.Dense(100, 
+                                 activation='elu', 
+                                 kernel_initializer='he_normal'))
+    model2.add(keras.layers.BatchNormalization())
+
+# Output layer to predict out of 10 classes.
+model2.add(keras.layers.Dense(10, activation='softmax'))
+
+# Compile model with Nadam optimization for learning scheduler.
+model2.compile(loss='sparse_categorical_crossentropy',
+              optimizer=keras.optimizers.Nadam(learning_rate=0.001),
+              metrics=['accuracy'])
+
+# Path for TensorBoard logs.
+tb_log = pathlib.Path("tf_logs_ch11", "ex8_c_model2.h5")
+if tb_log.exists() and tb_log.is_dir():
+    shutil.rmtree(tb_log)
+
+history = model2.fit(
+    cifar_X_train,
+    cifar_y_train,
+    epochs=100,
+    validation_split=0.2,
+    callbacks=[keras.callbacks.EarlyStopping(patience=5),
+               keras.callbacks.TensorBoard(log_dir=tb_log.as_posix())]
+)
+```
+
+    Train on 40000 samples, validate on 10000 samples
+    Epoch 1/100
+    40000/40000 [==============================] - 103s 3ms/sample - loss: 1.9371 - accuracy: 0.3025 - val_loss: 1.8252 - val_accuracy: 0.3539
+    Epoch 2/100
+    40000/40000 [==============================] - 79s 2ms/sample - loss: 1.7820 - accuracy: 0.3607 - val_loss: 1.9012 - val_accuracy: 0.3352
+    Epoch 3/100
+    40000/40000 [==============================] - 79s 2ms/sample - loss: 1.7204 - accuracy: 0.3848 - val_loss: 1.7365 - val_accuracy: 0.3920
+    Epoch 4/100
+    40000/40000 [==============================] - 78s 2ms/sample - loss: 1.6715 - accuracy: 0.4040 - val_loss: 1.7687 - val_accuracy: 0.3733
+    Epoch 5/100
+    40000/40000 [==============================] - 81s 2ms/sample - loss: 1.6471 - accuracy: 0.4172 - val_loss: 1.7594 - val_accuracy: 0.3793
+    Epoch 6/100
+    40000/40000 [==============================] - 79s 2ms/sample - loss: 1.6148 - accuracy: 0.4261 - val_loss: 1.7367 - val_accuracy: 0.3821
+    Epoch 7/100
+    40000/40000 [==============================] - 79s 2ms/sample - loss: 1.5899 - accuracy: 0.4373 - val_loss: 1.6237 - val_accuracy: 0.4348
+    Epoch 8/100
+    40000/40000 [==============================] - 79s 2ms/sample - loss: 1.5570 - accuracy: 0.4484 - val_loss: 1.7065 - val_accuracy: 0.4213
+    Epoch 9/100
+    40000/40000 [==============================] - 80s 2ms/sample - loss: 1.5359 - accuracy: 0.4563 - val_loss: 1.6524 - val_accuracy: 0.4415
+    Epoch 10/100
+    40000/40000 [==============================] - 79s 2ms/sample - loss: 1.5124 - accuracy: 0.4639 - val_loss: 1.6823 - val_accuracy: 0.4446
+    Epoch 11/100
+    40000/40000 [==============================] - 79s 2ms/sample - loss: 1.4877 - accuracy: 0.4745 - val_loss: 1.7232 - val_accuracy: 0.4518
+    Epoch 12/100
+    40000/40000 [==============================] - 79s 2ms/sample - loss: 1.4777 - accuracy: 0.4774 - val_loss: 1.8282 - val_accuracy: 0.4394
+
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8, 5))
+plt.axis([0, 11, 0, 1])
+plt.show()
+```
+
+
+![png](homl_ch11_Training-deep-neural-networks_files/homl_ch11_Training-deep-neural-networks_85_0.png)
+
+
+**d.** Replace Batch Normalization with SELU and the necessary adjustments to ensure the network is self-normalizing.
+
+
+```python
+
+```
 
 
 ```python

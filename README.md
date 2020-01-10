@@ -375,3 +375,8 @@ I also began the section on regularization.
 
 **Day 80 - January 09, 2020:**
 I learned about Dropout regularization and hoow to perform and use Monte Carlo Dropout to obtain between prediction probabilities.
+
+**Day 81 - January 10, 2020:**
+I began Ch 12 which provides a deeper dive into TF.
+I am very excited for this chapter because it is a peak behind the curtain of TF and should provide a better understanding of what is happening when I `compile()` or `fit()` a model with the Keras API.
+We began by learning about Tensors and Variables.
