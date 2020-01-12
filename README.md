@@ -380,3 +380,7 @@ I learned about Dropout regularization and hoow to perform and use Monte Carlo D
 I began Ch 12 which provides a deeper dive into TF.
 I am very excited for this chapter because it is a peak behind the curtain of TF and should provide a better understanding of what is happening when I `compile()` or `fit()` a model with the Keras API.
 We began by learning about Tensors and Variables.
+
+**Day 82 - January 11, 2020:**
+I learned about creating custom Loss functions and how to save and load the model that employs them.
+I ran into a bug that has been reported, so I will need to address that next.
