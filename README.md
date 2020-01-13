@@ -384,3 +384,6 @@ We began by learning about Tensors and Variables.
 **Day 82 - January 11, 2020:**
 I learned about creating custom Loss functions and how to save and load the model that employs them.
 I ran into a bug that has been reported, so I will need to address that next.
+
+**Day 83 - January 12, 2020:**
+We learned about making other custom loss components and metrics, including streaming metrics.

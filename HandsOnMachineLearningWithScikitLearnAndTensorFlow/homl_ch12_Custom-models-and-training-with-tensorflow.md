@@ -457,93 +457,144 @@ class HuberLoss(keras.losses.Loss):
         return {**base_config, 'threshold': self.threshold}
 
 
-model.compile(loss=HuberLoss(), optimizer='nadam')
+model.compile(loss=HuberLoss(2.0), optimizer='nadam')
 
 model.save(model_path.as_posix())
 ```
 
+However, there seems to currently be a bug in loading models with custom loss classes.
+Thus, loading the model does not work.
+
 
 ```python
-custom_objects = {'HuberLoss': HuberLoss}
+# model = keras.models.load_model(model_path.as_posix(),
+#                                custom_objects={'HuberLoss': HuberLoss})
+```
 
-model = keras.models.load_model(model_path.as_posix(),
-                               custom_objects={'HuberLoss': HuberLoss})
+### Custom activation functions, initializers, regularizers, and constraints
+
+A similar processes is required to create custom activation functions, initializers, regularizers, and constraints.
+Generally, you just need to create a function with the correct inputs and outputs.
+Here are some examples followed by a layer using them.
+
+
+```python
+def my_softplus_activation_fxn(z):
+    return tf.math.log(tf.exp(z) + 1.0)
+
+
+def my_glorot_initializer(shape, dtype=tf.float32):
+    stddev = tf.sqrt(2.0 / (shape[0] + shape[1]))
+    return tf.random.normal(shape, stddev=stddev, dtype=dtype)
+
+
+def my_l1_regularizer(weights):
+    return tf.reduce_sum(tf.abs(0.01 * weights))
+
+
+def my_positive_weights_constraint(weights):
+    return tf.where(weights < 0.0, tf.zeros_like(weights), weights)
+
+
+keras.layers.Dense(units=30,
+                   activation=my_softplus_activation_fxn,
+                   kernel_initializer=my_glorot_initializer,
+                   kernel_regularizer=my_l1_regularizer,
+                   kernel_constraint=my_positive_weights_constraint)
 ```
 
 
-    ---------------------------------------------------------------------------
 
-    ValueError                                Traceback (most recent call last)
 
-    <ipython-input-28-d2ecf3240698> in <module>
-          2 
-          3 model = keras.models.load_model(model_path.as_posix(),
-    ----> 4                                custom_objects={'HuberLoss': HuberLoss})
+    <tensorflow.python.keras.layers.core.Dense at 0x648eedfd0>
+
+
+
+If additional hyperparameters must be retained by the saved model, then you will have to subclass the appropriate TF class like shown previously.
+*Remember to implement the `get_config()` method.*
+
+### Custom metrics
+
+The most basic custom metric is a function that takes two parameters, `y_true` and `y_pred`, and computes the metric given that information.
+This function is called at each training batch and TF keeps a running average of the results.
+
+Sometimes, however, we want to retain the previous values and accumulate the results, ourselves.
+This is coming for *streaming metrics* (or *stateful metrics*, those that are continuously updated over the training.
+One example is precision.
+To do this, we create a `keras.metrics.Precision` object and pass it the the real and predicted values.
+
+
+```python
+precision = keras.metrics.Precision()
+
+# Mock two training steps.
+precision([0, 1, 1, 1, 0, 1, 0, 1], [1, 1, 0, 1, 0, 1, 0, 1])
+precision([0, 1, 0, 0, 1, 0, 1, 1], [1, 0, 1, 1, 0, 0, 0, 0])
+
+precision.result()
+```
+
+
+
+
+    <tf.Tensor: id=970, shape=(), dtype=float32, numpy=0.5>
+
+
+
+
+```python
+precision.variables
+```
+
+
+
+
+    [<tf.Variable 'true_positives:0' shape=(1,) dtype=float32, numpy=array([4.], dtype=float32)>,
+     <tf.Variable 'false_positives:0' shape=(1,) dtype=float32, numpy=array([4.], dtype=float32)>]
+
+
+
+The values can be reset using the `reset_states()` method.
+
+
+```python
+precision.reset_states()
+```
+
+If you need to create a custom streaming method, subclass `keras.metrics.Metric`.
+Below is an example of implementing a custom streaming metric that tracks the Huber loss and number of instances seen so far.
+Further, when asked for a result, it returns the ratio.
+
+
+```python
+class HuberMetric(keras.metrics.Metric):
+    def __init__(self, threshold=1.0, **kwargs):
+        super().__init__(**kwargs)
+        self.threshold = threshold
+        self.huber_fn = create_huber_loss_fxn(threshold)
+        self.total = self.add_weight('total', initializer='zeros')
+        self.count = self.add_weight('count', initializer='zeros')
     
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/keras/saving/save.py in load_model(filepath, custom_objects, compile)
-        144   if (h5py is not None and (
-        145       isinstance(filepath, h5py.File) or h5py.is_hdf5(filepath))):
-    --> 146     return hdf5_format.load_model_from_hdf5(filepath, custom_objects, compile)
-        147 
-        148   if isinstance(filepath, six.string_types):
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/keras/saving/hdf5_format.py in load_model_from_hdf5(filepath, custom_objects, compile)
-        182       # Compile model.
-        183       model.compile(**saving_utils.compile_args_from_training_config(
-    --> 184           training_config, custom_objects))
-        185 
-        186       # Set optimizer weights.
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/keras/saving/saving_utils.py in compile_args_from_training_config(training_config, custom_objects)
-        225   loss_config = training_config['loss']  # Deserialize loss class.
-        226   if isinstance(loss_config, dict) and 'class_name' in loss_config:
-    --> 227     loss_config = losses.get(loss_config)
-        228   loss = nest.map_structure(
-        229       lambda obj: custom_objects.get(obj, obj), loss_config)
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/keras/losses.py in get(identifier)
-       1183     return deserialize(identifier)
-       1184   if isinstance(identifier, dict):
-    -> 1185     return deserialize(identifier)
-       1186   elif callable(identifier):
-       1187     return identifier
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/keras/losses.py in deserialize(name, custom_objects)
-       1172       module_objects=globals(),
-       1173       custom_objects=custom_objects,
-    -> 1174       printable_module_name='loss function')
-       1175 
-       1176 
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/keras/utils/generic_utils.py in deserialize_keras_object(identifier, module_objects, custom_objects, printable_module_name)
-        178     config = identifier
-        179     (cls, cls_config) = class_and_config_for_serialized_keras_object(
-    --> 180         config, module_objects, custom_objects, printable_module_name)
-        181 
-        182     if hasattr(cls, 'from_config'):
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/keras/utils/generic_utils.py in class_and_config_for_serialized_keras_object(config, module_objects, custom_objects, printable_module_name)
-        163     cls = module_objects.get(class_name)
-        164     if cls is None:
-    --> 165       raise ValueError('Unknown ' + printable_module_name + ': ' + class_name)
-        166   return (cls, config['config'])
-        167 
-
-
-    ValueError: Unknown loss function: HuberLoss
-
-
-
-```python
-model.loss_functions
+    def update_state(self, y_true, y_pred, sample_weight=None):
+        metric = self.huber_fn(y_true, y_pred)
+        self.total.assign_add(tf.reduce_sum(metric))
+        self.count.assign_add(tf.cast(tf.size(y_true), tf.float32))
+    
+    def result(self):
+        return self.total / self.count
+    
+    def get_config(self):
+        base_config = super().get_config()
+        return {**base_config, 'threshold': self.threshold}
 ```
+
+Here are some notes on the above class:
+
+* The constructor uses the `add_weight()` method to create the variables to keep track of the desired information over the training batches. Alternatively, you could just create a `tf.Variable` for each and TF will automatically remember it.
+* The `update_state()` is called when the object of the class gets called as a function. It is provided the real and predicted labels and batch weights (ignored in the example).
+* The `result()` method returns the desired result.
+* The `get_config()` method helps to remember any hyperparameters, used here to remember the threshold for the Huber loss.
+* There is also a `reset_states()` method that, by default, resets all variables, though it can be overriden if desired.
 
 
 ```python
