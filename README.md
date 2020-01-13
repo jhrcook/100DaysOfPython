@@ -387,3 +387,6 @@ I ran into a bug that has been reported, so I will need to address that next.
 
 **Day 83 - January 12, 2020:**
 We learned about making other custom loss components and metrics, including streaming metrics.
+
+**Day 84 - January 13, 2020:**
+I learned how to create custom layers and models.

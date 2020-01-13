@@ -506,7 +506,7 @@ keras.layers.Dense(units=30,
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x648eedfd0>
+    <tensorflow.python.keras.layers.core.Dense at 0x646cbac90>
 
 
 
@@ -537,7 +537,7 @@ precision.result()
 
 
 
-    <tf.Tensor: id=970, shape=(), dtype=float32, numpy=0.5>
+    <tf.Tensor: id=737, shape=(), dtype=float32, numpy=0.5>
 
 
 
@@ -595,6 +595,163 @@ Here are some notes on the above class:
 * The `result()` method returns the desired result.
 * The `get_config()` method helps to remember any hyperparameters, used here to remember the threshold for the Huber loss.
 * There is also a `reset_states()` method that, by default, resets all variables, though it can be overriden if desired.
+
+### Custom layers
+
+There are two common circumstances under which a custom layer is desireable. The first is if you want to implement a new layer architecture that isn't available in Keras. The second is if you have a identical blocks of layers that you don't want to repeat over and over. For instance, if you wanted to have a pattern a layers $\text{ABCABCABC}$, then you could create a layer $\text{D = ABC}$ and make a network $\text{DDD}$, instead.
+The following are several ways to create a custom layer.
+
+Some layers do not have any weights such as `Flatten` or `ReLU`.
+If you want a layer without any weights, the easiest option is to create a `Lambda` layer and and provide it a function to use to transform its inputs.
+Here is an example of an exponential layer.
+
+
+```python
+exponential_layer = keras.layers.Lambda(lambda x: tf.exp(x))
+```
+
+To create a *stateful layer*, a layer with weights, create a subclass of the `Layer` class.
+Below is an example reimplementing a Dense layer.
+
+
+```python
+class MyDense(keras.layers.Layer):
+    def __init__(self, units, activation=None, **kwargs):
+        super().__init__(**kwargs)
+        self.units = units
+        self.activation = keras.activations.get(activation)
+
+    def build(self, batch_input_shape):
+        self.kernel = self.add_weight(name='kernel',
+                                      shape=[batch_input_shape[-1], self.units],
+                                      initializer='glorot_normal')
+        self.bias = self.add_weight(name='bias',
+                                    shape=[self.units],
+                                    initializer='zeros')
+        super().build(batch_input_shape)
+
+    def call(self, X):
+        return self.activation(X @ self.kernel + self.bias)
+
+    def compute_output_shape(self, batch_input_shape):
+        return tf.TensorShape(batch_input_shape.as_list()[:-1] + [self.units])
+
+    def get_config(self):
+        base_config = super().get_config()
+        return {**base_config,
+                'units': self.units,
+                'activation': keras.activations.serialize(self.activation)}
+```
+
+The following are notes on the above class:
+
+* The constructor method takes all of the hyperparameters as arguments and creates the necessary attributes. The parent constructor takes care of the standard information and the rest is customizable.
+* The `build()` method creates the layers variables by calling `add_weight()`. This will be called when the layer is first used because only then will it know the number of connections to make. *Remember to call the parent `build()` method at the end.*
+* The `call()` method performs the desired neuron function. In this case, it is a simple linear formula passed to the activation function.
+* The `compute_output_shape()` method returns a tensor of the shape of the outputs of the layer. This method can often be ignored in TF Keras because it is automatically inferred. This does not apply to dynamic layers.
+* The `get_config()` method is used to help Keras store and retrieve custom hyperparameters.
+
+If the layer takes multiple inputs, such as `Concatenate`, the arguments to `call()` and `compute_output_shape()` will be tuples of the inputs and input's batch shape, respectively.
+Below is a toy example of a layer that takes two inputs and returns three outputs.
+
+
+```python
+class MyToyMultiLayer(keras.layers.Layer):
+    def call(self, X):
+        X1, X2 = X
+        return [X1 + X2, X1 * X2, X1 / X2]
+    
+    def compute_output_shape(self, batch_input_shape):
+        b1, b2 = batch_input_shape
+        return [b1, b1, b1]
+```
+
+If the layer must behave differently between training and testing, then a `training` argument must be added to `call()`.
+It will be passed a boolean or `None` to indicate the if the model is in training or not.
+
+
+```python
+class MyGaussianNoiseLayer(keras.layers.Layer):
+    def __init__(self, stddev=1, **kwargs):
+        super().__init__(**kwargs)
+        self.stddev = stddev
+    
+    def call(self, X, training=None):
+        if training:
+            noise = tf.random.normal(tf.shape(X), stddev=self.stddev)
+            return X + noise
+        else:
+            return X
+        
+    def compute_output_shape(self, batch_input_shape):
+        return batch_input_shape
+```
+
+### Custom models
+
+As an example of the flexibility and power provided by TF, we will create the following custom model:
+
+1. A Dense input layer.
+2. A Residual Block composed of two Dense layers and an addition operator. The input data flows through the two Dense layers and the input data is again added to the output data which is then fed back through the residual block. This procedure is repeated three times.
+3. Another Residual Block.
+4. A Dense output layer.
+
+To begin, we will create a custom layer for the Residual Block.
+
+
+```python
+class ResidualBlock(keras.layers.Layer):
+    def __init__(self, n_layers, n_neurons, **kwargs):
+        super().__init__(**kwargs)
+        self.hidden = [keras.layers.Dense(n_neurons,
+                                          activation='elu',
+                                          kernel_initializer='he_normal')
+                       for _ in range(n_layers)]
+
+    def call(self, X, training=None):
+        Z = X
+        for layer in self.hidden:
+            Z = layer(Z)
+        return X + Z
+
+    def get_config(self):
+        base_config = super().get_config()
+        return {**base_config,
+                'n_layers': n_layers,
+                'n_neurons': n_neurons}
+```
+
+Now we can use the Subclassing API to create the model.
+
+
+```python
+class ResidualRegressor(keras.Model):
+    def __init__(self, output_dim, **kwargs):
+        super().__init__(**kwargs)
+        self.hidden1 = keras.layers.Dense(30,
+                                          activation='elu',
+                                          kernel_initializer='he_normal')
+        self.block1 = ResidualBlock(2, 30)
+        self.block2 = ResidualBlock(2, 30)
+        self.out = keras.layers.Dense(output_dim)
+
+    def call(self, X):
+        Z = self.hidden1(X)
+        for _ in range(1 + 3):
+            Z = self.block1(Z)
+        Z = self.block2(Z)
+        return self.out(Z)
+
+    def get_config(self):
+        base_config = super().get_config()
+        return {**base_config,
+                'output_dim': output_dim}
+```
+
+The model can now be trained and used like any other.
+The `get_config()` methods for `ResidualBlock` and `ResidualRegressor` were implemented, so the model could be saved and loaded.
+
+### Losses and metrics based on model internals
 
 
 ```python
