@@ -87,6 +87,7 @@ lz4-c=1.8.3=h6de7cb9_1001
 markdown=3.1.1=py_0
 markupsafe=1.1.1=py37h0b31af3_0
 matplotlib=3.1.1=py37h54f8f79_0
+matplotlib-base=3.1.2=py37h11da6c2_1
 mistune=0.8.4=py37h0b31af3_1000
 mkl=2019.4=233
 mkl-service=2.3.0=py37h0b31af3_0
@@ -118,6 +119,7 @@ pexpect=4.7.0=py37_0
 pickleshare=0.7.5=py37_1000
 pillow=6.2.1=py37hb68e598_0
 pip=19.3.1=py37_0
+plotly=4.4.1=py_0
 pluggy=0.13.0=py37_0
 prometheus_client=0.7.1=py_0
 prompt_toolkit=2.0.10=py_0
@@ -147,9 +149,10 @@ qt=5.12.5=h1b46049_0
 qtconsole=4.6.0=py_0
 readline=7.0=hcfe32e1_1001
 requests=2.22.0=py37_1
+retrying=1.3.3=py_2
 scikit-learn=0.22=pypi_0
 scipy=1.3.1=py37h1410ff5_0
-seaborn=0.9.0=py37_0
+seaborn=0.9.0=py_2
 send2trash=1.5.0=py_0
 setuptools=44.0.0=py37_0
 six=1.13.0=py37_0

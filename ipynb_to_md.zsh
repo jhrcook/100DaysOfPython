@@ -27,3 +27,9 @@ if [[ $1 == "homl" ]];
 then
 	ipynb_to_markdown "HandsOnMachineLearningWithScikitLearnAndTensorFlow"
 fi
+
+
+if [[ $1 == "plotting" ]];
+then
+	ipynb_to_markdown "Plotting-tutorials"
+fi

@@ -506,7 +506,7 @@ keras.layers.Dense(units=30,
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x646cbac90>
+    <tensorflow.python.keras.layers.core.Dense at 0x640d4bb10>
 
 
 
@@ -752,6 +752,169 @@ The model can now be trained and used like any other.
 The `get_config()` methods for `ResidualBlock` and `ResidualRegressor` were implemented, so the model could be saved and loaded.
 
 ### Losses and metrics based on model internals
+
+Previously, we created custom loss functions that accept the predicted values, the known values, and a binary training argument.
+However, there are times we want to use additional information about the model to compute a specific loss function.
+For example, we can design a regression model with a *reconstruction loss* that computes the mean squared difference between the original inputs and the reconstructed outputs (we did a similar thing when studying decomposition and dimensionality reduction).
+To apply the custom loss, the reconstruction loss is computed and added to the normal MSE loss using the `add_loss()` method within the `call()` method.
+
+
+```python
+class ReconstructionRegressor(keras.Model):
+    def __init__(self, output_dim, **kwargs):
+        super().__init__(**kwargs)
+        self.hidden = [keras.layers.Dense(units=30, 
+                                          activation='selu', 
+                                          kernel_initializer='lecun_normal')
+                      for _ in range(5)]
+        self.out = keras.layers.Dense(output_dim)
+    
+    def build(self, batch_input_shape):
+        n_inputs = batch_input_shape[-1]
+        # An additional output layer for the reconstruction.
+        self.reconstruct = keras.layers.Dense(n_inputs)
+        super().build(batch_input_shape)
+    
+    def call(self, X):
+        Z = X
+        for layer in self.hidden:
+            Z = layer(Z)
+        
+        # Apply reconstruction loss.
+        reconstruction = self.reconstruct(Z)
+        recon_loss = tf.reduce_mean(tf.square(reconstruction - inputs))
+        self.add_loss(0.05 * recon_loss)
+        
+        return self.out(Z)
+```
+
+A custom metric is created in a similar fashion.
+The result must be a `keras.metrics` object and added to the others using the `add_metric()` method.
+A new copy of `ReconstructionRegressor` is created below with this feature.
+
+
+```python
+class ReconstructionRegressor(keras.Model):
+    def __init__(self, output_dim, **kwargs):
+        super().__init__(**kwargs)
+        self.hidden = [keras.layers.Dense(units=10,
+                                          activation='relu')
+                       for _ in range(5)]
+        self.out = keras.layers.Dense(output_dim)
+
+    def build(self, batch_input_shape):
+        self.reconstruct_layer = keras.layers.Dense(batch_input_shape[-1])
+        super().build(batch_input_shape)
+
+    def call(self, X):
+        Z = X
+        for layer in self.hidden:
+            Z = layer(Z)
+
+        # Include reconstruction loss.
+        reconstruction = self.reconstruct_layer(Z)
+        recon_loss = tf.reduce_mean(tf.square(reconstruction - X))
+        self.add_loss(0.05 * recon_loss)
+        
+        # Report reconstruction loss as a metric.
+        # self.recon_metric.update_state(recon_loss)
+        # self.add_metric(self.recon_metric, name='reconstruction_loss')
+
+        return self.out(Z)
+```
+
+
+```python
+from sklearn.datasets import make_swiss_roll
+import mpl_toolkits.mplot3d.axes3d as p3
+
+X, y = make_swiss_roll(3000, noise=0.3, random_state=0)
+
+fig = plt.figure()
+ax = p3.Axes3D(fig)
+ax.view_init(7, -80)
+ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=y)
+plt.title("Swiss Roll", fontsize=14)
+plt.show()
+```
+
+
+![png](homl_ch12_Custom-models-and-training-with-tensorflow_files/homl_ch12_Custom-models-and-training-with-tensorflow_68_0.png)
+
+
+
+```python
+model = ReconstructionRegressor(1)
+model.compile(loss='mse', 
+              optimizer='nadam')
+model.fit(X, y, epochs=20, validation_split=0.2)
+```
+
+    Train on 2400 samples, validate on 600 samples
+    Epoch 1/20
+    2400/2400 [==============================] - 3s 1ms/sample - loss: 49.5501 - val_loss: 15.0125
+    Epoch 2/20
+    2400/2400 [==============================] - 0s 157us/sample - loss: 6.6965 - val_loss: 4.5870
+    Epoch 3/20
+    2400/2400 [==============================] - 0s 159us/sample - loss: 3.7183 - val_loss: 3.1629
+    Epoch 4/20
+    2400/2400 [==============================] - 0s 163us/sample - loss: 2.6642 - val_loss: 2.4296
+    Epoch 5/20
+    2400/2400 [==============================] - 0s 171us/sample - loss: 2.1406 - val_loss: 1.9774
+    Epoch 6/20
+    2400/2400 [==============================] - 0s 174us/sample - loss: 1.8015 - val_loss: 1.6936
+    Epoch 7/20
+    2400/2400 [==============================] - 0s 179us/sample - loss: 1.5154 - val_loss: 1.4168
+    Epoch 8/20
+    2400/2400 [==============================] - 0s 148us/sample - loss: 1.2558 - val_loss: 1.1654
+    Epoch 9/20
+    2400/2400 [==============================] - 0s 143us/sample - loss: 1.0413 - val_loss: 0.9741
+    Epoch 10/20
+    2400/2400 [==============================] - 0s 157us/sample - loss: 0.8764 - val_loss: 0.8253
+    Epoch 11/20
+    2400/2400 [==============================] - 0s 152us/sample - loss: 0.7399 - val_loss: 0.6889
+    Epoch 12/20
+    2400/2400 [==============================] - 0s 144us/sample - loss: 0.6303 - val_loss: 0.6249
+    Epoch 13/20
+    2400/2400 [==============================] - 0s 144us/sample - loss: 0.5147 - val_loss: 0.4498
+    Epoch 14/20
+    2400/2400 [==============================] - 0s 145us/sample - loss: 0.4033 - val_loss: 0.3338
+    Epoch 15/20
+    2400/2400 [==============================] - 0s 142us/sample - loss: 0.3119 - val_loss: 0.2755
+    Epoch 16/20
+    2400/2400 [==============================] - 0s 145us/sample - loss: 0.2666 - val_loss: 0.2577
+    Epoch 17/20
+    2400/2400 [==============================] - 0s 188us/sample - loss: 0.2280 - val_loss: 0.2058
+    Epoch 18/20
+    2400/2400 [==============================] - 0s 203us/sample - loss: 0.2135 - val_loss: 0.1880
+    Epoch 19/20
+    2400/2400 [==============================] - 0s 146us/sample - loss: 0.1928 - val_loss: 0.1714
+    Epoch 20/20
+    2400/2400 [==============================] - 0s 161us/sample - loss: 0.1832 - val_loss: 0.1776
+
+
+
+
+
+    <tensorflow.python.keras.callbacks.History at 0x1a45e25550>
+
+
+
+
+```python
+y_pred = model.predict(X)
+
+fig = plt.figure()
+ax = p3.Axes3D(fig)
+ax.view_init(7, -80)
+ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=y_pred.ravel())
+plt.title("Swiss Roll", fontsize=14)
+plt.show()
+```
+
+
+![png](homl_ch12_Custom-models-and-training-with-tensorflow_files/homl_ch12_Custom-models-and-training-with-tensorflow_70_0.png)
+
 
 
 ```python

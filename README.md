@@ -16,10 +16,15 @@ The notebooks can be found [here](./PythonForDataAnalysis/).
 I am currently working through [*Hands-On Machine Learning with Scikit-Learn, Keras, and Tensorflow*](https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/), using the new seconnd edition of the book that has been updated for TF 2.0.
 The notebooks can be found [here](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/).
 
+When I finish the current chapter of *HOML*, I will take a brief but important interlude and learn how to effectively use Matplotlib, Seaborn, and Plotly, so that I can begin using Python for my research.
+Each library will have its own notebook [here](./Plotting-tutorials/).
+
+
 ## Interesting Images
 
 During my progress through my learning materials, I have created a lot of fun and interesting data visualizations.
 I have documented some of my favorites [here](cool-plots-and-viz.md).
+
 
 ## Creating the environment
 
@@ -390,3 +395,7 @@ We learned about making other custom loss components and metrics, including stre
 
 **Day 84 - January 13, 2020:**
 I learned how to create custom layers and models.
+
+**Day 85 - January 14, 2020:**
+We went over how to implement custom losses and metrics that use internal knowledge about the model instead of being limited to the predicted and known labels like before.
+There seem to be a few bugs in TF at the moment with implementing the custom metric, but the loss appears to we working (I need to make a change that will be checked-in in another commit).
