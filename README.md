@@ -399,3 +399,6 @@ I learned how to create custom layers and models.
 **Day 85 - January 14, 2020:**
 We went over how to implement custom losses and metrics that use internal knowledge about the model instead of being limited to the predicted and known labels like before.
 There seem to be a few bugs in TF at the moment with implementing the custom metric, but the loss appears to we working (I need to make a change that will be checked-in in another commit).
+
+**Day 86 - January 15, 2020:**
+I did some work on the Matplotlib tutorials and learned about computing gradients with autodiff in TF.

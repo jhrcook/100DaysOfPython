@@ -21,7 +21,7 @@ source activate daysOfCode-env
 # zsh ipynb_to_md.zsh "pfda"
 # zsh ipynb_to_md.zsh "cs20"
 zsh ipynb_to_md.zsh "homl"
-# zsh ipynb_to_md.zsh "plotting"
+zsh ipynb_to_md.zsh "plotting"
 
 ## Write virtual environment to requirements.txt
 conda list -e > requirements.txt

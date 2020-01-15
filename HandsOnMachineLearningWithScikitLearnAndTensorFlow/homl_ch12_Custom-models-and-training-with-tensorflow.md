@@ -506,7 +506,7 @@ keras.layers.Dense(units=30,
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x640d4bb10>
+    <tensorflow.python.keras.layers.core.Dense at 0x6450e1990>
 
 
 
@@ -761,18 +761,17 @@ To apply the custom loss, the reconstruction loss is computed and added to the n
 
 ```python
 class ReconstructionRegressor(keras.Model):
-    def __init__(self, output_dim, **kwargs):
+    def __init__(self, output_dim, with_reconstruction_loss=True, **kwargs):
         super().__init__(**kwargs)
-        self.hidden = [keras.layers.Dense(units=30, 
-                                          activation='selu', 
-                                          kernel_initializer='lecun_normal')
+        self.hidden = [keras.layers.Dense(units=10, activation='relu')
                       for _ in range(5)]
         self.out = keras.layers.Dense(output_dim)
+        self.with_reconstruction_loss=with_reconstruction_loss
     
     def build(self, batch_input_shape):
         n_inputs = batch_input_shape[-1]
         # An additional output layer for the reconstruction.
-        self.reconstruct = keras.layers.Dense(n_inputs)
+        self.reconstruct_layer = keras.layers.Dense(n_inputs)
         super().build(batch_input_shape)
     
     def call(self, X):
@@ -781,9 +780,10 @@ class ReconstructionRegressor(keras.Model):
             Z = layer(Z)
         
         # Apply reconstruction loss.
-        reconstruction = self.reconstruct(Z)
-        recon_loss = tf.reduce_mean(tf.square(reconstruction - inputs))
-        self.add_loss(0.05 * recon_loss)
+        if self.with_reconstruction_loss:
+            reconstruction = self.reconstruct_layer(Z)
+            recon_loss = tf.reduce_mean(tf.square(reconstruction - X))
+            self.add_loss(0.05 * recon_loss)
         
         return self.out(Z)
 ```
@@ -795,12 +795,12 @@ A new copy of `ReconstructionRegressor` is created below with this feature.
 
 ```python
 class ReconstructionRegressor(keras.Model):
-    def __init__(self, output_dim, **kwargs):
+    def __init__(self, output_dim, with_reconstruction_loss=True, **kwargs):
         super().__init__(**kwargs)
-        self.hidden = [keras.layers.Dense(units=10,
-                                          activation='relu')
-                       for _ in range(5)]
+        self.hidden = [keras.layers.Dense(units=10, activation='relu')
+                      for _ in range(5)]
         self.out = keras.layers.Dense(output_dim)
+        self.with_reconstruction_loss=with_reconstruction_loss
 
     def build(self, batch_input_shape):
         self.reconstruct_layer = keras.layers.Dense(batch_input_shape[-1])
@@ -811,14 +811,16 @@ class ReconstructionRegressor(keras.Model):
         for layer in self.hidden:
             Z = layer(Z)
 
-        # Include reconstruction loss.
-        reconstruction = self.reconstruct_layer(Z)
-        recon_loss = tf.reduce_mean(tf.square(reconstruction - X))
-        self.add_loss(0.05 * recon_loss)
+        # Apply reconstruction loss.
+        if self.with_reconstruction_loss:
+            reconstruction = self.reconstruct_layer(Z)
+            recon_loss = tf.reduce_mean(tf.square(reconstruction - X))
+            self.add_loss(0.05 * recon_loss)
         
         # Report reconstruction loss as a metric.
-        # self.recon_metric.update_state(recon_loss)
-        # self.add_metric(self.recon_metric, name='reconstruction_loss')
+        # m = keras.metrics.Mean(name='reconstruction_loss')
+        # m.update_state(recon_loss)
+        # self.add_metric(m, name='reconstruction_loss')
 
         return self.out(Z)
 ```
@@ -844,77 +846,195 @@ plt.show()
 
 
 ```python
-model = ReconstructionRegressor(1)
-model.compile(loss='mse', 
-              optimizer='nadam')
-model.fit(X, y, epochs=20, validation_split=0.2)
+# Without reconstruction.
+model = ReconstructionRegressor(1, with_reconstruction_loss=False)
+model.compile(loss='mse', optimizer='nadam')
+history_no_recon = model.fit(X, y, 
+                             epochs=20, 
+                             validation_split=0.2, 
+                             verbose=0)
+
+
+# With reconstruction.
+model_recon = ReconstructionRegressor(1, with_reconstruction_loss=True)
+model_recon.compile(loss='mse', optimizer='nadam')
+history_recon = model_recon.fit(X, y, 
+                                epochs=20, 
+                                validation_split=0.2, 
+                                verbose=0)
 ```
 
-    Train on 2400 samples, validate on 600 samples
-    Epoch 1/20
-    2400/2400 [==============================] - 3s 1ms/sample - loss: 49.5501 - val_loss: 15.0125
-    Epoch 2/20
-    2400/2400 [==============================] - 0s 157us/sample - loss: 6.6965 - val_loss: 4.5870
-    Epoch 3/20
-    2400/2400 [==============================] - 0s 159us/sample - loss: 3.7183 - val_loss: 3.1629
-    Epoch 4/20
-    2400/2400 [==============================] - 0s 163us/sample - loss: 2.6642 - val_loss: 2.4296
-    Epoch 5/20
-    2400/2400 [==============================] - 0s 171us/sample - loss: 2.1406 - val_loss: 1.9774
-    Epoch 6/20
-    2400/2400 [==============================] - 0s 174us/sample - loss: 1.8015 - val_loss: 1.6936
-    Epoch 7/20
-    2400/2400 [==============================] - 0s 179us/sample - loss: 1.5154 - val_loss: 1.4168
-    Epoch 8/20
-    2400/2400 [==============================] - 0s 148us/sample - loss: 1.2558 - val_loss: 1.1654
-    Epoch 9/20
-    2400/2400 [==============================] - 0s 143us/sample - loss: 1.0413 - val_loss: 0.9741
-    Epoch 10/20
-    2400/2400 [==============================] - 0s 157us/sample - loss: 0.8764 - val_loss: 0.8253
-    Epoch 11/20
-    2400/2400 [==============================] - 0s 152us/sample - loss: 0.7399 - val_loss: 0.6889
-    Epoch 12/20
-    2400/2400 [==============================] - 0s 144us/sample - loss: 0.6303 - val_loss: 0.6249
-    Epoch 13/20
-    2400/2400 [==============================] - 0s 144us/sample - loss: 0.5147 - val_loss: 0.4498
-    Epoch 14/20
-    2400/2400 [==============================] - 0s 145us/sample - loss: 0.4033 - val_loss: 0.3338
-    Epoch 15/20
-    2400/2400 [==============================] - 0s 142us/sample - loss: 0.3119 - val_loss: 0.2755
-    Epoch 16/20
-    2400/2400 [==============================] - 0s 145us/sample - loss: 0.2666 - val_loss: 0.2577
-    Epoch 17/20
-    2400/2400 [==============================] - 0s 188us/sample - loss: 0.2280 - val_loss: 0.2058
-    Epoch 18/20
-    2400/2400 [==============================] - 0s 203us/sample - loss: 0.2135 - val_loss: 0.1880
-    Epoch 19/20
-    2400/2400 [==============================] - 0s 146us/sample - loss: 0.1928 - val_loss: 0.1714
-    Epoch 20/20
-    2400/2400 [==============================] - 0s 161us/sample - loss: 0.1832 - val_loss: 0.1776
+To demonstrate that the reconstruction loss had an effect on training, the learning curves are shown below.
+The one with reconstruction loss (right) has a less steep descent than the one without this regularization (left).
+
+
+```python
+fig = plt.figure(figsize=(10, 10))
+
+for i, history in enumerate((history_no_recon, history_recon)):
+    plt.subplot(2, 2, i+1)
+    df = pd.DataFrame(history.history)
+    plt.plot('loss', 'b-', data=df, label='loss')
+    plt.plot('val_loss', 'r-', data=df, label='val loss')
+    plt.xlabel('epoch')
+    plt.title(['Without reconstruction loss', 'With reconstruction loss'][i],
+              fontsize=14)
+    plt.legend(loc='best')
+
+for i, m in enumerate([model, model_recon]):
+    ax = fig.add_subplot(2, 2, i+3, projection='3d')
+    y_pred = m.predict(X)
+    ax.view_init(7, -80)
+    ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=y_pred.ravel())
+    plt.title("Prediction", fontsize=14)
+
+plt.show()
+```
+
+
+![png](homl_ch12_Custom-models-and-training-with-tensorflow_files/homl_ch12_Custom-models-and-training-with-tensorflow_71_0.png)
+
+
+### Computing gradients using Autodiff
+
+For this section, the following tow function will be used.
+
+$
+y = 3 w_1^2 + 2 w_1 w_2
+$
+
+
+```python
+def  f(w1, w2):
+    return 3 * w1**2 + 2 * w1 * w2
+```
+
+Using calculus, we can find  the partial derivatives w.r.t each variable, $w_1$ and $w_2$.
+
+$
+\frac{\delta w_1}{\delta y} = 6 w_1 +2 w_2 \qquad
+\frac{\delta w_2}{\delta y} = 2 w_1
+$
+
+Thus, if ($w_1$, $w_2$) = (5, 3), then, using the partial derivatives, the gradient at that point would be (36, 10).
+For a large ANN, finding the partial derivatives by hand would be an immense challenge.
+One solution is to find the partial derivatives by slightly changing one parameter and measuring its effect on the output.
+
+
+```python
+w1, w2 = 5, 3
+eps = 1e-6
+
+# Estimated partial derivative of w1.
+(f(w1+eps, w2) - f(w1, w2)) / eps
+```
 
 
 
 
-
-    <tensorflow.python.keras.callbacks.History at 0x1a45e25550>
+    36.000003007075065
 
 
 
 
 ```python
-y_pred = model.predict(X)
-
-fig = plt.figure()
-ax = p3.Axes3D(fig)
-ax.view_init(7, -80)
-ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=y_pred.ravel())
-plt.title("Swiss Roll", fontsize=14)
-plt.show()
+# Estimated partial derivative of w2.
+(f(w1, w2+eps) - f(w1, w2)) / eps
 ```
 
 
-![png](homl_ch12_Custom-models-and-training-with-tensorflow_files/homl_ch12_Custom-models-and-training-with-tensorflow_70_0.png)
 
+
+    10.000000003174137
+
+
+
+Though rather accurate, this would take too long for a large ANN.
+Thus, we instead use autodiff.
+
+First, two variables (`tf.Variable`) are defined
+Then, a `tf.GradientTape` context is created.
+It automatically records every operation that involves a variable.
+With the `GradientTape` available, `z` is defined as a function of the two variables.
+Finally, we ask the `GradientTape` object to find the derivatives.
+
+
+```python
+w1, w2 = tf.Variable(5.0), tf.Variable(3.0)
+
+with tf.GradientTape()  as tape:
+    z = f(w1, w2)
+
+gradients = tape.gradient(z, [w1, w2])
+gradients
+```
+
+
+
+
+    [<tf.Tensor: id=12552, shape=(), dtype=float32, numpy=36.0>,
+     <tf.Tensor: id=12544, shape=(), dtype=float32, numpy=10.0>]
+
+
+
+**To save memory, keep the bare minimum within the `tf.GradientTape()` block.**
+It is possible to pause recording with `tape.stop_recording()`.
+
+The tape is immediately erased after `gradient()` is called.
+However, setting `persistent=True` in `tf.Gradient()` can prevent this - just make sure to erase the tape manually using `del tape`.
+
+
+```python
+w1, w2 = tf.Variable(5.0), tf.Variable(3.0)
+
+with tf.GradientTape(persistent=True)  as tape:
+    z = f(w1, w2)
+
+print(tape.gradient(z, w1))
+print(tape.gradient(z, w2))
+del tape
+```
+
+    tf.Tensor(36.0, shape=(), dtype=float32)
+    tf.Tensor(10.0, shape=(), dtype=float32)
+
+
+It is possible to prevent backpropagation through a part of the function by "marking" it with `tf.stop_gradient()`.
+
+
+```python
+def  f2(w1, w2):
+    return 3 * w1**2 + tf.stop_gradient(2 * w1 * w2)
+
+with tf.GradientTape() as tape:
+    z = f2(w1, w2)
+
+tape.gradient(z, [w1, w2])
+```
+
+
+
+
+    [<tf.Tensor: id=12622, shape=(), dtype=float32, numpy=30.0>, None]
+
+
+
+Sometimes there are numerical difficulties with autodiff.
+For example, it has trouble finding the derivative of the softplus function.
+Fortunately, we can calculate it analytically and provide the derivative function manually.
+The function `my_better_softplus()`, decorated with `tf.custom_gradient` now  returns its normal output and a function used to compute its gradient provided the gradients so far passed down by backpropagation.
+
+
+```python
+@tf.custom_gradient
+def my_better_softplus(z):
+    exp = tf.exp(z)
+    def my_softplus_gradients(grad):
+        return grad / (1 + 1 / exp)
+    return tf.math.log(exp + 1), my_softplus_gradients
+```
+
+### Custom training loops
 
 
 ```python
