@@ -506,7 +506,7 @@ keras.layers.Dense(units=30,
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x6450e1990>
+    <tensorflow.python.keras.layers.core.Dense at 0x6417307d0>
 
 
 
@@ -877,6 +877,7 @@ for i, history in enumerate((history_no_recon, history_recon)):
     plt.plot('loss', 'b-', data=df, label='loss')
     plt.plot('val_loss', 'r-', data=df, label='val loss')
     plt.xlabel('epoch')
+    plt.axis([0, 19, 0, 80])
     plt.title(['Without reconstruction loss', 'With reconstruction loss'][i],
               fontsize=14)
     plt.legend(loc='best')
@@ -1035,6 +1036,147 @@ def my_better_softplus(z):
 ```
 
 ### Custom training loops
+
+One reason to create a custom training loop is to implement a custom or multiple training methods.
+For example, the Wide and Deep model was trained by the original authors with two optimizers, one for each route.
+However, for most instances, the default `fit()` method should be used as a custom training loop will be more error prone.
+
+To provide and example of a custom training loop, we must first create some example data and define an example model.
+
+
+```python
+from sklearn.datasets import make_regression
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+from sklearn.model_selection import train_test_split
+
+# Create mock regression data.
+X, y = make_regression(n_samples=2000,
+                       n_features=5,
+                       n_informative=5,
+                       n_targets=1,
+                       noise=0,
+                       shuffle=True,
+                       random_state=0)
+
+# Split training and testing data.
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
+
+# Scale the input.
+std_scaler = StandardScaler()
+X_train = std_scaler.fit_transform(X_train)
+X_test = std_scaler.fit(X_test)
+
+# PCA and plot of mock data.
+pca = PCA(n_components=0.95, random_state=0)
+tsne = TSNE(n_components=2, random_state=0)
+X_reduced = pca.fit_transform(X_train)
+X_reduced = tsne.fit_transform(X_reduced)
+plt.scatter(X_reduced[:, 0], X_reduced[:, 1], c=y_train, alpha=0.3)
+plt.title('PCA & t-SNE of mock regression data', fontsize=14)
+plt.xlabel('$z_1$', fontsize=12)
+plt.ylabel('$z_2$', fontsize=12)
+plt.show()
+
+# Construct model.
+l2_reg = keras.regularizers.l2(l=0.05)
+model = keras.models.Sequential([
+    keras.layers.Dense(units=30,
+                       activation='elu',
+                       kernel_initializer='he_normal',
+                       kernel_regularizer=l2_reg),
+    keras.layers.Dense(units=1, kernel_regularizer=l2_reg)
+])
+```
+
+
+![png](homl_ch12_Custom-models-and-training-with-tensorflow_files/homl_ch12_Custom-models-and-training-with-tensorflow_86_0.png)
+
+
+Then we must create a function that randomly samples a batch of instances from the training set and a function that prints out the status of the training.
+
+
+```python
+def random_batch(X, y, batch_size=32):
+    """Sample a random batch of training data."""
+    idx = np.random.randint(len(X), size=batch_size)
+    return X[idx], y[idx]
+
+
+def print_training_status(iteration, total, loss, metrics):
+    metrics = ' - '.join([f'{m.name}: {np.round(m.result(), 4)}' 
+                          for m in [loss] + (metrics or [])])
+    end = '' if iteration < total else '\n'
+    print(f'\r{iteration}/{total} - ' + metrics, end=end)
+```
+
+Now we must define the hyperparameters for the trining and choose an optimizer, the loss function, and the metrics (here, MAE).
+
+
+```python
+n_epochs = 5
+batch_size = 32
+n_steps = len(X_train) // batch_size
+optimizer = keras.optimizers.Nadam(learning_rate=0.01)
+loss_fxn = keras.losses.mean_absolute_error
+mean_loss = keras.metrics.Mean()
+metrics = [keras.metrics.MeanAbsoluteError()]
+```
+
+Finally, we can write the custom loop.
+A step-by-step explanation follows the code, below.
+
+
+```python
+for epoch in range(1, n_epochs + 1):
+    print(f'Epoch {epoch} of {n_epochs}')
+    for step in range(1, n_steps + 1):
+        X_batch, y_batch = random_batch(X_train, y_train)
+        with tf.GradientTape() as tape:
+            y_pred = model(X_batch, training=True)
+            main_loss = tf.reduce_mean(loss_fxn(y_batch, y_pred))
+            loss = tf.add_n([main_loss] + model.losses)
+        gradients = tape.gradient(loss, model.trainable_variables)
+        optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+        mean_loss(loss)
+        for metric in metrics:
+            metric(y_batch, y_pred)
+        print_training_status(step * batch_size, len(y_train), mean_loss, metrics)
+    print_training_status(len(y_train), len(y_train), mean_loss, metrics)
+    for metric in [mean_loss] + metrics:
+        metric.reset_states()
+```
+
+    Epoch 1 of 5
+    WARNING:tensorflow:Layer sequential_1 is casting an input tensor from dtype float64 to the layer's dtype of float32, which is new behavior in TensorFlow 2.  The layer has dtype float32 because it's dtype defaults to floatx.
+    
+    If you intended to run this layer in float32, you can safely ignore this warning. If in doubt, this warning is likely only an issue if you are porting a TensorFlow 1.X model to TensorFlow 2.
+    
+    To change all layers to have dtype float64 by default, call `tf.keras.backend.set_floatx('float64')`. To change just this layer, pass dtype='float64' to the layer constructor. If you are the author of this layer, you can disable autocasting by passing autocast=False to the base Layer constructor.
+    
+    1500/1500 - mean: 81.73989868164062 - mean_absolute_error: 79.33889770507812
+    Epoch 2 of 5
+    1500/1500 - mean: 79.52300262451172 - mean_absolute_error: 78.59210205078125
+    Epoch 3 of 5
+    1500/1500 - mean: 81.27179718017578 - mean_absolute_error: 80.82839965820312
+    Epoch 4 of 5
+    1500/1500 - mean: 80.30829620361328 - mean_absolute_error: 79.94570159912112
+    Epoch 5 of 5
+    1500/1500 - mean: 77.16580200195312 - mean_absolute_error: 77.08529663085938
+
+
+Below is a walk-through of the custom training loop:
+
+* There are two nested loops, one for each epoch and one for the batches within the training epoch.
+* A random batch sample is taken, `X_batch` and `y_batch`.
+* Within the `GradientTape` block, a prediction is made by the model and used to compute the main loss using MAE, in this case. The total loss if found by adding up any other losses computed by the model; in this case, each layer has an $\ell_1$ regularization loss value.
+* The gradients are computed from the `GradientTape` and passed to the optimizer to perform a gradient descent step.
+* The mean loss and metrics for the epoch are updated and displayed.
+* At the end of the epoch, the status bar is displayed again before reseting the metrics.
+
+This training loop does not account for layers that behave differently between training and testing, such as `BatchNormalization` or `Dropout`.
+This can be done by setting `training=True` and ensuring this message is propagated to the layers.
 
 
 ```python

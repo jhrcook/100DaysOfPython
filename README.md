@@ -402,3 +402,8 @@ There seem to be a few bugs in TF at the moment with implementing the custom met
 
 **Day 86 - January 15, 2020:**
 I did some work on the Matplotlib tutorials and learned about computing gradients with autodiff in TF.
+
+**Day 87 - January 16, 2020:**
+I learned how to implement a custom training loop.
+In my opinion, there are too many things that can go wrong to worry about this until I am very experienced in ML and TF2.
+Still, it was a good look under the hood.
