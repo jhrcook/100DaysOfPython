@@ -506,7 +506,7 @@ keras.layers.Dense(units=30,
 
 
 
-    <tensorflow.python.keras.layers.core.Dense at 0x6417307d0>
+    <tensorflow.python.keras.layers.core.Dense at 0x63fb5f9d0>
 
 
 
@@ -1155,15 +1155,15 @@ for epoch in range(1, n_epochs + 1):
     
     To change all layers to have dtype float64 by default, call `tf.keras.backend.set_floatx('float64')`. To change just this layer, pass dtype='float64' to the layer constructor. If you are the author of this layer, you can disable autocasting by passing autocast=False to the base Layer constructor.
     
-    1500/1500 - mean: 81.73989868164062 - mean_absolute_error: 79.33889770507812
+    1500/1500 - mean: 81.21199798583984 - mean_absolute_error: 79.62300109863281
     Epoch 2 of 5
-    1500/1500 - mean: 79.52300262451172 - mean_absolute_error: 78.59210205078125
+    1500/1500 - mean: 79.32990264892578 - mean_absolute_error: 78.76760101318366
     Epoch 3 of 5
-    1500/1500 - mean: 81.27179718017578 - mean_absolute_error: 80.82839965820312
+    1500/1500 - mean: 81.2311019897461 - mean_absolute_error: 80.972702026367195
     Epoch 4 of 5
-    1500/1500 - mean: 80.30829620361328 - mean_absolute_error: 79.94570159912112
+    1500/1500 - mean: 80.2770004272461 - mean_absolute_error: 80.036003112792972
     Epoch 5 of 5
-    1500/1500 - mean: 77.16580200195312 - mean_absolute_error: 77.08529663085938
+    1500/1500 - mean: 77.1583023071289 - mean_absolute_error: 77.103797912597668
 
 
 Below is a walk-through of the custom training loop:
@@ -1178,7 +1178,99 @@ Below is a walk-through of the custom training loop:
 This training loop does not account for layers that behave differently between training and testing, such as `BatchNormalization` or `Dropout`.
 This can be done by setting `training=True` and ensuring this message is propagated to the layers.
 
+## TensorFlow functions and graphs
+
+In TF 2, the graphs are not as central and are musch easier to use.
+For an example, we start with a trivial function that returns the cube of its input.
+
 
 ```python
-
+def cube(x):
+    return x**3
 ```
+
+
+```python
+cube(2)
+```
+
+
+
+
+    8
+
+
+
+
+```python
+cube(tf.constant(2.0))
+```
+
+
+
+
+    <tf.Tensor: id=70592, shape=(), dtype=float32, numpy=8.0>
+
+
+
+We then use `tf.function()` to turn `cube()` into a *TensorFlow Function*. 
+
+
+```python
+tf_cube = tf.function(cube)
+tf_cube
+```
+
+
+
+
+    <tensorflow.python.eager.def_function.Function at 0x1a46626ed0>
+
+
+
+It can still be used like normal, but will always return tensors.
+
+
+```python
+tf_cube(2)
+```
+
+
+
+
+    <tf.Tensor: id=70598, shape=(), dtype=int32, numpy=8>
+
+
+
+Alternatively, we could have declared the function a TF Function at definition by including a decorator.
+
+
+```python
+@tf.function
+def tf_cube(x):
+    return x**3
+```
+
+The original function is still available, though.
+
+
+```python
+tf_cube.python_function(2)
+```
+
+
+
+
+    8
+
+
+
+In the background, TF is computing the function graph and making optimizations eagerly.
+It also can run the function faster by optimizing based on the graph's structure (e.g. parallel execution of independent computations).
+For tensor inputs, a new graph is computed for each different shape and cached for later.
+For normal Python inputs, a new graph is computed for every input, even if they are the same shape - thus, irresponsible use of TF Functions can take a lot of RAM.
+
+---
+
+The author continued with a good explanation of what TF is doing under the hood and provided some tips on not disrupting the process and getting good performance.
+I choose not to copy this information here, though I took notes in the book.

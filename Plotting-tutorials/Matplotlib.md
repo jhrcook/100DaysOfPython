@@ -406,6 +406,304 @@ plt.show()
 ![png](Matplotlib_files/Matplotlib_27_0.png)
 
 
+Note that the memory required for a figure is not fully released until `plt.close()` is called.
+
+### Working with text
+
+The `text()` command can add arbitrary text to a plot.
+It returns a `Text` object that can be customized further (see the [Text properties and layout](https://matplotlib.org/tutorials/text/text_props.html) documentation).
+
+
+```python
+mu, sigma = 100, 15
+x = mu + sigma * np.random.randn(10000)
+n, bins, patches = plt.hist(x, 50, density=1, facecolor='g', alpha=0.75)
+
+plt.xlabel('Smarts')
+plt.ylabel('Probability')
+plt.title('Histogram of IQ')
+plt.text(60, 0.025, r'$\mu=100,\ \sigma=15$')
+plt.axis([40, 160, 0, 0.03])
+plt.grid(True)
+plt.show()
+plt.close()
+```
+
+
+![png](Matplotlib_files/Matplotlib_30_0.png)
+
+
+#### Annotating text
+
+The `annotate()` command adds a tet and arrow to a plot.
+There are [Basic](https://matplotlib.org/tutorials/text/annotations.html#annotations-tutorial) and [Advanced Annotation](https://matplotlib.org/tutorials/text/annotations.html#plotting-guide-annotation) tutorials available.
+
+
+```python
+t = np.arange(0.0, 5.0, 0.01)
+s = np.cos(2*np.pi*t)
+line, = plt.plot(t, s, lw=2)
+plt.annotate('local max.', 
+             xy=(2, 1), 
+             xytext=(3, 1.5), 
+             arrowprops={'facecolor': 'k', 'shrink': 0.05})
+plt.ylim(-2, 2)
+plt.show()
+plt.close()
+```
+
+
+![png](Matplotlib_files/Matplotlib_32_0.png)
+
+
+### Logarithmic and other nonlinear axes
+
+To change the scale of the x-axis to logarithmic, use `plt.xscale('log')`.
+Some common options are `'linear'` (default), `'log'`, `'symlog'` (symmetric log), and `'logit''`.
+
+
+```python
+from matplotlib.ticker import NullFormatter  # useful for `logit` scale
+
+# make up some data in the interval (0, 1)
+y = np.random.normal(loc=0.5, scale=0.4, size=1000)
+y = y[(y > 0) & (y < 1)]
+y.sort()
+x = np.arange(len(y))
+
+# plot with various axes scales
+plt.figure(figsize=(10, 10))
+
+# linear
+plt.subplot(221)
+plt.plot(x, y)
+plt.yscale('linear')
+plt.title('linear')
+plt.grid(True)
+
+
+# log
+plt.subplot(222)
+plt.plot(x, y)
+plt.yscale('log')
+plt.title('log')
+plt.grid(True)
+
+
+# symmetric log
+plt.subplot(223)
+plt.plot(x, y - y.mean())
+plt.yscale('symlog', linthreshy=0.01)
+plt.title('symlog')
+plt.grid(True)
+
+# logit
+plt.subplot(224)
+plt.plot(x, y)
+plt.yscale('logit')
+plt.title('logit')
+plt.grid(True)
+# Format the minor tick labels of the y-axis into empty strings with
+# `NullFormatter`, to avoid cumbering the axis with too many labels.
+plt.gca().yaxis.set_minor_formatter(NullFormatter())
+# Adjust the subplot layout, because the logit one may take more space
+# than usual, due to y-tick labels like "1 - 10^{-3}"
+plt.subplots_adjust(top=0.92, bottom=0.08, left=0.10, right=0.95, hspace=0.25,
+                    wspace=0.35)
+
+plt.show()
+plt.close()
+```
+
+
+![png](Matplotlib_files/Matplotlib_34_0.png)
+
+
+## Sample plots in Matplotlib ([link](https://matplotlib.org/tutorials/introductory/sample_plots.html#sphx-glr-tutorials-introductory-sample-plots-py))
+
+This is not a tutorial, but instead there is a gallery of example plots with their source code.
+I decided to just try plotting a few of them.
+
+[**Contouring and pseudocolor**](https://matplotlib.org/gallery/images_contours_and_fields/pcolormesh_levels.html)
+
+
+```python
+import matplotlib
+from matplotlib.colors import BoundaryNorm
+from matplotlib.ticker import MaxNLocator
+
+dx, dy = 0.05, 0.05
+y, x = np.mgrid[slice(1, 5 + dy, dy),
+                slice(1, 5 + dx, dx)]
+```
+
+
+```python
+y
+```
+
+
+
+
+    array([[1.  , 1.  , 1.  , ..., 1.  , 1.  , 1.  ],
+           [1.05, 1.05, 1.05, ..., 1.05, 1.05, 1.05],
+           [1.1 , 1.1 , 1.1 , ..., 1.1 , 1.1 , 1.1 ],
+           ...,
+           [4.9 , 4.9 , 4.9 , ..., 4.9 , 4.9 , 4.9 ],
+           [4.95, 4.95, 4.95, ..., 4.95, 4.95, 4.95],
+           [5.  , 5.  , 5.  , ..., 5.  , 5.  , 5.  ]])
+
+
+
+
+```python
+x
+```
+
+
+
+
+    array([[1.  , 1.05, 1.1 , ..., 4.9 , 4.95, 5.  ],
+           [1.  , 1.05, 1.1 , ..., 4.9 , 4.95, 5.  ],
+           [1.  , 1.05, 1.1 , ..., 4.9 , 4.95, 5.  ],
+           ...,
+           [1.  , 1.05, 1.1 , ..., 4.9 , 4.95, 5.  ],
+           [1.  , 1.05, 1.1 , ..., 4.9 , 4.95, 5.  ],
+           [1.  , 1.05, 1.1 , ..., 4.9 , 4.95, 5.  ]])
+
+
+
+
+```python
+z = np.sin(x)**10 + np.cos(10 + y*x) * np.cos(x)
+z
+```
+
+
+
+
+    array([[ 0.18037951,  0.26823017,  0.36335424, ...,  0.70887839,
+             0.58107739,  0.44192559],
+           [ 0.20738012,  0.2942647 ,  0.38808212, ...,  0.68002396,
+             0.54664565,  0.40298815],
+           [ 0.23430727,  0.3201529 ,  0.41259223, ...,  0.66058997,
+             0.5247303 ,  0.37987008],
+           ...,
+           [-0.19534556, -0.17962168, -0.11478605, ...,  0.67850552,
+             0.52732772,  0.37422725],
+           [-0.21439958, -0.19297694, -0.12193009, ...,  0.65971059,
+             0.51699498,  0.37899662],
+           [-0.23247283, -0.20513588, -0.12774952, ...,  0.65154933,
+             0.52098567,  0.40107702]])
+
+
+
+
+```python
+z = z[:-1, :-1]
+levels = MaxNLocator(nbins=15).tick_values(z.min(), z.max())
+levels
+```
+
+
+
+
+    array([-1.05, -0.9 , -0.75, -0.6 , -0.45, -0.3 , -0.15,  0.  ,  0.15,
+            0.3 ,  0.45,  0.6 ,  0.75,  0.9 ,  1.05,  1.2 ])
+
+
+
+
+```python
+cmap = plt.get_cmap('PiYG')
+norm = BoundaryNorm(levels, ncolors=cmap.N, clip=True)
+
+fig = plt.figure(figsize=(10, 10))
+fig.tight_layout()
+
+ax0 = plt.subplot(211)
+im = ax0.pcolormesh(x, y, z, cmap=cmap, norm=norm)
+fig.colorbar(im, ax=ax0)
+ax0.set_title('pcolormesh with levels')
+
+ax1 = plt.subplot(212)
+cf = ax1.contourf(x[:-1, :-1] + dx/2.0,
+                  y[:-1, :-1] + dy/2.0,
+                  z, levels=levels, cmap=cmap)
+fig.colorbar(cf, ax=ax1)
+ax1.set_title('contourf with levels')
+
+plt.show()
+plt.close()
+```
+
+
+![png](Matplotlib_files/Matplotlib_41_0.png)
+
+
+[**3D surface (color map)**](https://matplotlib.org/gallery/mplot3d/surface3d.html)
+
+
+```python
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
+
+fig = plt.figure(figsize=(8, 6))
+ax = fig.gca(projection='3d')
+
+X = np.arange(-5, 5, 0.2)
+Y = np.arange(-5, 5, 0.2)
+X, Y = np.meshgrid(X, Y)
+R = np.sqrt(X**2 + Y**2)
+Z = np.sin(R)
+
+surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm, linewidth=0)
+
+fig.colorbar(surf, shrink=0.5, aspect=10)
+
+plt.show()
+plt.close()
+```
+
+
+![png](Matplotlib_files/Matplotlib_43_0.png)
+
+
+[**Demo of the histogram (hist) function with a few features**](https://matplotlib.org/gallery/statistics/histogram_features.html)
+
+
+```python
+from sklearn.mixture import GaussianMixture
+
+mu = 100
+sigma = 15
+x = mu + sigma * np.random.randn(10000)
+
+num_bins = 50
+
+fig = plt.figure(figsize=(8, 5))
+ax = plt.subplot(111)
+
+n, bins, patches = ax.hist(x, num_bins, density=1)
+
+# Add a "best-fit" line.
+gmm = GaussianMixture(n_components=1)
+gmm.fit(x.reshape(-1, 1))
+x_new = np.arange(40, 160, 1).reshape(-1, 1)
+y_pred = np.exp(gmm.score_samples(x_new))
+
+ax.plot(x_new, y_pred, 'r--', linewidth=2)
+ax.axis([40, 170, 0, 0.030])
+
+plt.show()
+plt.close()
+```
+
+
+![png](Matplotlib_files/Matplotlib_45_0.png)
+
+
 
 ```python
 

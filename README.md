@@ -407,3 +407,7 @@ I did some work on the Matplotlib tutorials and learned about computing gradient
 I learned how to implement a custom training loop.
 In my opinion, there are too many things that can go wrong to worry about this until I am very experienced in ML and TF2.
 Still, it was a good look under the hood.
+
+**Day 88 - January 17, 2020:**
+I finished up the chapter of HOML about custom TF components and now have a better understadning of what is happening under the hood.
+I then switched over to some Matplotlib tutorials and made some fun plots.
