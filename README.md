@@ -415,3 +415,6 @@ I then switched over to some Matplotlib tutorials and made some fun plots.
 **Day 89 - January 18, 2020:**
 I followed a brief tutorial on loading and displaying images in Matplotlib.
 I followd a tutorial from Matplotlib's website on creating a full-featured plot from start to finish.
+
+**Day 90 - January 19, 2020:**
+I learned about style sheets for Matplotlib and how to customize a figure legend.

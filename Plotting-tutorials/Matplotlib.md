@@ -6,6 +6,7 @@ This notebook is for working through the various [tutorials](https://matplotlib.
 ```python
 import numpy as np
 import pandas as pd
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from matplotlib.ticker import FuncFormatter
@@ -1121,6 +1122,472 @@ fig.savefig(
 Below is the saved image rendered in a Markdown cell.
 
 ![](output/Matplotlib-tutorial/the-lifecycle-of-a-plot_final-img.jpeg)
+
+## Customizing Matplotlib with style sheets and rcParams ([link](https://matplotlib.org/tutorials/introductory/customizing.html#sphx-glr-tutorials-introductory-customizing-py))
+
+Below is a list of all available styles in Matplotlib.
+
+
+```python
+sorted(plt.style.available)
+```
+
+
+
+
+    ['Solarize_Light2',
+     '_classic_test',
+     'bmh',
+     'classic',
+     'dark_background',
+     'fast',
+     'fivethirtyeight',
+     'ggplot',
+     'grayscale',
+     'seaborn',
+     'seaborn-bright',
+     'seaborn-colorblind',
+     'seaborn-dark',
+     'seaborn-dark-palette',
+     'seaborn-darkgrid',
+     'seaborn-deep',
+     'seaborn-muted',
+     'seaborn-notebook',
+     'seaborn-paper',
+     'seaborn-pastel',
+     'seaborn-poster',
+     'seaborn-talk',
+     'seaborn-ticks',
+     'seaborn-white',
+     'seaborn-whitegrid',
+     'tableau-colorblind10']
+
+
+
+Set the styling using `plt.style.use('style-name')`
+
+
+```python
+plt.style.use('ggplot')
+```
+
+
+```python
+x = np.arange(0, 10, 0.1)
+y = np.sin(x)
+fig, ax = plt.subplots()
+ax.plot(x, y)
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_84_0.png)
+
+
+
+```python
+plt.style.use('seaborn-paper')
+```
+
+
+```python
+x = np.arange(0, 10, 0.1)
+y = np.sin(x)
+fig, ax = plt.subplots()
+ax.plot(x, y)
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_86_0.png)
+
+
+
+```python
+plt.style.use('seaborn-white')
+```
+
+
+```python
+x = np.arange(0, 10, 0.1)
+y = np.sin(x)
+fig, ax = plt.subplots()
+ax.plot(x, y)
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_88_0.png)
+
+
+### Defining you own style
+
+A style sheet can be added to mpl_configdir/stylelib and then loaded with `plt.style.use('your-own-stylesheet.mplstyle')` or the sheet can be saved to another directory and the path or URL can be passed to `plt.style.use('path/to/style-sheet.mplstyle')`.
+
+### Composing styles
+
+Style sheets are designed to be composed together.
+The styles listed last will overwrite properties set by those before them.
+
+
+```python
+plt.style.use(['dark_background', 'seaborn-notebook'])
+```
+
+
+```python
+x = np.arange(0, 10, 0.1)
+y = np.sin(x)
+fig, ax = plt.subplots()
+ax.plot(x, y)
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_91_0.png)
+
+
+### Matplotlib rcParams
+
+#### Dynamic rc settings
+
+The default rc settings can be changed within a script or interactive session.
+The settings are stored in a dictionary-like variable `matplotlib.rcParams`.
+It can be modified directly.
+
+
+```python
+plt.style.use('classic')
+
+mpl.rcParams['lines.linewidth'] = 10
+
+x = np.arange(0, 10, 0.1)
+y = np.sin(x)
+fig, ax = plt.subplots()
+ax.plot(x, y)
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_93_0.png)
+
+
+Also, multiple settings of a plot object can be adjusted at once using `matplotlib.rc()`.
+
+
+```python
+mpl.rc('lines', linewidth=4, color='g')
+
+x = np.arange(0, 10, 0.1)
+y = np.sin(x)
+fig, ax = plt.subplots()
+ax.plot(x, y)
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_95_0.png)
+
+
+The `matplotlib.rcdefaults()` restores the standard matplotlib default settings.
+
+
+```python
+mpl.rcdefaults()
+```
+
+
+```python
+x = np.arange(0, 10, 0.1)
+y = np.sin(x)
+fig, ax = plt.subplots()
+ax.plot(x, y)
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_98_0.png)
+
+
+### The "matplotlibrc" file
+
+Matplotlib uses *matplotlibrc* configuration files to customize almost every property of a plot.
+Matplotlib looks for a *matploblibrc* file in four locations in the following order:
+
+1. current working directory
+2. at `$MATPLOTLIBRC` if it is a file, else `$MATPLOTLIBRC/matplotlibrc`
+3. `.matplotlib/matplotlibrc`
+4. `INSTALL/matplotlib/mpl-data/matplotlibrc` where install is the installation location of Python
+
+Only the first *matplotlibrc* file is used.
+The location of the file currently used can be found using the `matplotlib_fname()` function.
+
+
+```python
+mpl.matplotlib_fname()
+```
+
+
+
+
+    '/opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/matplotlib/mpl-data/matplotlibrc'
+
+
+
+**A sample *matplotlibrc* file is avaiable at the following link: [sample *matplotlibrc* file](https://matplotlib.org/tutorials/introductory/customizing.html#matplotlibrc-sample)**
+
+## Legend guide ([link](https://matplotlib.org/tutorials/intermediate/legend_guide.html#sphx-glr-tutorials-intermediate-legend-guide-py))
+
+The documentation for `legend()` is available [here](https://matplotlib.org/api/_as_gen/matplotlib.pyplot.legend.html#matplotlib.pyplot.legend).
+Below are some common terms specifcially defined:
+
+* **legend entry**: A legend is composed of one or more legend entries. An entry is composed of one key and one label.
+* **legend key**: A colored and/or patterned marker to the left of each legend label.
+* **legend label**: The text describing the handle that the key represents.
+* **legend handle**: The original object used to generate the appropriate entry in the legend.
+
+### Controlling the legend entries
+
+Calling `legend()` with no arguments automatically fetches the legend handles and their associated labels.
+It is equivalent to the following.
+
+
+```python
+fig, ax = plt.subplots()
+
+ax.plot([1, 2, 3], 'r', label='line 1')
+ax.plot([3, 2, 1], 'b', label='line 2')
+
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels)
+
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_103_0.png)
+
+
+The method returns a list of handles/artists and their labels.
+
+
+```python
+handles
+```
+
+
+
+
+    [<matplotlib.lines.Line2D at 0x1a1c260890>,
+     <matplotlib.lines.Line2D at 0x1a1c1c9b90>]
+
+
+
+
+```python
+labels
+```
+
+
+
+
+    ['line 1', 'line 2']
+
+
+
+Alternatively, for full control of what the legend includes, it is common to pass the appropriate handles directly to `legend()`. (The order *does* matter.)
+
+
+```python
+fig, ax = plt.subplots()
+
+lineup, = ax.plot([1, 2, 3], 'r', label='line 1')
+linedown, = ax.plot([3, 2, 1], 'b', label='line 2')
+
+ax.legend(handles=[linedown, lineup])
+
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_108_0.png)
+
+
+### Legend location
+
+The location of the legend can be set using the `loc` keyword argument.
+A complete list of avaialble locations is provided in the documentation for `legend()`.
+
+The `bbox_to_anchor` keyword gives more manual control over the legend placement.
+
+
+```python
+fig, ax = plt.subplots()
+
+lineup, = ax.plot([1, 2, 3], 'r', label='line 1')
+linedown, = ax.plot([3, 2, 1], 'b', label='line 2')
+
+ax.legend(bbox_to_anchor=(0.2, 1.2))
+
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_110_0.png)
+
+
+Below are two more examples of adjusting the legend.
+
+
+```python
+fig, ax = plt.subplots()
+
+lineup, = ax.plot([1, 2, 3], 'r', label='line 1')
+linedown, = ax.plot([3, 2, 1], 'b', label='line 2')
+
+ax.legend(bbox_to_anchor=(0.0, 1.02, 1.0, 0.0),
+          loc='lower left',
+          ncol=2,
+          mode='expand',
+          borderaxespad=0.0)
+
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_112_0.png)
+
+
+
+```python
+fig, ax = plt.subplots()
+
+lineup, = ax.plot([1, 2, 3], 'r', label='line 1')
+linedown, = ax.plot([3, 2, 1], 'b', label='line 2')
+
+ax.legend(bbox_to_anchor=(1.02, 1),
+          loc='upper left',
+          borderaxespad=0.0)
+
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_113_0.png)
+
+
+### Multiple legends on the same axes
+
+Each call to `legend()` resets the current legend, thus multiple legends *cannot* be added by calling `legend()` multiple times.
+Instead, separate legend instances must be manually added.
+
+
+```python
+fig, ax = plt.subplots()
+
+lineup, = ax.plot([1, 2, 3], 'r', label='line 1')
+linedown, = ax.plot([3, 2, 1], 'b', label='line 2')
+
+first_legend = plt.legend(handles=[lineup], loc='upper right')
+ax.add_artist(first_legend)
+
+plt.legend(handles=[linedown], loc='lower right')
+
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_115_0.png)
+
+
+### Legend handlers
+
+The simplest way to modify legend handles is by provide a dictionary to `handler_map` argument in `legend()`.
+The dictionary maps each plotted object to a subclass of `HandlerBase`.
+Below is an example of customizing the number of points for the key of one of the lines.
+
+
+```python
+fig, ax = plt.subplots()
+
+lineup, = ax.plot([1, 2, 3], 'r-o', label='line 1')
+linedown, = ax.plot([3, 2, 1], 'b-x', label='line 2')
+
+ax.legend(
+    loc='center right',
+    handler_map={lineup: mpl.legend_handler.HandlerLine2D(numpoints=4)}
+)
+
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_117_0.png)
+
+
+Also, the mapping for the dictionary can be by type of plot object.
+
+
+```python
+fig, ax = plt.subplots()
+
+lineup, = ax.plot([1, 2, 3], 'r-o', label='line 1')
+linedown, = ax.plot([3, 2, 1], 'b-x', label='line 2')
+
+ax.legend(
+    loc='center right',
+    handler_map={type(lineup): mpl.legend_handler.HandlerLine2D(numpoints=4)}
+)
+
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_119_0.png)
+
+
+The following example demonstrates combining two legend keys on top of one another.
+
+
+```python
+z = np.random.randn(10)
+
+fig, ax = plt.subplots()
+
+red_dot,  = ax.plot(z, 'ro', markersize=15)
+white_cross, = ax.plot(z[:5], 'w+', markersize=14, markeredgewidth=3)
+
+plt.legend(loc='best',
+           handles=[red_dot, (red_dot, white_cross)],
+           labels=['Attr A', 'Attr A & B'])
+
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_121_0.png)
+
+
+It is also possible to assign several legend keys to the same entry.
+
+
+```python
+fig, ax = plt.subplots()
+
+lineup, = ax.plot([1, 2, 3], 'r-o', label='line 1')
+linedown, = ax.plot([3, 2, 1], 'b-x', label='line 2')
+
+ax.legend(handles=[(lineup, linedown)],
+          labels=['two keys'],
+          numpoints=1,
+          handler_map={tuple: mpl.legend_handler.HandlerTuple(ndivide=None)})
+
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_123_0.png)
+
 
 
 ```python
