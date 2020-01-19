@@ -7,10 +7,16 @@ This notebook is for working through the various [tutorials](https://matplotlib.
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+from matplotlib.ticker import FuncFormatter
+import pathlib
 
 np.random.seed(0)
 
 %matplotlib inline
+
+assets_path = pathlib.Path('assets', 'Matplotlib-tutorial')
+save_path = pathlib.Path('output', 'Matplotlib-tutorial')
 ```
 
 ## Usage guide ([link](https://matplotlib.org/tutorials/introductory/usage.html#sphx-glr-tutorials-introductory-usage-py))
@@ -703,6 +709,418 @@ plt.close()
 
 ![png](Matplotlib_files/Matplotlib_45_0.png)
 
+
+## Image tutorial ([link](https://matplotlib.org/tutorials/introductory/images.html#sphx-glr-tutorials-introductory-images-py))
+
+### Importing image data into Numpy arrays
+
+Natively, Matplotlib only supports PNG images.
+Under the hood, Matplotlib relies on the *Pillow* library for loading images.
+The image used below was downloaded from the tutorial website.
+It is an 8-bit image with one value per pixel representing a grayscale.
+Each value of the array represents the shade of a pixel.
+
+![](assets/Matplotlib-tutorial/stinkbug.png)
+
+
+```python
+img = mpimg.imread(assets_path.joinpath('stinkbug.png').as_posix())
+img
+```
+
+
+
+
+    array([[0.40784314, 0.40784314, 0.40784314, ..., 0.42745098, 0.42745098,
+            0.42745098],
+           [0.4117647 , 0.4117647 , 0.4117647 , ..., 0.42745098, 0.42745098,
+            0.42745098],
+           [0.41960785, 0.41568628, 0.41568628, ..., 0.43137255, 0.43137255,
+            0.43137255],
+           ...,
+           [0.4392157 , 0.43529412, 0.43137255, ..., 0.45490196, 0.4509804 ,
+            0.4509804 ],
+           [0.44313726, 0.44313726, 0.4392157 , ..., 0.4509804 , 0.44705883,
+            0.44705883],
+           [0.44313726, 0.4509804 , 0.4509804 , ..., 0.44705883, 0.44705883,
+            0.44313726]], dtype=float32)
+
+
+
+
+```python
+img.shape
+```
+
+
+
+
+    (375, 500)
+
+
+
+### Plotting Numpy arrays as images
+
+The Numpy array can be siplayed as an image using `imshow()`.
+The default colormap is *viridis*
+
+
+```python
+imgplot = plt.imshow(img)
+```
+
+
+![png](Matplotlib_files/Matplotlib_50_0.png)
+
+
+
+```python
+imgplot = plt.imshow(img, cmap='hot')
+```
+
+
+![png](Matplotlib_files/Matplotlib_51_0.png)
+
+
+
+```python
+imgplot = plt.imshow(img)
+imgplot.set_cmap('nipy_spectral')
+```
+
+
+![png](Matplotlib_files/Matplotlib_52_0.png)
+
+
+
+```python
+imgplot = plt.imshow(img)
+plt.colorbar()
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_53_0.png)
+
+
+It is possible to change to limits of the colormap by "clipping" them to a range.
+
+
+```python
+imgplotg = plt.imshow(img, clim=(0.1, 0.6))
+plt.colorbar()
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_55_0.png)
+
+
+## The lifecycle of a plot ([link](https://matplotlib.org/tutorials/introductory/lifecycle.html#sphx-glr-tutorials-introductory-lifecycle-py))
+
+This tutorial demonstrated the process of creating a full-featured figure.
+
+### Our data
+
+
+```python
+data = {'Barton LLC': 109438.50,
+        'Frami, Hills and Schmidt': 103569.59,
+        'Fritsch, Russel and Anderson': 112214.71,
+        'Jerde-Hilpert': 112591.43,
+        'Keeling LLC': 100934.30,
+        'Koepp Ltd': 103660.54,
+        'Kulas Inc': 137351.96,
+        'Trantow-Barrows': 123381.38,
+        'White-Trantow': 135841.99,
+        'Will LLC': 104437.60}
+group_data = list(data.values())
+group_names = list(data.keys())
+group_mean = np.mean(group_data)
+data
+```
+
+
+
+
+    {'Barton LLC': 109438.5,
+     'Frami, Hills and Schmidt': 103569.59,
+     'Fritsch, Russel and Anderson': 112214.71,
+     'Jerde-Hilpert': 112591.43,
+     'Keeling LLC': 100934.3,
+     'Koepp Ltd': 103660.54,
+     'Kulas Inc': 137351.96,
+     'Trantow-Barrows': 123381.38,
+     'White-Trantow': 135841.99,
+     'Will LLC': 104437.6}
+
+
+
+### Getting started
+
+
+```python
+fig, ax = plt.subplots()
+```
+
+
+![png](Matplotlib_files/Matplotlib_59_0.png)
+
+
+
+```python
+fig, ax = plt.subplots()
+ax.barh(group_names, group_data)
+```
+
+
+
+
+    <BarContainer object of 10 artists>
+
+
+
+
+![png](Matplotlib_files/Matplotlib_60_1.png)
+
+
+### Controlling the style
+
+The following are the available plot styles.
+
+
+```python
+print(plt.style.available)
+```
+
+    ['seaborn-dark', 'seaborn-darkgrid', 'seaborn-ticks', 'fivethirtyeight', 'seaborn-whitegrid', 'classic', '_classic_test', 'fast', 'seaborn-talk', 'seaborn-dark-palette', 'seaborn-bright', 'seaborn-pastel', 'grayscale', 'seaborn-notebook', 'ggplot', 'seaborn-colorblind', 'seaborn-muted', 'seaborn', 'Solarize_Light2', 'seaborn-paper', 'bmh', 'tableau-colorblind10', 'seaborn-white', 'dark_background', 'seaborn-poster', 'seaborn-deep']
+
+
+They are easy to implement.
+
+
+```python
+plt.style.use('fivethirtyeight')
+```
+
+
+```python
+fig, ax = plt.subplots()
+ax.barh(group_names, group_data)
+```
+
+
+
+
+    <BarContainer object of 10 artists>
+
+
+
+
+![png](Matplotlib_files/Matplotlib_65_1.png)
+
+
+### Customizing the plot
+
+The `setp()` method can set the properties of one or a list of Matplotlib objects at once.
+Below, we extract the x-axis labels and rotate them and set their horizontal alignment to the right.
+
+
+```python
+fig, ax = plt.subplots()
+ax.barh(group_names, group_data)
+x_labels = ax.get_xticklabels()
+plt.setp(x_labels, rotation=45, horizontalalignment='right')
+```
+
+
+
+
+    [None,
+     None,
+     None,
+     None,
+     None,
+     None,
+     None,
+     None,
+     None,
+     None,
+     None,
+     None,
+     None,
+     None,
+     None,
+     None,
+     None,
+     None]
+
+
+
+
+![png](Matplotlib_files/Matplotlib_67_1.png)
+
+
+We will use the OO interface of Matplotlib to add properties using the `set()` method of the `Axes` object `ax`.
+
+
+```python
+fig, ax = plt.subplots()
+ax.barh(group_names, group_data)
+labels = ax.get_xticklabels()
+plt.setp(labels, rotation=45, horizontalalignment='right')
+ax.set(xlim=[-1000, 140000],
+       xlabel='Total Revenue',
+       ylabel='Company',
+       title='Company Revenue')
+```
+
+
+
+
+    [Text(0, 0.5, 'Company'),
+     (-1000, 140000),
+     Text(0.5, 0, 'Total Revenue'),
+     Text(0.5, 1.0, 'Company Revenue')]
+
+
+
+
+![png](Matplotlib_files/Matplotlib_69_1.png)
+
+
+The size of the figure can be set when the `Figure` and `Axes` objects were created.
+
+
+```python
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.barh(group_names, group_data)
+labels = ax.get_xticklabels()
+plt.setp(labels, rotation=45, horizontalalignment='right')
+ax.set(xlim=[-1000, 140000],
+       xlabel='Total Revenue',
+       ylabel='Company',
+       title='Company Revenue')
+```
+
+
+
+
+    [Text(0, 0.5, 'Company'),
+     (-1000, 140000),
+     Text(0.5, 0, 'Total Revenue'),
+     Text(0.5, 1.0, 'Company Revenue')]
+
+
+
+
+![png](Matplotlib_files/Matplotlib_71_1.png)
+
+
+Custom formating guidelines for labels can be created using a `FuncFormatter` object initialized with a function that returns the desired label string for a current value and position.
+
+
+```python
+def currency_formatter(x, pos):
+    """The two args are the value and position."""
+    if x >= 1e6:
+        return '${:1.1f}M'.format(x*1e-6)
+    else :
+        return '${:1.0f}K'.format(x*1e-3)
+
+
+formatter = FuncFormatter(currency_formatter)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.barh(group_names, group_data)
+labels = ax.get_xticklabels()
+plt.setp(labels, rotation=45, horizontalalignment='right')
+ax.set(xlim=[-1000, 140000],
+       xlabel='Total Revenue',
+       ylabel='Company',
+       title='Company Revenue')
+ax.xaxis.set_major_formatter(formatter)
+```
+
+
+![png](Matplotlib_files/Matplotlib_73_0.png)
+
+
+### Combining multiple visualizations
+
+Multiple plot elements can be drawn on the same instance of `Axes`.
+
+
+```python
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.barh(group_names, group_data)
+labels = ax.get_xticklabels()
+plt.setp(labels, rotation=45, horizontalalignment='right')
+
+# Add a vertical line.
+ax.axvline(group_mean, ls='--', color='r')
+
+# Annotate new companies.
+for group in [3, 5, 8]:
+    ax.text(145000, group, 'new company', 
+            fontsize=10, verticalalignment='center')
+
+# Move the title up so the plot doesn't get too cramped.
+ax.title.set(y=1.05)
+
+ax.set(xlim=[-1000, 140000],
+       xlabel='Total Revenue',
+       ylabel='Company',
+       title='Company Revenue')
+ax.xaxis.set_major_formatter(formatter)
+ax.set_xticks([0, 25e3, 50e3, 75e3, 100e3, 125e3])
+
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_75_0.png)
+
+
+### Saving our plot
+
+A list of all file types that Matplotlib can save to is shown below.
+
+
+```python
+fig.canvas.get_supported_filetypes()
+```
+
+
+
+
+    {'ps': 'Postscript',
+     'eps': 'Encapsulated Postscript',
+     'pdf': 'Portable Document Format',
+     'pgf': 'PGF code for LaTeX',
+     'png': 'Portable Network Graphics',
+     'raw': 'Raw RGBA bitmap',
+     'rgba': 'Raw RGBA bitmap',
+     'svg': 'Scalable Vector Graphics',
+     'svgz': 'Scalable Vector Graphics',
+     'jpg': 'Joint Photographic Experts Group',
+     'jpeg': 'Joint Photographic Experts Group',
+     'tif': 'Tagged Image File Format',
+     'tiff': 'Tagged Image File Format'}
+
+
+
+
+```python
+fig.savefig(
+    save_path.joinpath('the-lifecycle-of-a-plot_final-img.jpeg').as_posix(),
+    transparent=False, dpi=80, bbox_inches='tight'
+)
+```
+
+Below is the saved image rendered in a Markdown cell.
+
+![](output/Matplotlib-tutorial/the-lifecycle-of-a-plot_final-img.jpeg)
 
 
 ```python

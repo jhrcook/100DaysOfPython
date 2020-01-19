@@ -411,3 +411,7 @@ Still, it was a good look under the hood.
 **Day 88 - January 17, 2020:**
 I finished up the chapter of HOML about custom TF components and now have a better understadning of what is happening under the hood.
 I then switched over to some Matplotlib tutorials and made some fun plots.
+
+**Day 89 - January 18, 2020:**
+I followed a brief tutorial on loading and displaying images in Matplotlib.
+I followd a tutorial from Matplotlib's website on creating a full-featured plot from start to finish.
