@@ -418,3 +418,7 @@ I followd a tutorial from Matplotlib's website on creating a full-featured plot 
 
 **Day 90 - January 19, 2020:**
 I learned about style sheets for Matplotlib and how to customize a figure legend.
+
+**Day 91 - January 20, 2020:**
+I finished up the matplotlib tutorials by learning about cyclers.
+I started the Plotly tutorials and learned about the fundamentals of creating an interactive plot.

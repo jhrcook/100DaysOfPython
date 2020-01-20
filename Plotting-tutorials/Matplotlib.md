@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from matplotlib.ticker import FuncFormatter
 import pathlib
+from cycler import cycler
 
 np.random.seed(0)
 
@@ -1378,8 +1379,8 @@ handles
 
 
 
-    [<matplotlib.lines.Line2D at 0x1a1c260890>,
-     <matplotlib.lines.Line2D at 0x1a1c1c9b90>]
+    [<matplotlib.lines.Line2D at 0x1a267de190>,
+     <matplotlib.lines.Line2D at 0x1a26776450>]
 
 
 
@@ -1587,6 +1588,114 @@ plt.show()
 
 
 ![png](Matplotlib_files/Matplotlib_123_0.png)
+
+
+## Styling with cycler ([link](https://matplotlib.org/tutorials/intermediate/color_cycle.html#sphx-glr-tutorials-intermediate-color-cycle-py))
+
+*Documentation of the [cycler API](https://matplotlib.org/cycler/).*
+
+The tutorial demonstrated two APIs: 
+   
+1. setting the default rc parameter specifying the property cycle
+2. seting the property cycle for a single pair of axes
+
+Below is the data we will use for the tutorial.
+
+
+```python
+x = np.linspace(0, 2 * np.pi, 50)
+offsets = np.linspace(0, 2 * np.pi, 4, endpoint=False)
+yy = np.transpose([np.sin(x + phi) for phi in offsets])
+```
+
+Below we set the default `prop_cycle` using `matplotlib.pyplot.rc()`.
+We combine a color and a linestyle cycler using the `+` operator.
+
+
+```python
+default_cycler = (
+    cycler(color=['r', 'g', 'b', 'y']) + 
+    cycler(linestyle=['-', '--', ':', '-.'])
+)
+plt.rc('axes', prop_cycle=default_cycler)
+plt.rc('lines', linewidth=4)
+```
+
+Now a plot will use these values for drawing plots with multiple lines.
+
+
+```python
+fig, ax = plt.subplots()
+ax.plot(yy)
+ax.set_title('Default color cycle')
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_129_0.png)
+
+
+Alternatively, custom cyclers can be set for a single axes.
+*Note that it is necessary to set the `prop_cycle` with `ax.set_prop_cycle()` before calling `ax.plot()`.*
+
+
+```python
+custom_cycler = (
+    cycler(color=['c', 'm', 'y', 'k']) +
+    cycler(lw=[1, 2, 3, 4])
+)
+fig, ax = plt.subplots()
+ax.set_prop_cycle(custom_cycler)
+ax.plot(yy)
+ax.set_title('Custom color cycle')
+plt.show()
+```
+
+
+![png](Matplotlib_files/Matplotlib_131_0.png)
+
+
+### Setting `prop_cycle` in the matplotlibrc file or style files
+
+If you want to include a custom cycler in a matplotlibrc file, use the following:
+
+```
+axes.prop_cycle : cycler(color='bgrcmyk')
+```
+
+*Adding* two cyclers joins the properties one-to-one while *multiplying* them creates every combination.
+
+
+```python
+cc = (cycler(color=list('rgb')) +
+      cycler(linestyle=['-', '--', '-.']))
+for d in cc:
+    print(d)
+```
+
+    {'color': 'r', 'linestyle': '-'}
+    {'color': 'g', 'linestyle': '--'}
+    {'color': 'b', 'linestyle': '-.'}
+
+
+
+```python
+from cycler import cycler
+cc = (cycler(color=list('rgb')) *
+      cycler(linestyle=['-', '--', '-.']))
+for d in cc:
+    print(d)
+```
+
+    {'color': 'r', 'linestyle': '-'}
+    {'color': 'r', 'linestyle': '--'}
+    {'color': 'r', 'linestyle': '-.'}
+    {'color': 'g', 'linestyle': '-'}
+    {'color': 'g', 'linestyle': '--'}
+    {'color': 'g', 'linestyle': '-.'}
+    {'color': 'b', 'linestyle': '-'}
+    {'color': 'b', 'linestyle': '--'}
+    {'color': 'b', 'linestyle': '-.'}
 
 
 
