@@ -422,3 +422,6 @@ I learned about style sheets for Matplotlib and how to customize a figure legend
 **Day 91 - January 20, 2020:**
 I finished up the matplotlib tutorials by learning about cyclers.
 I started the Plotly tutorials and learned about the fundamentals of creating an interactive plot.
+
+**Day 92 - January 21, 2020:**
+I learned about many of the commonly used functions of Plotly Express and how to make a reactive plot with widgets.
