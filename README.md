@@ -425,3 +425,6 @@ I started the Plotly tutorials and learned about the fundamentals of creating an
 
 **Day 92 - January 21, 2020:**
 I learned about many of the commonly used functions of Plotly Express and how to make a reactive plot with widgets.
+
+**Day 93 - January 22, 2020:**
+I finished up the small interlude into plotting in Python by learning about reacting to click events in Plotly, and then touring around Seaborn.
