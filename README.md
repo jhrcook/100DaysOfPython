@@ -16,8 +16,14 @@ The notebooks can be found [here](./PythonForDataAnalysis/).
 I am currently working through [*Hands-On Machine Learning with Scikit-Learn, Keras, and Tensorflow*](https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/), using the new seconnd edition of the book that has been updated for TF 2.0.
 The notebooks can be found [here](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/).
 
-When I finish the current chapter of *HOML*, I will take a brief but important interlude and learn how to effectively use Matplotlib, Seaborn, and Plotly, so that I can begin using Python for my research.
-Each library will have its own notebook [here](./Plotting-tutorials/).
+I took a brief, but important, interlude to learn how to effectively use Matplotlib, Seaborn, and Plotly, so that I can use Python for my research.
+Each library has its own notebook [here](./Plotting-tutorials/).
+
+Here is a running list of other tutorials and sources I want to use:
+
+* [Python 101: iterators, generators, coroutines](https://www.integralist.co.uk/posts/python-generators/)
+* [SymPy](https://docs.sympy.org/1.5.1/tutorial/index.html)
+* [SciPy](https://docs.scipy.org/doc/scipy/reference/tutorial/index.html)
 
 
 ## Interesting Images
