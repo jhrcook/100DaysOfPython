@@ -434,3 +434,6 @@ I learned about many of the commonly used functions of Plotly Express and how to
 
 **Day 93 - January 22, 2020:**
 I finished up the small interlude into plotting in Python by learning about reacting to click events in Plotly, and then touring around Seaborn.
+
+**Day 94 - January 23, 2020:**
+I began working through some of the tutorials offered for SciPy.
