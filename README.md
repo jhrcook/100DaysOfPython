@@ -437,3 +437,7 @@ I finished up the small interlude into plotting in Python by learning about reac
 
 **Day 94 - January 23, 2020:**
 I began working through some of the tutorials offered for SciPy.
+
+**Day 95 - January 24, 2020:**
+I finished up with SciPy and then began learning about the statsmodels package.
+I think this will be how I finish off my 100 Days of Python.
