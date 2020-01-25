@@ -441,3 +441,6 @@ I began working through some of the tutorials offered for SciPy.
 **Day 95 - January 24, 2020:**
 I finished up with SciPy and then began learning about the statsmodels package.
 I think this will be how I finish off my 100 Days of Python.
+
+**Day 96 - January 25, 2020:**
+I worked through the statsmodels tutorials and have a working-knowledge of using the library.
