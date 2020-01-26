@@ -444,3 +444,7 @@ I think this will be how I finish off my 100 Days of Python.
 
 **Day 96 - January 25, 2020:**
 I worked through the statsmodels tutorials and have a working-knowledge of using the library.
+
+**Day 97 - January 26, 2020:**
+I began Chapter 13 of HOML and began learning about the TF Data API.
+It seems incredibly useful and efficient, so I'm looking forward to learning how to use it effectively.
