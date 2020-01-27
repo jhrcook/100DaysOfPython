@@ -448,3 +448,6 @@ I worked through the statsmodels tutorials and have a working-knowledge of using
 **Day 97 - January 26, 2020:**
 I began Chapter 13 of HOML and began learning about the TF Data API.
 It seems incredibly useful and efficient, so I'm looking forward to learning how to use it effectively.
+
+**Day 98 - January 27, 2020:**
+I learned about preprocessing data in a TF Dataset object and how to use it in training and validating a Keras ANN.

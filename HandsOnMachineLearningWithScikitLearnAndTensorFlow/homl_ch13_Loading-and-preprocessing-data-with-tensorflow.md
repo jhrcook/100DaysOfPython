@@ -146,6 +146,7 @@ cal_housing = fetch_california_housing()
 df = pd.DataFrame(cal_housing.data)
 df.columns = cal_housing.feature_names
 df['MedianHousingValue'] = cal_housing.target
+df = df.sample(frac=1)
 df
 ```
 
@@ -183,64 +184,64 @@ df
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>8.3252</td>
-      <td>41.0</td>
-      <td>6.984127</td>
-      <td>1.023810</td>
-      <td>322.0</td>
-      <td>2.555556</td>
-      <td>37.88</td>
-      <td>-122.23</td>
-      <td>4.526</td>
+      <th>14740</th>
+      <td>4.1518</td>
+      <td>22.0</td>
+      <td>5.663073</td>
+      <td>1.075472</td>
+      <td>1551.0</td>
+      <td>4.180593</td>
+      <td>32.58</td>
+      <td>-117.05</td>
+      <td>1.369</td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>8.3014</td>
-      <td>21.0</td>
-      <td>6.238137</td>
-      <td>0.971880</td>
-      <td>2401.0</td>
-      <td>2.109842</td>
-      <td>37.86</td>
-      <td>-122.22</td>
-      <td>3.585</td>
+      <th>10101</th>
+      <td>5.7796</td>
+      <td>32.0</td>
+      <td>6.107226</td>
+      <td>0.927739</td>
+      <td>1296.0</td>
+      <td>3.020979</td>
+      <td>33.92</td>
+      <td>-117.97</td>
+      <td>2.413</td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>7.2574</td>
-      <td>52.0</td>
-      <td>8.288136</td>
-      <td>1.073446</td>
-      <td>496.0</td>
-      <td>2.802260</td>
-      <td>37.85</td>
-      <td>-122.24</td>
-      <td>3.521</td>
+      <th>20566</th>
+      <td>4.3487</td>
+      <td>29.0</td>
+      <td>5.930712</td>
+      <td>1.026217</td>
+      <td>1554.0</td>
+      <td>2.910112</td>
+      <td>38.65</td>
+      <td>-121.84</td>
+      <td>2.007</td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>5.6431</td>
-      <td>52.0</td>
-      <td>5.817352</td>
-      <td>1.073059</td>
-      <td>558.0</td>
-      <td>2.547945</td>
-      <td>37.85</td>
-      <td>-122.25</td>
-      <td>3.413</td>
+      <th>2670</th>
+      <td>2.4511</td>
+      <td>37.0</td>
+      <td>4.992958</td>
+      <td>1.316901</td>
+      <td>390.0</td>
+      <td>2.746479</td>
+      <td>33.20</td>
+      <td>-115.60</td>
+      <td>0.725</td>
     </tr>
     <tr>
-      <th>4</th>
-      <td>3.8462</td>
-      <td>52.0</td>
-      <td>6.281853</td>
-      <td>1.081081</td>
-      <td>565.0</td>
-      <td>2.181467</td>
-      <td>37.85</td>
-      <td>-122.25</td>
-      <td>3.422</td>
+      <th>15709</th>
+      <td>5.0049</td>
+      <td>25.0</td>
+      <td>4.319261</td>
+      <td>1.039578</td>
+      <td>649.0</td>
+      <td>1.712401</td>
+      <td>37.79</td>
+      <td>-122.43</td>
+      <td>4.600</td>
     </tr>
     <tr>
       <th>...</th>
@@ -255,64 +256,64 @@ df
       <td>...</td>
     </tr>
     <tr>
-      <th>20635</th>
-      <td>1.5603</td>
-      <td>25.0</td>
-      <td>5.045455</td>
-      <td>1.133333</td>
-      <td>845.0</td>
-      <td>2.560606</td>
-      <td>39.48</td>
-      <td>-121.09</td>
-      <td>0.781</td>
+      <th>13123</th>
+      <td>4.4125</td>
+      <td>20.0</td>
+      <td>6.000000</td>
+      <td>1.045662</td>
+      <td>712.0</td>
+      <td>3.251142</td>
+      <td>38.27</td>
+      <td>-121.26</td>
+      <td>1.446</td>
     </tr>
     <tr>
-      <th>20636</th>
-      <td>2.5568</td>
-      <td>18.0</td>
-      <td>6.114035</td>
-      <td>1.315789</td>
-      <td>356.0</td>
-      <td>3.122807</td>
-      <td>39.49</td>
-      <td>-121.21</td>
-      <td>0.771</td>
+      <th>19648</th>
+      <td>2.9135</td>
+      <td>27.0</td>
+      <td>5.349282</td>
+      <td>0.933014</td>
+      <td>647.0</td>
+      <td>3.095694</td>
+      <td>37.48</td>
+      <td>-120.89</td>
+      <td>1.594</td>
     </tr>
     <tr>
-      <th>20637</th>
-      <td>1.7000</td>
-      <td>17.0</td>
-      <td>5.205543</td>
-      <td>1.120092</td>
-      <td>1007.0</td>
-      <td>2.325635</td>
-      <td>39.43</td>
-      <td>-121.22</td>
-      <td>0.923</td>
+      <th>9845</th>
+      <td>3.1977</td>
+      <td>31.0</td>
+      <td>3.641221</td>
+      <td>0.941476</td>
+      <td>704.0</td>
+      <td>1.791349</td>
+      <td>36.58</td>
+      <td>-121.90</td>
+      <td>2.893</td>
     </tr>
     <tr>
-      <th>20638</th>
-      <td>1.8672</td>
-      <td>18.0</td>
-      <td>5.329513</td>
-      <td>1.171920</td>
-      <td>741.0</td>
-      <td>2.123209</td>
-      <td>39.43</td>
-      <td>-121.32</td>
-      <td>0.847</td>
+      <th>10799</th>
+      <td>5.6315</td>
+      <td>34.0</td>
+      <td>4.540598</td>
+      <td>1.064103</td>
+      <td>1052.0</td>
+      <td>2.247863</td>
+      <td>33.62</td>
+      <td>-117.93</td>
+      <td>4.846</td>
     </tr>
     <tr>
-      <th>20639</th>
-      <td>2.3886</td>
-      <td>16.0</td>
-      <td>5.254717</td>
-      <td>1.162264</td>
-      <td>1387.0</td>
-      <td>2.616981</td>
-      <td>39.37</td>
-      <td>-121.24</td>
-      <td>0.894</td>
+      <th>2732</th>
+      <td>1.3882</td>
+      <td>15.0</td>
+      <td>3.929530</td>
+      <td>1.100671</td>
+      <td>1024.0</td>
+      <td>3.436242</td>
+      <td>32.80</td>
+      <td>-115.56</td>
+      <td>0.694</td>
     </tr>
   </tbody>
 </table>
@@ -376,16 +377,199 @@ for line in dataset.take(5):
     print(line.numpy())
 ```
 
-    b'3.9375,51.0,5.231805929919138,1.0188679245283019,1012.0,2.7277628032345014,34.14,-118.2,2.17'
-    b'8.3252,41.0,6.984126984126984,1.0238095238095237,322.0,2.5555555555555554,37.88,-122.23,4.526'
-    b'2.1691,31.0,5.322115384615385,1.0384615384615385,1326.0,3.1875,36.68,-119.8,0.667'
-    b'2.1378,39.0,3.7617834394904457,1.1184713375796178,1379.0,1.756687898089172,33.77,-118.17,1.804'
-    b'4.3359,47.0,5.070281124497992,1.0502008032128514,1514.0,3.040160642570281,34.14,-118.19,2.092'
+    b'4.2386,6.0,7.723076923076923,1.1692307692307693,228.0,3.5076923076923077,33.83,-117.55,5.00001'
+    b'4.1518,22.0,5.663072776280323,1.0754716981132075,1551.0,4.180592991913747,32.58,-117.05,1.369'
+    b'3.125,16.0,5.380070546737214,1.0582010582010581,3407.0,3.004409171075838,36.8,-119.83,0.808'
+    b'3.2875,52.0,5.990936555891238,1.039274924471299,887.0,2.6797583081570995,34.07,-118.15,2.344'
+    b'4.3898,52.0,5.32662192393736,1.1006711409395973,1485.0,3.3221476510067114,37.73,-122.44,2.7'
 
 
 Note that the data are still byte strings that need to be processed further, still.
 
 ### Preprocessing the data
+
+We can write a function to preprocess this input data.
+This implementation assumes we have precomputed the mean and standard deviation for each column.
+
+The first step is to define defaults and use those to help decode the byte string using `tf.io.decode_csv()`.
+Then `x` and `y` are made as as stacks of the list of 1D tensors, one per column, returned from the previous step.
+Finally,  the z-scaled data points and the target values are returned.
+
+
+```python
+n_inputs = 8
+X_mean = df.mean().tolist()[:n_inputs]
+X_std = df.std().tolist()[:n_inputs]
+
+def preprocess(line):
+    defs = [0.0] * n_inputs + [tf.constant([], dtype=tf.float32)]
+    fields = tf.io.decode_csv(line, record_defaults=defs)
+    x = tf.stack(fields[:-1])
+    y = tf.stack(fields[-1:])
+    return (x - X_mean) / X_std, y
+```
+
+
+```python
+preprocess(b'8.3252,41.0,6.984126984126984,1.0238095238095237,322.0,2.5555555555555554,37.88,-122.23,4.526')
+```
+
+
+
+
+    (<tf.Tensor: id=101078, shape=(8,), dtype=float32, numpy=
+     array([ 2.344709  ,  0.98211884,  0.6285442 , -0.15375382, -0.97440493,
+            -0.04959533,  1.0525227 , -1.3278059 ], dtype=float32)>,
+     <tf.Tensor: id=101074, shape=(1,), dtype=float32, numpy=array([4.526], dtype=float32)>)
+
+
+
+Finally, we can create one function to wrap all of these steps into one.
+
+
+```python
+def csv_reader_dataset(filepaths, repeat=1, n_readers=5,
+                       n_read_threads=None, shuffle_buffer_size=10000,
+                       n_parse_threads=5, batch_size=32):
+    dataset = tf.data.Dataset.list_files(filepaths)
+    dataset = dataset.interleave(
+        lambda fp: tf.data.TextLineDataset(fp).skip(1),
+        cycle_length=n_readers, num_parallel_calls=n_read_threads
+    )
+    dataset = dataset.map(preprocess, num_parallel_calls=n_parse_threads)
+    dataset = dataset.shuffle(shuffle_buffer_size).repeat(repeat)
+    return dataset.batch(batch_size).prefetch(1)
+```
+
+### Prefetching
+
+The `prefecth(1)` included at the end of `csv_reader_dataset()` ensures that the next batch is ready to be used when the current training step is completed.
+
+### Using the dataset with tf.keras
+
+The dataset we have built can be used directly by Keras.
+
+
+```python
+train_set = csv_reader_dataset(cal_housing_strs[:5])
+valid_set = csv_reader_dataset(cal_housing_strs[5:8])
+test_set = csv_reader_dataset(cal_housing_strs[8:])
+```
+
+
+```python
+model = keras.models.Sequential([
+    keras.layers.InputLayer(n_inputs),
+    keras.layers.Dense(20, activation='relu', kernel_initializer='he_normal',
+                       kernel_regularizer=keras.regularizers.l2(0.01)),
+    keras.layers.Dense(10, activation='relu', kernel_initializer='he_normal',
+                       kernel_regularizer=keras.regularizers.l2(0.01)),
+    keras.layers.Dense(5, activation='relu', kernel_initializer='he_normal',
+                       kernel_regularizer=keras.regularizers.l2(0.01)),
+    keras.layers.Dense(1),
+])
+
+model.compile(optimizer=keras.optimizers.Nadam(),
+              loss='mse')
+
+history = model.fit(train_set, epochs=10, validation_data=valid_set)
+```
+
+    Epoch 1/10
+    323/323 [==============================] - 7s 23ms/step - loss: 2.4419 - val_loss: 0.0000e+00
+    Epoch 2/10
+    323/323 [==============================] - 4s 11ms/step - loss: 1.1816 - val_loss: 1.0340
+    Epoch 3/10
+    323/323 [==============================] - 4s 11ms/step - loss: 0.9702 - val_loss: 0.9089
+    Epoch 4/10
+    323/323 [==============================] - 4s 11ms/step - loss: 0.8802 - val_loss: 0.8341
+    Epoch 5/10
+    323/323 [==============================] - 4s 11ms/step - loss: 0.8120 - val_loss: 0.7744
+    Epoch 6/10
+    323/323 [==============================] - 4s 11ms/step - loss: 0.7618 - val_loss: 0.7272
+    Epoch 7/10
+    323/323 [==============================] - 4s 11ms/step - loss: 0.7147 - val_loss: 0.6944
+    Epoch 8/10
+    323/323 [==============================] - 4s 12ms/step - loss: 0.6787 - val_loss: 0.6709
+    Epoch 9/10
+    323/323 [==============================] - 3s 10ms/step - loss: 0.6578 - val_loss: 0.6426
+    Epoch 10/10
+    323/323 [==============================] - 3s 10ms/step - loss: 0.6289 - val_loss: 0.6239
+
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8, 5))
+plt.show()
+```
+
+
+![png](homl_ch13_Loading-and-preprocessing-data-with-tensorflow_files/homl_ch13_Loading-and-preprocessing-data-with-tensorflow_34_0.png)
+
+
+
+```python
+model.evaluate(test_set)
+```
+
+    129/129 [==============================] - 2s 12ms/step - loss: 0.5953
+
+
+
+
+
+    0.595285428817882
+
+
+
+
+```python
+new_data = test_set.take(100)
+y_new = []
+for __, y in new_data:
+    y_new.append(y.numpy())
+
+y_new = np.concatenate(y_new).flatten()
+
+y_pred = model.predict(new_data.map(lambda X, y: X)).flatten()
+
+fig, ax = plt.subplots()
+ax.scatter(y_new, y_pred, color='k', alpha=0.1)
+ax.plot(y_new, y_new, 'k--', color='blue')
+ax.set_title('CA housing ANN', fontsize=20)
+ax.set_xlabel('real', fontsize=16)
+ax.set_ylabel('predicted', fontsize=16)
+plt.show()
+```
+
+
+![png](homl_ch13_Loading-and-preprocessing-data-with-tensorflow_files/homl_ch13_Loading-and-preprocessing-data-with-tensorflow_36_0.png)
+
+
+
+```python
+np.corrcoef(y_new, y_pred)[0, 1]
+```
+
+
+
+
+    0.022175215966235853
+
+
+
+
+```python
+idx = y_new < 5
+np.corrcoef(y_new[idx], y_pred[idx])[0, 1]
+```
+
+
+
+
+    0.01641203714119741
+
+
 
 
 ```python
