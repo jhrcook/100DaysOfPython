@@ -90,6 +90,11 @@ The following example removes the batches created above.
 dataset = dataset.apply(tf.data.experimental.unbatch())
 ```
 
+    WARNING:tensorflow:From <ipython-input-6-15e8a30c9761>:1: unbatch (from tensorflow.python.data.experimental.ops.batching) is deprecated and will be removed in a future version.
+    Instructions for updating:
+    Use `tf.data.Dataset.unbatch()`.
+
+
 The `filter()` method makes it each to apply a filter to each data point.
 
 
@@ -417,10 +422,10 @@ preprocess(b'8.3252,41.0,6.984126984126984,1.0238095238095237,322.0,2.5555555555
 
 
 
-    (<tf.Tensor: id=101078, shape=(8,), dtype=float32, numpy=
+    (<tf.Tensor: id=187, shape=(8,), dtype=float32, numpy=
      array([ 2.344709  ,  0.98211884,  0.6285442 , -0.15375382, -0.97440493,
             -0.04959533,  1.0525227 , -1.3278059 ], dtype=float32)>,
-     <tf.Tensor: id=101074, shape=(1,), dtype=float32, numpy=array([4.526], dtype=float32)>)
+     <tf.Tensor: id=183, shape=(1,), dtype=float32, numpy=array([4.526], dtype=float32)>)
 
 
 
@@ -476,25 +481,25 @@ history = model.fit(train_set, epochs=10, validation_data=valid_set)
 ```
 
     Epoch 1/10
-    323/323 [==============================] - 7s 23ms/step - loss: 2.4419 - val_loss: 0.0000e+00
+    323/323 [==============================] - 17s 52ms/step - loss: 3.0097 - val_loss: 0.0000e+00
     Epoch 2/10
-    323/323 [==============================] - 4s 11ms/step - loss: 1.1816 - val_loss: 1.0340
+    323/323 [==============================] - 5s 15ms/step - loss: 2.3176 - val_loss: 1.3552
     Epoch 3/10
-    323/323 [==============================] - 4s 11ms/step - loss: 0.9702 - val_loss: 0.9089
+    323/323 [==============================] - 5s 15ms/step - loss: 1.3191 - val_loss: 1.1061
     Epoch 4/10
-    323/323 [==============================] - 4s 11ms/step - loss: 0.8802 - val_loss: 0.8341
+    323/323 [==============================] - 6s 17ms/step - loss: 1.2183 - val_loss: 0.9694
     Epoch 5/10
-    323/323 [==============================] - 4s 11ms/step - loss: 0.8120 - val_loss: 0.7744
+    323/323 [==============================] - 5s 17ms/step - loss: 1.0083 - val_loss: 0.8889
     Epoch 6/10
-    323/323 [==============================] - 4s 11ms/step - loss: 0.7618 - val_loss: 0.7272
+    323/323 [==============================] - 5s 15ms/step - loss: 0.8951 - val_loss: 0.8343
     Epoch 7/10
-    323/323 [==============================] - 4s 11ms/step - loss: 0.7147 - val_loss: 0.6944
+    323/323 [==============================] - 5s 17ms/step - loss: 0.8229 - val_loss: 0.7974
     Epoch 8/10
-    323/323 [==============================] - 4s 12ms/step - loss: 0.6787 - val_loss: 0.6709
+    323/323 [==============================] - 5s 16ms/step - loss: 0.7925 - val_loss: 0.7686
     Epoch 9/10
-    323/323 [==============================] - 3s 10ms/step - loss: 0.6578 - val_loss: 0.6426
+    323/323 [==============================] - 8s 24ms/step - loss: 0.7603 - val_loss: 0.7381
     Epoch 10/10
-    323/323 [==============================] - 3s 10ms/step - loss: 0.6289 - val_loss: 0.6239
+    323/323 [==============================] - 6s 17ms/step - loss: 0.7400 - val_loss: 0.7115
 
 
 
@@ -512,13 +517,13 @@ plt.show()
 model.evaluate(test_set)
 ```
 
-    129/129 [==============================] - 2s 12ms/step - loss: 0.5953
+    129/129 [==============================] - 2s 14ms/step - loss: 0.6878
 
 
 
 
 
-    0.595285428817882
+    0.6877937892148661
 
 
 
@@ -554,7 +559,7 @@ np.corrcoef(y_new, y_pred)[0, 1]
 
 
 
-    0.022175215966235853
+    0.0001563837878735278
 
 
 
@@ -567,7 +572,104 @@ np.corrcoef(y_new[idx], y_pred[idx])[0, 1]
 
 
 
-    0.01641203714119741
+    0.008024826220675903
+
+
+
+## Preprocessing the input features
+
+There are 3 general methods for preprocessing data: 1) preparing ahead of time using NumPy, Pandas, Scikit-Learn, etc., 2) on the fly using the Data API and mapping over the instances (see above), or 3) including a preprocessing layer in the model.
+We will experiment with the third option below.
+
+The simplest implementation would be to use s `Lambda` layer.
+The following example applies scaling to the input data.
+
+
+```python
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+
+X, y = load_iris(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y,
+                                                    shuffle=True,
+                                                    random_state=0)
+
+means = np.mean(X_train, axis=0, keepdims=True)
+stds = np.std(X_train, axis=0, keepdims=True)
+eps = 0.001
+
+model = keras.models.Sequential([
+    keras.layers.Lambda(lambda x: (x - means) / (stds + eps)),
+    keras.layers.Dense(10, activation='elu', kernel_initializer='he_normal'),
+    keras.layers.Dense(5, activation='elu', kernel_initializer='he_normal'),
+    keras.layers.Dense(3, activation='softmax')
+])
+
+model.compile(optmizer=keras.optimizers.Nadam(0.01),
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+history = model.fit(X_train, y_train, 
+                    epochs=200, 
+                    validation_split=0.2,
+                    callbacks=[
+                        keras.callbacks.EarlyStopping(min_delta=0.0, patience=5)
+                    ],
+                    verbose=0)
+```
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8, 5))
+plt.show()
+```
+
+
+![png](homl_ch13_Loading-and-preprocessing-data-with-tensorflow_files/homl_ch13_Loading-and-preprocessing-data-with-tensorflow_41_0.png)
+
+
+
+```python
+loss, accuracy = model.evaluate(X_train, y_train, verbose=0)
+print(f'loss: {loss:.2f}; accuracy: {accuracy:.2f}')
+```
+
+    loss: 0.11; accuracy: 0.97
+
+
+
+```python
+loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
+print(f'loss: {loss:.2f}; accuracy: {accuracy:.2f}')
+```
+
+    loss: 0.23; accuracy: 0.89
+
+
+Alternatively, you can create a separate layer class that can retain other data.
+This is preferable to using global variables like above with `means` and `stds`.
+
+
+```python
+class StandardizationLayer(keras.layers.Layer):
+    def adapt(self, data_sample):
+        self.means_ = np.mean(data_sample, axis=0, keepdims=True)
+        self.stds_ = np.std(data_sample, axis=0, keepdims=True)
+        return
+    
+    def call(self, inputs):
+        return (inputs - self.means_) / (self.stds_ + keras.backend.epsilon())
+```
+
+Before this layer can be used, it must be "adapted" by passing in the training data.
+Now the feature means and standard deviations are contained within the layer.
+
+
+```python
+std_layer = StandardizationLayer(X_train)
+```
+
+### Encoding categorical features using one-hot vectors
 
 
 

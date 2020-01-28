@@ -451,3 +451,6 @@ It seems incredibly useful and efficient, so I'm looking forward to learning how
 
 **Day 98 - January 27, 2020:**
 I learned about preprocessing data in a TF Dataset object and how to use it in training and validating a Keras ANN.
+
+**Day 99 - January 28, 2020:**
+I learned about TF Records and how to include preprocessing steps as layers in the ANN.
