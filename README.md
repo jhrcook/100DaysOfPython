@@ -454,3 +454,6 @@ I learned about preprocessing data in a TF Dataset object and how to use it in t
 
 **Day 99 - January 28, 2020:**
 I learned about TF Records and how to include preprocessing steps as layers in the ANN.
+
+**Day 100 - January 29, 2020:**
+I learned about embedding categorical variables in new dimensions and how to use an Embedding layer in a Keras model.

@@ -481,25 +481,25 @@ history = model.fit(train_set, epochs=10, validation_data=valid_set)
 ```
 
     Epoch 1/10
-    323/323 [==============================] - 17s 52ms/step - loss: 3.0097 - val_loss: 0.0000e+00
+    323/323 [==============================] - 24s 76ms/step - loss: 2.8145 - val_loss: 0.0000e+00
     Epoch 2/10
-    323/323 [==============================] - 5s 15ms/step - loss: 2.3176 - val_loss: 1.3552
+    323/323 [==============================] - 11s 33ms/step - loss: 1.3126 - val_loss: 1.1014
     Epoch 3/10
-    323/323 [==============================] - 5s 15ms/step - loss: 1.3191 - val_loss: 1.1061
+    323/323 [==============================] - 6s 20ms/step - loss: 1.0569 - val_loss: 0.9669
     Epoch 4/10
-    323/323 [==============================] - 6s 17ms/step - loss: 1.2183 - val_loss: 0.9694
+    323/323 [==============================] - 6s 18ms/step - loss: 0.9400 - val_loss: 0.8857
     Epoch 5/10
-    323/323 [==============================] - 5s 17ms/step - loss: 1.0083 - val_loss: 0.8889
+    323/323 [==============================] - 5s 17ms/step - loss: 0.8662 - val_loss: 0.8179
     Epoch 6/10
-    323/323 [==============================] - 5s 15ms/step - loss: 0.8951 - val_loss: 0.8343
+    323/323 [==============================] - 5s 14ms/step - loss: 0.8022 - val_loss: 0.7758
     Epoch 7/10
-    323/323 [==============================] - 5s 17ms/step - loss: 0.8229 - val_loss: 0.7974
+    323/323 [==============================] - 5s 15ms/step - loss: 0.7532 - val_loss: 0.7319
     Epoch 8/10
-    323/323 [==============================] - 5s 16ms/step - loss: 0.7925 - val_loss: 0.7686
+    323/323 [==============================] - 3s 10ms/step - loss: 0.7142 - val_loss: 0.6878
     Epoch 9/10
-    323/323 [==============================] - 8s 24ms/step - loss: 0.7603 - val_loss: 0.7381
+    323/323 [==============================] - 3s 10ms/step - loss: 0.6709 - val_loss: 0.6643
     Epoch 10/10
-    323/323 [==============================] - 6s 17ms/step - loss: 0.7400 - val_loss: 0.7115
+    323/323 [==============================] - 3s 11ms/step - loss: 0.6458 - val_loss: 0.6352
 
 
 
@@ -517,13 +517,13 @@ plt.show()
 model.evaluate(test_set)
 ```
 
-    129/129 [==============================] - 2s 14ms/step - loss: 0.6878
+    129/129 [==============================] - 2s 17ms/step - loss: 0.6098
 
 
 
 
 
-    0.6877937892148661
+    0.6097588275754174
 
 
 
@@ -559,7 +559,7 @@ np.corrcoef(y_new, y_pred)[0, 1]
 
 
 
-    0.0001563837878735278
+    -0.010609508603971841
 
 
 
@@ -572,7 +572,7 @@ np.corrcoef(y_new[idx], y_pred[idx])[0, 1]
 
 
 
-    0.008024826220675903
+    0.0011837284435882237
 
 
 
@@ -634,7 +634,7 @@ loss, accuracy = model.evaluate(X_train, y_train, verbose=0)
 print(f'loss: {loss:.2f}; accuracy: {accuracy:.2f}')
 ```
 
-    loss: 0.11; accuracy: 0.97
+    loss: 0.12; accuracy: 0.96
 
 
 
@@ -643,7 +643,7 @@ loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
 print(f'loss: {loss:.2f}; accuracy: {accuracy:.2f}')
 ```
 
-    loss: 0.23; accuracy: 0.89
+    loss: 0.21; accuracy: 0.92
 
 
 Alternatively, you can create a separate layer class that can retain other data.
@@ -671,7 +671,216 @@ std_layer = StandardizationLayer(X_train)
 
 ### Encoding categorical features using one-hot vectors
 
+NN's can only take numeric inputs.
+Thus, categorical inputs must be encoded and one common method is *one-hot-vectors*.
 
+For example, we can encode the ocean proximity feature from the CA housing data.
+We need a list of the possible categories and their indices.
+Then, a `KeyValueTensorInitializer` is created from these two lists.
+Finally, a `StaticVocabularyTable` is created from the initializer.
+
+The `num_oov_buckets` is the number of *out-of-vocabulary* that could be in the data, but not reported during initialization.
+If a category comes in that wasn't in the original "vocabulary" of the table, it will be hashed and assigned to one of the oov buckets.
+The more unknown categoires you expect to find, the move oov buckets you must add.
+If there are not enough oov buckets, then multiple categories could be mushed into one bucket.
+
+
+```python
+vocab = ['1<H OCEAN', 'INLAND', 'NEAR OCEAN', 'NEAR BAY', 'ISLAND']
+indices = tf.range(len(vocab), dtype=tf.int64)
+table_init = tf.lookup.KeyValueTensorInitializer(vocab, indices)
+num_oov_buckets = 2
+table = tf.lookup.StaticVocabularyTable(table_init, num_oov_buckets)
+```
+
+Now we can use the lookup table to encode an example batch of categorical features to one-hot vectors.
+"DESERT" was not included in the original vocab, so it should be assigned to one of the oov buckets.
+
+
+```python
+eg_categories = tf.constant(['NEAR BAY', 'DESERT', 'INLAND', 'NEAR OCEAN'])
+cat_indices = table.lookup(eg_categories)
+cat_indices
+```
+
+
+
+
+    <tf.Tensor: id=17652, shape=(4,), dtype=int64, numpy=array([3, 5, 1, 2])>
+
+
+
+
+```python
+cat_one_hot = tf.one_hot(cat_indices, depth=len(vocab) + num_oov_buckets)
+cat_one_hot
+```
+
+
+
+
+    <tf.Tensor: id=17656, shape=(4, 7), dtype=float32, numpy=
+    array([[0., 0., 0., 1., 0., 0., 0.],
+           [0., 0., 0., 0., 0., 1., 0.],
+           [0., 1., 0., 0., 0., 0., 0.],
+           [0., 0., 1., 0., 0., 0., 0.]], dtype=float32)>
+
+
+
+It would be possible to wrap up this process into a custom layer, though Keras may add a layer called `TextVectorization` in the future to do the same thing.
+
+One-hot vectorization is fine for a few categories, but if the vocabulary is too large, a more efficient method is to use *embeddings* instead.
+
+### Encoding categorical features using embedding
+
+"An embedding is a trainable dense vector that represents a category."
+Basically, an N-dimensional space is created and each word is assigned a vector.
+This vector is adjusted during training such that like words become closer and unlike words get further apart.
+In more sophisticated models, such as *word2vec*, the space can become even more sophisticated and actually embed the meanings of the words.
+This is called *representation learning*.
+
+First, below, we will manually create an embedding matrix as a demonstration.
+Then we will create an `Embedding` layer available from Keras to show how this would be used in practice.
+
+
+```python
+# Create a 2D embedding of the features.
+embedding_dims = 2
+
+# Initialize the vectors for each vocabulary term randomly.
+embed_init = tf.random.uniform([len(vocab) + num_oov_buckets, embedding_dims])
+embedding_matrix = tf.Variable(embed_init)
+embedding_matrix
+```
+
+
+
+
+    <tf.Variable 'Variable:0' shape=(7, 2) dtype=float32, numpy=
+    array([[0.10994923, 0.05847311],
+           [0.41186762, 0.7803062 ],
+           [0.5453501 , 0.49279583],
+           [0.3587228 , 0.7464359 ],
+           [0.72553134, 0.996606  ],
+           [0.74649405, 0.74806595],
+           [0.06906319, 0.02098906]], dtype=float32)>
+
+
+
+
+```python
+names = vocab + ['oov 1', 'oov 2']
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.scatter(embedding_matrix[:, 0], embedding_matrix[:, 1], color='k')
+ax.set_xlabel('$x_1$', fontsize=14)
+ax.set_ylabel('$x_2$', fontsize=14)
+ax.set_title('Embedding of Ocean Proximity', fontsize=18)
+
+for i, name in enumerate(names):
+    x, y = embedding_matrix[i, 0].numpy() + 0.01, embedding_matrix[i, 1].numpy()
+    ax.annotate(name, (x, y), fontsize=12)
+
+plt.show()
+```
+
+
+![png](homl_ch13_Loading-and-preprocessing-data-with-tensorflow_files/homl_ch13_Loading-and-preprocessing-data-with-tensorflow_55_0.png)
+
+
+
+```python
+# Encode an example batch.
+eg_categories = tf.constant(['NEAR BAY', 'DESERT', 'INLAND', 'NEAR OCEAN'])
+cat_indices = table.lookup(eg_categories)
+cat_indices
+tf.nn.embedding_lookup(embedding_matrix, cat_indices)
+```
+
+
+
+
+    <tf.Tensor: id=17782, shape=(4, 2), dtype=float32, numpy=
+    array([[0.3587228 , 0.7464359 ],
+           [0.74649405, 0.74806595],
+           [0.41186762, 0.7803062 ],
+           [0.5453501 , 0.49279583]], dtype=float32)>
+
+
+
+Below is a model (built using the functional API) that can process categorical features and learn an embedding for each category.
+
+
+```python
+# Standard numerical inputs.
+regular_inputs = keras.layers.Input(shape=[8])
+
+# Categorical inputs.
+categories = keras.layers.Input(shape=[], dtype=tf.string)
+cat_indices = keras.layers.Lambda(lambda cats: table.lookup(cats))(categories)
+cat_embed = keras.layers.Embedding(input_dim=6, output_dim=2)(cat_indices)
+
+# Combine the inputs.
+encoded_inputs = keras.layers.concatenate([regular_inputs, cat_embed])
+
+# Hidden layers.
+hidden_layer1 = keras.layers.Dense(
+    15, 
+    activation='elu', 
+    kernel_initializer='he_normal'
+)(encoded_inputs)
+
+hidden_layer2 = keras.layers.Dense(
+    10, 
+    activation='elu', 
+    kernel_initializer='he_normal'
+)(hidden_layer1)
+
+hidden_layer3 = keras.layers.Dense(
+    5, 
+    activation='elu', 
+    kernel_initializer='he_normal'
+)(hidden_layer2)
+
+# Output layer.
+outputs = keras.layers.Dense(1)(hidden_layer3)
+
+# Model.
+model = keras.models.Model(inputs=[regular_inputs, categories],
+                           outputs=[outputs])
+
+model.summary()
+```
+
+    Model: "model"
+    __________________________________________________________________________________________________
+    Layer (type)                    Output Shape         Param #     Connected to                     
+    ==================================================================================================
+    input_3 (InputLayer)            [(None,)]            0                                            
+    __________________________________________________________________________________________________
+    lambda_1 (Lambda)               (None,)              0           input_3[0][0]                    
+    __________________________________________________________________________________________________
+    input_2 (InputLayer)            [(None, 8)]          0                                            
+    __________________________________________________________________________________________________
+    embedding (Embedding)           (None, 2)            12          lambda_1[0][0]                   
+    __________________________________________________________________________________________________
+    concatenate (Concatenate)       (None, 10)           0           input_2[0][0]                    
+                                                                     embedding[0][0]                  
+    __________________________________________________________________________________________________
+    dense_7 (Dense)                 (None, 15)           165         concatenate[0][0]                
+    __________________________________________________________________________________________________
+    dense_8 (Dense)                 (None, 10)           160         dense_7[0][0]                    
+    __________________________________________________________________________________________________
+    dense_9 (Dense)                 (None, 5)            55          dense_8[0][0]                    
+    __________________________________________________________________________________________________
+    dense_10 (Dense)                (None, 1)            6           dense_9[0][0]                    
+    ==================================================================================================
+    Total params: 398
+    Trainable params: 398
+    Non-trainable params: 0
+    __________________________________________________________________________________________________
+
+
+### Keras preprocessing layers
 
 
 ```python
