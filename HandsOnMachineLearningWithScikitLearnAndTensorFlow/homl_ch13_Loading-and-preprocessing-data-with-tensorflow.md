@@ -481,25 +481,25 @@ history = model.fit(train_set, epochs=10, validation_data=valid_set)
 ```
 
     Epoch 1/10
-    323/323 [==============================] - 24s 76ms/step - loss: 2.8145 - val_loss: 0.0000e+00
+    323/323 [==============================] - 7s 22ms/step - loss: 2.8890 - val_loss: 0.0000e+00
     Epoch 2/10
-    323/323 [==============================] - 11s 33ms/step - loss: 1.3126 - val_loss: 1.1014
+    323/323 [==============================] - 3s 10ms/step - loss: 1.2663 - val_loss: 1.1156
     Epoch 3/10
-    323/323 [==============================] - 6s 20ms/step - loss: 1.0569 - val_loss: 0.9669
+    323/323 [==============================] - 3s 10ms/step - loss: 1.0433 - val_loss: 0.9665
     Epoch 4/10
-    323/323 [==============================] - 6s 18ms/step - loss: 0.9400 - val_loss: 0.8857
+    323/323 [==============================] - 3s 10ms/step - loss: 0.9393 - val_loss: 0.8775
     Epoch 5/10
-    323/323 [==============================] - 5s 17ms/step - loss: 0.8662 - val_loss: 0.8179
+    323/323 [==============================] - 3s 10ms/step - loss: 0.8578 - val_loss: 0.8130
     Epoch 6/10
-    323/323 [==============================] - 5s 14ms/step - loss: 0.8022 - val_loss: 0.7758
+    323/323 [==============================] - 3s 10ms/step - loss: 0.7942 - val_loss: 0.7690
     Epoch 7/10
-    323/323 [==============================] - 5s 15ms/step - loss: 0.7532 - val_loss: 0.7319
+    323/323 [==============================] - 3s 10ms/step - loss: 0.7404 - val_loss: 0.7253
     Epoch 8/10
-    323/323 [==============================] - 3s 10ms/step - loss: 0.7142 - val_loss: 0.6878
+    323/323 [==============================] - 3s 10ms/step - loss: 0.7017 - val_loss: 0.6849
     Epoch 9/10
-    323/323 [==============================] - 3s 10ms/step - loss: 0.6709 - val_loss: 0.6643
+    323/323 [==============================] - 3s 10ms/step - loss: 0.6801 - val_loss: 0.6575
     Epoch 10/10
-    323/323 [==============================] - 3s 11ms/step - loss: 0.6458 - val_loss: 0.6352
+    323/323 [==============================] - 3s 10ms/step - loss: 0.6394 - val_loss: 0.6270
 
 
 
@@ -517,13 +517,13 @@ plt.show()
 model.evaluate(test_set)
 ```
 
-    129/129 [==============================] - 2s 17ms/step - loss: 0.6098
+    129/129 [==============================] - 1s 10ms/step - loss: 0.6023
 
 
 
 
 
-    0.6097588275754174
+    0.6023314907107242
 
 
 
@@ -559,7 +559,7 @@ np.corrcoef(y_new, y_pred)[0, 1]
 
 
 
-    -0.010609508603971841
+    0.012913442387781068
 
 
 
@@ -572,7 +572,7 @@ np.corrcoef(y_new[idx], y_pred[idx])[0, 1]
 
 
 
-    0.0011837284435882237
+    0.010949339267940212
 
 
 
@@ -634,7 +634,7 @@ loss, accuracy = model.evaluate(X_train, y_train, verbose=0)
 print(f'loss: {loss:.2f}; accuracy: {accuracy:.2f}')
 ```
 
-    loss: 0.12; accuracy: 0.96
+    loss: 0.10; accuracy: 0.97
 
 
 
@@ -643,7 +643,7 @@ loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
 print(f'loss: {loss:.2f}; accuracy: {accuracy:.2f}')
 ```
 
-    loss: 0.21; accuracy: 0.92
+    loss: 0.18; accuracy: 0.95
 
 
 Alternatively, you can create a separate layer class that can retain other data.
@@ -706,7 +706,7 @@ cat_indices
 
 
 
-    <tf.Tensor: id=17652, shape=(4,), dtype=int64, numpy=array([3, 5, 1, 2])>
+    <tf.Tensor: id=17348, shape=(4,), dtype=int64, numpy=array([3, 5, 1, 2])>
 
 
 
@@ -719,7 +719,7 @@ cat_one_hot
 
 
 
-    <tf.Tensor: id=17656, shape=(4, 7), dtype=float32, numpy=
+    <tf.Tensor: id=17352, shape=(4, 7), dtype=float32, numpy=
     array([[0., 0., 0., 1., 0., 0., 0.],
            [0., 0., 0., 0., 0., 1., 0.],
            [0., 1., 0., 0., 0., 0., 0.],
@@ -757,13 +757,13 @@ embedding_matrix
 
 
     <tf.Variable 'Variable:0' shape=(7, 2) dtype=float32, numpy=
-    array([[0.10994923, 0.05847311],
-           [0.41186762, 0.7803062 ],
-           [0.5453501 , 0.49279583],
-           [0.3587228 , 0.7464359 ],
-           [0.72553134, 0.996606  ],
-           [0.74649405, 0.74806595],
-           [0.06906319, 0.02098906]], dtype=float32)>
+    array([[0.8620689 , 0.42660105],
+           [0.6114336 , 0.02744067],
+           [0.19828093, 0.973667  ],
+           [0.6924714 , 0.18765879],
+           [0.98749256, 0.43081176],
+           [0.25966418, 0.02023518],
+           [0.08034861, 0.6603186 ]], dtype=float32)>
 
 
 
@@ -799,11 +799,11 @@ tf.nn.embedding_lookup(embedding_matrix, cat_indices)
 
 
 
-    <tf.Tensor: id=17782, shape=(4, 2), dtype=float32, numpy=
-    array([[0.3587228 , 0.7464359 ],
-           [0.74649405, 0.74806595],
-           [0.41186762, 0.7803062 ],
-           [0.5453501 , 0.49279583]], dtype=float32)>
+    <tf.Tensor: id=17478, shape=(4, 2), dtype=float32, numpy=
+    array([[0.6924714 , 0.18765879],
+           [0.25966418, 0.02023518],
+           [0.6114336 , 0.02744067],
+           [0.19828093, 0.973667  ]], dtype=float32)>
 
 
 
@@ -881,6 +881,138 @@ model.summary()
 
 
 ### Keras preprocessing layers
+
+These are currently under development by the TF team and should be available soon.
+They generally follow the process used above where a layer is created, its adapt method is called with a data sample, and then it is inserted into the model.
+
+Preprocessing for a deployed model is difficult and can require the duplication of code in multiple locations (ie. into TensorFlow.js for use in the browser).
+This break with DRY can be avoided by using the TF Transform library from TF Extended (TFX).
+
+## The TensorFlow Datasets (TFDS) project
+
+TFDS is an easy way to download common image, text, audio, and video datasets.
+
+
+```python
+import tensorflow_datasets as tfds
+
+dataset = tfds.load(name='mnist')
+mnist_train, mnist_test = dataset['train'], dataset['test']
+
+mnist_train = mnist_train.shuffle(10000).batch(32).prefetch(1)
+```
+
+    WARNING:absl:Warning: Setting shuffle_files=True because split=TRAIN and shuffle_files=None. This behavior will be deprecated on 2019-08-06, at which point shuffle_files=False will be the default for all splits.
+
+
+Each training instance contains the image and label.
+
+
+```python
+from math import ceil
+
+
+def plot_image(img, ax):
+    ax.imshow(img.numpy().reshape(28, -1))
+    ax.grid(False)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    return None
+
+
+def plot_images(imgs, lbls):
+    
+    n_col = 5
+    n_row = ceil(len(lbls) / n_col)
+    fig = plt.figure(figsize=(2 * n_col, 2 * n_row))
+    
+    for i, (img, lbl) in enumerate(zip(imgs, lbls)):
+        ax = plt.subplot(n_row, n_col, i+1)
+        plot_image(img, ax)
+        ax.set_title(lbl.numpy())
+    
+
+# Plot a sample of the MNIST data.
+for item in mnist_train.take(1):
+    images = item['image']
+    labels = item['label']
+
+plot_images(images, labels)
+    
+plt.show()
+```
+
+
+![png](homl_ch13_Loading-and-preprocessing-data-with-tensorflow_files/homl_ch13_Loading-and-preprocessing-data-with-tensorflow_62_0.png)
+
+
+However, the neural network model's `fit()` method requires a tuple of images and a tuple of labels.
+It would be possible to extract these data into separate tuples using the `map()` function from Numpy, though it is simpler to ask the `load()` function from TFDS to do this by setting `as_supervised=True`.
+
+
+```python
+dataset = tfds.load(name='mnist', batch_size=32, as_supervised=True)
+mnist_train = dataset['train'].prefetch(1)
+
+def make_hidden_layer(n_neurons):
+    return keras.layers.Dense(n_neurons, 
+                              activation='elu', 
+                              kernel_initializer='he_normal', 
+                              kernel_regularizer=keras.regularizers.l2(0.01))
+
+mnist_ann = keras.models.Sequential([
+    keras.layers.Flatten(input_shape = [28, 28, 1]),
+    make_hidden_layer(300),
+    make_hidden_layer(100),
+    make_hidden_layer(20),
+    keras.layers.Dense(10, activation='softmax')
+])
+
+mnist_ann.compile(
+    loss='sparse_categorical_crossentropy',
+    optimizer=keras.optimizers.Nadam(),
+    metrics=['accuracy']
+)
+
+mnist_ann.fit(mnist_train, epochs=5)
+```
+
+    WARNING:absl:Warning: Setting shuffle_files=True because split=TRAIN and shuffle_files=None. This behavior will be deprecated on 2019-08-06, at which point shuffle_files=False will be the default for all splits.
+
+
+    Epoch 1/5
+    1875/1875 [==============================] - 67s 36ms/step - loss: 5.8763 - accuracy: 0.4832
+    Epoch 2/5
+    1875/1875 [==============================] - 60s 32ms/step - loss: 1.9556 - accuracy: 0.8483
+    Epoch 3/5
+    1875/1875 [==============================] - 61s 32ms/step - loss: 0.7055 - accuracy: 0.9380
+    Epoch 4/5
+    1875/1875 [==============================] - 68s 36ms/step - loss: 0.4136 - accuracy: 0.9462
+    Epoch 5/5
+    1875/1875 [==============================] - 69s 37ms/step - loss: 0.3450 - accuracy: 0.9506
+
+
+
+
+
+    <tensorflow.python.keras.callbacks.History at 0x13b9c1f10>
+
+
+
+
+```python
+mnist_ann.evaluate(dataset['test'])
+```
+
+    313/313 [==============================] - 17s 54ms/step - loss: 0.3656 - accuracy: 0.9410
+
+
+
+
+
+    [0.36563336477873803, 0.941]
+
+
 
 
 ```python

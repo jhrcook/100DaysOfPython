@@ -457,3 +457,8 @@ I learned about TF Records and how to include preprocessing steps as layers in t
 
 **Day 100 - January 29, 2020:**
 I learned about embedding categorical variables in new dimensions and how to use an Embedding layer in a Keras model.
+
+**Day 101 - January 30, 2020:**
+I finished up Chapter 13 on handling data in TF.
+We learned about the Preprocessing layers that will be coming to TF Keras shortly and the TensorFlow Datasets project.
+I used TFDS to loading MNIST to train a small NN.
