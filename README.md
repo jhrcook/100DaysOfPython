@@ -462,3 +462,7 @@ I learned about embedding categorical variables in new dimensions and how to use
 I finished up Chapter 13 on handling data in TF.
 We learned about the Preprocessing layers that will be coming to TF Keras shortly and the TensorFlow Datasets project.
 I used TFDS to loading MNIST to train a small NN.
+
+**Day 102 - January 31, 2020:**
+I began chapter 14 on convolutional neural networks were we covered the basics, learning about convolutional layers and how they create and interpret feature maps.
+We began loading example images, inspecting their shape, and applying filters (horizontal and vertical lines).

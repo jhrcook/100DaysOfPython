@@ -43,6 +43,7 @@ ipywidgets=7.5.1=py_0
 jedi=0.16.0=py37_0
 jinja2=2.10.3=py_0
 joblib=0.14.1=py_0
+jpeg=9c=h1de35cc_1001
 jsonschema=3.2.0=py37_0
 jupyter_client=5.3.4=py37_1
 jupyter_contrib_core=0.3.3=py_2
@@ -65,11 +66,13 @@ libopenblas=0.3.7=h3d69b6c_7
 libpng=1.6.37=h2573ce8_0
 libprotobuf=3.11.2=hd174df1_0
 libsodium=1.0.17=h01d97ff_0
+libtiff=4.1.0=ha78913b_3
 libxgboost=0.90=h4a8c4bd_4
 libxml2=2.9.10=h53d96d6_0
 libxslt=1.1.33=h320ff13_0
 llvm-openmp=9.0.1=h28b9765_2
 lxml=4.4.2=py37he54a443_0
+lz4-c=1.8.3=h6de7cb9_1001
 markdown=3.1.1=py_0
 markupsafe=1.1.1=py37h0b31af3_0
 matplotlib=3.1.2=py37_1
@@ -82,6 +85,7 @@ nbformat=5.0.4=py_0
 ncurses=6.1=h0a44026_1002
 notebook=6.0.3=py37_0
 numpy=1.17.5=py37hde6bac1_0
+olefile=0.46=py_0
 openssl=1.1.1d=h0b31af3_0
 opt_einsum=3.1.0=py_0
 packaging=20.1=py_0
@@ -93,6 +97,7 @@ pathspec=0.7.0=py_0
 patsy=0.5.1=py_0
 pexpect=4.8.0=py37_0
 pickleshare=0.7.5=py37_1000
+pillow=7.0.0=py37h918e99a_0
 pip=20.0.2=py37_0
 plotly=4.5.0=py_0
 pluggy=0.12.0=py_0
@@ -160,3 +165,4 @@ yellowbrick=1.0.1=py37_0
 zeromq=4.3.2=h6de7cb9_2
 zipp=2.0.0=py_2
 zlib=1.2.11=h0b31af3_1006
+zstd=1.4.4=he7fca8b_1
