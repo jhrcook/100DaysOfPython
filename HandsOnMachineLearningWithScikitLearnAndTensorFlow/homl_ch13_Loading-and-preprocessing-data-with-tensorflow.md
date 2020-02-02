@@ -481,25 +481,25 @@ history = model.fit(train_set, epochs=10, validation_data=valid_set)
 ```
 
     Epoch 1/10
-    323/323 [==============================] - 7s 22ms/step - loss: 2.8890 - val_loss: 0.0000e+00
+    323/323 [==============================] - 9s 29ms/step - loss: 3.5360 - val_loss: 0.0000e+00
     Epoch 2/10
-    323/323 [==============================] - 3s 10ms/step - loss: 1.2663 - val_loss: 1.1156
+    323/323 [==============================] - 3s 10ms/step - loss: 1.4575 - val_loss: 1.2450
     Epoch 3/10
-    323/323 [==============================] - 3s 10ms/step - loss: 1.0433 - val_loss: 0.9665
+    323/323 [==============================] - 3s 10ms/step - loss: 1.1931 - val_loss: 1.0837
     Epoch 4/10
-    323/323 [==============================] - 3s 10ms/step - loss: 0.9393 - val_loss: 0.8775
+    323/323 [==============================] - 3s 11ms/step - loss: 1.0586 - val_loss: 0.9823
     Epoch 5/10
-    323/323 [==============================] - 3s 10ms/step - loss: 0.8578 - val_loss: 0.8130
+    323/323 [==============================] - 3s 10ms/step - loss: 0.9664 - val_loss: 0.8965
     Epoch 6/10
-    323/323 [==============================] - 3s 10ms/step - loss: 0.7942 - val_loss: 0.7690
+    323/323 [==============================] - 4s 11ms/step - loss: 0.8677 - val_loss: 0.8424
     Epoch 7/10
-    323/323 [==============================] - 3s 10ms/step - loss: 0.7404 - val_loss: 0.7253
+    323/323 [==============================] - 4s 13ms/step - loss: 0.8584 - val_loss: 0.7994
     Epoch 8/10
-    323/323 [==============================] - 3s 10ms/step - loss: 0.7017 - val_loss: 0.6849
+    323/323 [==============================] - 4s 12ms/step - loss: 0.7863 - val_loss: 0.7590
     Epoch 9/10
-    323/323 [==============================] - 3s 10ms/step - loss: 0.6801 - val_loss: 0.6575
+    323/323 [==============================] - 4s 12ms/step - loss: 0.7503 - val_loss: 0.7244
     Epoch 10/10
-    323/323 [==============================] - 3s 10ms/step - loss: 0.6394 - val_loss: 0.6270
+    323/323 [==============================] - 4s 13ms/step - loss: 0.7292 - val_loss: 0.7018
 
 
 
@@ -517,13 +517,13 @@ plt.show()
 model.evaluate(test_set)
 ```
 
-    129/129 [==============================] - 1s 10ms/step - loss: 0.6023
+    129/129 [==============================] - 1s 11ms/step - loss: 0.6722
 
 
 
 
 
-    0.6023314907107242
+    0.6722136361654415
 
 
 
@@ -559,7 +559,7 @@ np.corrcoef(y_new, y_pred)[0, 1]
 
 
 
-    0.012913442387781068
+    -0.001153286649125252
 
 
 
@@ -572,7 +572,7 @@ np.corrcoef(y_new[idx], y_pred[idx])[0, 1]
 
 
 
-    0.010949339267940212
+    0.010225436674531687
 
 
 
@@ -634,7 +634,7 @@ loss, accuracy = model.evaluate(X_train, y_train, verbose=0)
 print(f'loss: {loss:.2f}; accuracy: {accuracy:.2f}')
 ```
 
-    loss: 0.10; accuracy: 0.97
+    loss: 0.11; accuracy: 0.97
 
 
 
@@ -643,7 +643,7 @@ loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
 print(f'loss: {loss:.2f}; accuracy: {accuracy:.2f}')
 ```
 
-    loss: 0.18; accuracy: 0.95
+    loss: 0.20; accuracy: 0.92
 
 
 Alternatively, you can create a separate layer class that can retain other data.
@@ -706,7 +706,7 @@ cat_indices
 
 
 
-    <tf.Tensor: id=17348, shape=(4,), dtype=int64, numpy=array([3, 5, 1, 2])>
+    <tf.Tensor: id=17006, shape=(4,), dtype=int64, numpy=array([3, 5, 1, 2])>
 
 
 
@@ -719,7 +719,7 @@ cat_one_hot
 
 
 
-    <tf.Tensor: id=17352, shape=(4, 7), dtype=float32, numpy=
+    <tf.Tensor: id=17010, shape=(4, 7), dtype=float32, numpy=
     array([[0., 0., 0., 1., 0., 0., 0.],
            [0., 0., 0., 0., 0., 1., 0.],
            [0., 1., 0., 0., 0., 0., 0.],
@@ -757,13 +757,13 @@ embedding_matrix
 
 
     <tf.Variable 'Variable:0' shape=(7, 2) dtype=float32, numpy=
-    array([[0.8620689 , 0.42660105],
-           [0.6114336 , 0.02744067],
-           [0.19828093, 0.973667  ],
-           [0.6924714 , 0.18765879],
-           [0.98749256, 0.43081176],
-           [0.25966418, 0.02023518],
-           [0.08034861, 0.6603186 ]], dtype=float32)>
+    array([[0.6443517 , 0.8595996 ],
+           [0.6088693 , 0.47989762],
+           [0.04883015, 0.02534735],
+           [0.99182963, 0.19231832],
+           [0.67552006, 0.02664173],
+           [0.3988006 , 0.554453  ],
+           [0.3432995 , 0.25060523]], dtype=float32)>
 
 
 
@@ -799,11 +799,11 @@ tf.nn.embedding_lookup(embedding_matrix, cat_indices)
 
 
 
-    <tf.Tensor: id=17478, shape=(4, 2), dtype=float32, numpy=
-    array([[0.6924714 , 0.18765879],
-           [0.25966418, 0.02023518],
-           [0.6114336 , 0.02744067],
-           [0.19828093, 0.973667  ]], dtype=float32)>
+    <tf.Tensor: id=17136, shape=(4, 2), dtype=float32, numpy=
+    array([[0.99182963, 0.19231832],
+           [0.3988006 , 0.554453  ],
+           [0.6088693 , 0.47989762],
+           [0.04883015, 0.02534735]], dtype=float32)>
 
 
 
@@ -981,21 +981,21 @@ mnist_ann.fit(mnist_train, epochs=5)
 
 
     Epoch 1/5
-    1875/1875 [==============================] - 67s 36ms/step - loss: 5.8763 - accuracy: 0.4832
+    1875/1875 [==============================] - 73s 39ms/step - loss: 5.3727 - accuracy: 0.2513
     Epoch 2/5
-    1875/1875 [==============================] - 60s 32ms/step - loss: 1.9556 - accuracy: 0.8483
+    1875/1875 [==============================] - 59s 31ms/step - loss: 1.9257 - accuracy: 0.5815
     Epoch 3/5
-    1875/1875 [==============================] - 61s 32ms/step - loss: 0.7055 - accuracy: 0.9380
+    1875/1875 [==============================] - 60s 32ms/step - loss: 0.4963 - accuracy: 0.9408
     Epoch 4/5
-    1875/1875 [==============================] - 68s 36ms/step - loss: 0.4136 - accuracy: 0.9462
+    1875/1875 [==============================] - 63s 33ms/step - loss: 0.3463 - accuracy: 0.9491
     Epoch 5/5
-    1875/1875 [==============================] - 69s 37ms/step - loss: 0.3450 - accuracy: 0.9506
+    1875/1875 [==============================] - 62s 33ms/step - loss: 0.3262 - accuracy: 0.9506
 
 
 
 
 
-    <tensorflow.python.keras.callbacks.History at 0x13b9c1f10>
+    <tensorflow.python.keras.callbacks.History at 0x1447839d0>
 
 
 
@@ -1004,13 +1004,13 @@ mnist_ann.fit(mnist_train, epochs=5)
 mnist_ann.evaluate(dataset['test'])
 ```
 
-    313/313 [==============================] - 17s 54ms/step - loss: 0.3656 - accuracy: 0.9410
+    313/313 [==============================] - 11s 36ms/step - loss: 0.3065 - accuracy: 0.9553
 
 
 
 
 
-    [0.36563336477873803, 0.941]
+    [0.30653164028740537, 0.9553]
 
 
 

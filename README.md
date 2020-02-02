@@ -466,3 +466,8 @@ I used TFDS to loading MNIST to train a small NN.
 **Day 102 - January 31, 2020:**
 I began chapter 14 on convolutional neural networks were we covered the basics, learning about convolutional layers and how they create and interpret feature maps.
 We began loading example images, inspecting their shape, and applying filters (horizontal and vertical lines).
+
+**Day 103 - February 01, 2020:**
+I continued learning about the layers used in CNNs.
+Specifcially, I learned about pooling layers, depthwise pooling layers, and global pooling layers.
+Next, we start going through modern CNN architectures.
