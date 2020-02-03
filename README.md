@@ -471,3 +471,7 @@ We began loading example images, inspecting their shape, and applying filters (h
 I continued learning about the layers used in CNNs.
 Specifcially, I learned about pooling layers, depthwise pooling layers, and global pooling layers.
 Next, we start going through modern CNN architectures.
+
+**Day 104 - February 03, 2020:**
+I began learning about some of the most popular and important CNN architectures.
+We learned about LeNet-5 and AlexNet.
