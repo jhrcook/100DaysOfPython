@@ -475,3 +475,6 @@ Next, we start going through modern CNN architectures.
 **Day 104 - February 03, 2020:**
 I began learning about some of the most popular and important CNN architectures.
 We learned about LeNet-5 and AlexNet.
+
+**Day 105 - February 04, 2020:**
+I finished reading and taking notes on the explanations of various powerful and important CNN architectures.

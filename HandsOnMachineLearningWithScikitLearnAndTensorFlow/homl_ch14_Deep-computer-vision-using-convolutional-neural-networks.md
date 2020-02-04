@@ -299,124 +299,17 @@ model.compile(
 
 
 ```python
+# %%cache -d caches ch14_example_CNN.pkl history
+
 # history = model.fit(
 #     X_train, y_train, 
-#     epochs=10,
+#     epochs=5,
 #     validation_data=(X_valid, y_valid),
 #     callbacks=[
 #         keras.callbacks.EarlyStopping(patience=5)
 #     ]
 # )
 ```
-
-    Train on 48000 samples, validate on 12000 samples
-    Epoch 1/10
-    38752/48000 [=======================>......] - ETA: 1:11 - loss: 0.8170 - accuracy: 0.7118WARNING:tensorflow:Early stopping conditioned on metric `val_loss` which is not available. Available metrics are: loss,accuracy
-
-
-
-    ---------------------------------------------------------------------------
-
-    KeyboardInterrupt                         Traceback (most recent call last)
-
-    <ipython-input-57-da195b4ef516> in <module>
-          4     validation_data=(X_valid, y_valid),
-          5     callbacks=[
-    ----> 6         keras.callbacks.EarlyStopping(patience=5)
-          7     ]
-          8 )
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/keras/engine/training.py in fit(self, x, y, batch_size, epochs, verbose, callbacks, validation_split, validation_data, shuffle, class_weight, sample_weight, initial_epoch, steps_per_epoch, validation_steps, validation_freq, max_queue_size, workers, use_multiprocessing, **kwargs)
-        726         max_queue_size=max_queue_size,
-        727         workers=workers,
-    --> 728         use_multiprocessing=use_multiprocessing)
-        729 
-        730   def evaluate(self,
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/keras/engine/training_v2.py in fit(self, model, x, y, batch_size, epochs, verbose, callbacks, validation_split, validation_data, shuffle, class_weight, sample_weight, initial_epoch, steps_per_epoch, validation_steps, validation_freq, **kwargs)
-        322                 mode=ModeKeys.TRAIN,
-        323                 training_context=training_context,
-    --> 324                 total_epochs=epochs)
-        325             cbks.make_logs(model, epoch_logs, training_result, ModeKeys.TRAIN)
-        326 
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/keras/engine/training_v2.py in run_one_epoch(model, iterator, execution_function, dataset_size, batch_size, strategy, steps_per_epoch, num_samples, mode, training_context, total_epochs)
-        121         step=step, mode=mode, size=current_batch_size) as batch_logs:
-        122       try:
-    --> 123         batch_outs = execution_function(iterator)
-        124       except (StopIteration, errors.OutOfRangeError):
-        125         # TODO(kaftan): File bug about tf function and errors.OutOfRangeError?
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/keras/engine/training_v2_utils.py in execution_function(input_fn)
-         84     # `numpy` translates Tensors to values in Eager mode.
-         85     return nest.map_structure(_non_none_constant_value,
-    ---> 86                               distributed_function(input_fn))
-         87 
-         88   return execution_function
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/eager/def_function.py in __call__(self, *args, **kwds)
-        455 
-        456     tracing_count = self._get_tracing_count()
-    --> 457     result = self._call(*args, **kwds)
-        458     if tracing_count == self._get_tracing_count():
-        459       self._call_counter.called_without_tracing()
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/eager/def_function.py in _call(self, *args, **kwds)
-        485       # In this case we have created variables on the first call, so we run the
-        486       # defunned version which is guaranteed to never create variables.
-    --> 487       return self._stateless_fn(*args, **kwds)  # pylint: disable=not-callable
-        488     elif self._stateful_fn is not None:
-        489       # Release the lock early so that multiple threads can perform the call
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/eager/function.py in __call__(self, *args, **kwargs)
-       1821     """Calls a graph function specialized to the inputs."""
-       1822     graph_function, args, kwargs = self._maybe_define_function(args, kwargs)
-    -> 1823     return graph_function._filtered_call(args, kwargs)  # pylint: disable=protected-access
-       1824 
-       1825   @property
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/eager/function.py in _filtered_call(self, args, kwargs)
-       1139          if isinstance(t, (ops.Tensor,
-       1140                            resource_variable_ops.BaseResourceVariable))),
-    -> 1141         self.captured_inputs)
-       1142 
-       1143   def _call_flat(self, args, captured_inputs, cancellation_manager=None):
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/eager/function.py in _call_flat(self, args, captured_inputs, cancellation_manager)
-       1222     if executing_eagerly:
-       1223       flat_outputs = forward_function.call(
-    -> 1224           ctx, args, cancellation_manager=cancellation_manager)
-       1225     else:
-       1226       gradient_name = self._delayed_rewrite_functions.register()
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/eager/function.py in call(self, ctx, args, cancellation_manager)
-        509               inputs=args,
-        510               attrs=("executor_type", executor_type, "config_proto", config),
-    --> 511               ctx=ctx)
-        512         else:
-        513           outputs = execute.execute_with_cancellation(
-
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/tensorflow_core/python/eager/execute.py in quick_execute(op_name, num_outputs, inputs, attrs, ctx, name)
-         59     tensors = pywrap_tensorflow.TFE_Py_Execute(ctx._handle, device_name,
-         60                                                op_name, inputs, attrs,
-    ---> 61                                                num_outputs)
-         62   except core._NotOkStatusException as e:
-         63     if name is not None:
-
-
-    KeyboardInterrupt: 
-
 
 ### LeNet-5
 
@@ -449,7 +342,82 @@ It is available in TF at `tf.nn.local_response_normalization()` and can be used 
 
 ### GoogLeNet
 
+GoogLeNet won ImageNet in 2014.
+Their success came mainly from using a deeper network with more efficient use of parameters.
+By using *inception modules* (explained next) GoogLeNet actually had 10 times *fewer* parameters than AlexNet.
 
+An inception module first copies the input into 4 and feeds it to 4 separate modules.
+The first is a 1x1 + 1 (S) comvolutional layer, meaning it has a 1x1 kernel, a stride of 1, and uses "same" padding.
+The second module is two convolutional layers, the first a 1x1 + 1 (S), but the second has a larger kernel, 3x3.
+The third module again has two convolutional layers, but the second has a kernel of 5x5.
+Finally, the fourth module has two layers, the first is a max pooling layer with a kernel of 3x3 and the second layer is a 1x1 + 1 (S) convolutional layer.
+These four modules feed into a *depth concatenation layer* that stacks the feature maps from the last convolutional layer of each module.
+
+The 1x1 kernels, though are unable to recognize spatial patterns, can capture patterns along the depth dimension.
+Also, they output fewer feature maps than their inputs, so they are actually reducing dimensionality.
+Finally, when a 1x1 layer is paired with a 3x3 or 5x5 layer, they act like one very powerful convolutional layer.
+Instead of sweeping a simple linear classifier across the image, like a normal convolutional layer does, this pair of layers sweeps a two-layer NN across the image.
+
+Basically, we can treat the inception module as a very powerful convolutional layer capable of recognizing complex patterns.
+
+Finally, we can get to the GoogLeNet CCN architecture.
+It is a very tall stack that I will not reproduce here.
+The first 3rd looks like a normal CNN, then there are many inception modules with max pooling layers interspersed.
+It is topped with a dense layer leading to a softmax output layer.
+
+There were a few auxiliary classifiers places in the middle of the CNN to contribute to the overall loss as an attempt to mitigate vanishing gradients.
+However, it was later demonstrated that these had little effect.
+
+Google has since improved upon GoogLeNet with Inception-v3 and v4 with improvements to the inception modules.
+
+### VGGNet
+
+VGGGNet came in 2nd place in 2014 with a faily standard architecture.
+The main architecture consisted of repeating blocks of 2 or 3 convolutional layers topped with a pooling layer.
+It was topped with a dense network with 2 hidden layers and an output layer.
+The convlutional layers used 3x3 kernels but had many filters.
+
+### ResNet
+
+ResNet won ImageNet in 2015 by following the trend of deeper networks with fewer parameters.
+The key to training such a deep network was the use of *skip connections*, where the signal feeding into a layer is also added to the output of a layer located further along the stack.
+
+The skip connection works by implementing *residual learning*.
+Usually, a normal NN needs to model a target function $h(\textbf{x})$.
+Adding $\textbf{x}$ to the output forces the model to learn $f(\textbf{x}) = h(\textbf{x}) - \textbf{x}$, instead.
+Overall, it helps the network learn by propagating the original signal further into the network.
+Thus, other layers can begin learning even if previous layers have not, yet.
+
+ResNet looks very simillar to GoogLeNet at the beginning and end, but uses many convolutional layers with skip connections instead of inception layers.
+Sometimes, the skip connection had to be fed through a simple convolutional layer in order to match the dimensions required by its destination.
+
+Google's Inception-v4 merged the architecture ideas from GoogLeNet with ResNet and achieved still higher rates of top-five accuracy in ImageNet.
+
+### Xception
+
+The Xception archtiecture is considered a mixture of GoogLeNet and ResNet, too.
+Instead of inception modules, though, Xception using *depthwise separable convolution layers* (or just *separable convolution layer* for short).
+Each layer is composed of two sets of layers, the first is comprised of spatial-only filters whereas the second is comprised of depthwise-only filters.
+This is simillar to an incpetion module except in the inception modules, the second set of convlutional layers were not restricted to depthwise-only filters.
+
+The author notes that separable convolution layers generally perform better that normal convolutional layers and with fewer parameters.
+Thus, he recommends considering them as the default option for a convolutional network, except after layers with few channels, such as the input layers.
+
+### SENet
+
+The Squeeze-and-Excitation Network (SENet) won ImageNet in 2017 with a 2.25% top-five error rate.
+SENet used inception modules (GoogLeNet and residual units (ResNet), but boosted their performance by adding a small NN, an *SE-block*, to every unit in the original architecture.
+Basically, for each module (either an inception module or a residual unit), the output was passed directly to the next layer and through an SE-block which passed its output to the next layer, too.
+An SE-block only looks for associations in the dept dimension.
+Thus, if two feature maps are commonly associated with one-another, then the SE-block "recalibrates" the output to accentuate one when the other is high.
+
+Each SE-block has just 3 layers, a global average pooling layer, a hidden dense layer with a ReLU activation function, and an output dense layer with a sigmoid activation function.
+If there are 256 feature maps passed to the global average pooling layer, it will output 256 values representing the response of each filter.
+The hidden layer has much fewer neurons than the input, typically 16 times fewer, (thus the name "squeeze") and effectively is a lower-dimensionally embedding of the pooled feature maps.
+The output layer again has the same number of neurons as the number of input feature maps so that it can provide a "recalibrated" value for each. 
+Because it uses the sigmoid activation function, it outputs a value between 0 and 1 that can be multiplied against the output of each feature map from the original module.
+
+## Implementing a ResNet-34 CNN using Keras
 
 
 ```python
