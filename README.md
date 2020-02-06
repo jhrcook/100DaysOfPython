@@ -478,3 +478,8 @@ We learned about LeNet-5 and AlexNet.
 
 **Day 105 - February 04, 2020:**
 I finished reading and taking notes on the explanations of various powerful and important CNN architectures.
+
+**Day 106 - February 06, 2020:**
+We constructed a ResNet-34 model using a custom Residual Unit layer and the Keras Sequential API.
+We also learned about using pretrained models from TensorFlow.
+Finally, we breifly demonstrated a simple example of implementing transfer learning use a pretrained Xception model.

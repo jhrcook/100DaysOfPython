@@ -419,6 +419,346 @@ Because it uses the sigmoid activation function, it outputs a value between 0 an
 
 ## Implementing a ResNet-34 CNN using Keras
 
+Normally, if you want to use a CNN, you should use transfer learning with a pretrained model.
+However, for the sake of an example, below is the implementation of ResNet-34 (34 layers deep) using Keras.
+
+
+```python
+# A Redidual Unit layer in Keras.
+class ResidualUnit(keras.layers.Layer):
+    def __init__(self, filters, strides=1, activation='relu', **kwargs):
+        super().__init__(**kwargs)
+
+        self.activation = keras.activations.get(activation)
+
+        self.main_layers = [
+            keras.layers.Conv2D(filters, 3, strides=strides,
+                                padding='same', use_bias=False),
+            keras.layers.BatchNormalization(),
+            self.activation,
+            keras.layers.Conv2D(filters, 3, strides=1,
+                                padding='same', use_bias=False),
+            keras.layers.BatchNormalization()
+        ]
+
+        self.skip_layers = []
+        if strides > 1:
+            self.skip_layers = [
+                keras.layers.Conv2D(filters, 1, strides=strides,
+                                    padding='same', use_bias=False),
+                keras.layers.BatchNormalization()
+            ]
+
+    def call(self, inputs):
+        Z = inputs
+        for layer in self.main_layers:
+            Z = layer(Z)
+
+        skip_Z = inputs
+        for layer in self.skip_layers:
+            skip_Z = layer(skip_Z)
+
+        return self.activation(Z + skip_Z)
+
+
+# ResNet-34 CNN using Keras Sequential API.
+model = keras.models.Sequential([
+    keras.layers.Conv2D(64, 7, strides=2, input_shape=[224, 224, 3],
+                        padding='same', use_bias=False),
+    keras.layers.BatchNormalization(),
+    keras.layers.Activation('relu'),
+    keras.layers.MaxPool2D(pool_size=3, strides=2, padding='same')
+])
+
+prev_filters = 64
+for filters in [64] * 3 + [128] * 4 + [256] * 6 + [512] * 3:
+    strides = 1 if filters == prev_filters else 2
+    model.add(ResidualUnit(filters, strides=strides))
+    prev_filters = filters
+
+model.add(keras.layers.GlobalAvgPool2D())
+model.add(keras.layers.Flatten())
+model.add(keras.layers.Dense(10, activation='softmax'))
+```
+
+
+```python
+model.summary()
+```
+
+    Model: "sequential_1"
+    _________________________________________________________________
+    Layer (type)                 Output Shape              Param #   
+    =================================================================
+    conv2d_6 (Conv2D)            (None, 112, 112, 64)      9408      
+    _________________________________________________________________
+    batch_normalization (BatchNo (None, 112, 112, 64)      256       
+    _________________________________________________________________
+    activation (Activation)      (None, 112, 112, 64)      0         
+    _________________________________________________________________
+    max_pooling2d_4 (MaxPooling2 (None, 56, 56, 64)        0         
+    _________________________________________________________________
+    residual_unit (ResidualUnit) (None, 56, 56, 64)        74240     
+    _________________________________________________________________
+    residual_unit_1 (ResidualUni (None, 56, 56, 64)        74240     
+    _________________________________________________________________
+    residual_unit_2 (ResidualUni (None, 56, 56, 64)        74240     
+    _________________________________________________________________
+    residual_unit_3 (ResidualUni (None, 28, 28, 128)       230912    
+    _________________________________________________________________
+    residual_unit_4 (ResidualUni (None, 28, 28, 128)       295936    
+    _________________________________________________________________
+    residual_unit_5 (ResidualUni (None, 28, 28, 128)       295936    
+    _________________________________________________________________
+    residual_unit_6 (ResidualUni (None, 28, 28, 128)       295936    
+    _________________________________________________________________
+    residual_unit_7 (ResidualUni (None, 14, 14, 256)       920576    
+    _________________________________________________________________
+    residual_unit_8 (ResidualUni (None, 14, 14, 256)       1181696   
+    _________________________________________________________________
+    residual_unit_9 (ResidualUni (None, 14, 14, 256)       1181696   
+    _________________________________________________________________
+    residual_unit_10 (ResidualUn (None, 14, 14, 256)       1181696   
+    _________________________________________________________________
+    residual_unit_11 (ResidualUn (None, 14, 14, 256)       1181696   
+    _________________________________________________________________
+    residual_unit_12 (ResidualUn (None, 14, 14, 256)       1181696   
+    _________________________________________________________________
+    residual_unit_13 (ResidualUn (None, 7, 7, 512)         3676160   
+    _________________________________________________________________
+    residual_unit_14 (ResidualUn (None, 7, 7, 512)         4722688   
+    _________________________________________________________________
+    residual_unit_15 (ResidualUn (None, 7, 7, 512)         4722688   
+    _________________________________________________________________
+    global_average_pooling2d_1 ( (None, 512)               0         
+    _________________________________________________________________
+    flatten_1 (Flatten)          (None, 512)               0         
+    _________________________________________________________________
+    dense_3 (Dense)              (None, 10)                5130      
+    =================================================================
+    Total params: 21,306,826
+    Trainable params: 21,289,802
+    Non-trainable params: 17,024
+    _________________________________________________________________
+
+
+## Using pretrained models from Keras
+
+It is usually best to use a pretrained model instead of training one personally for these massive CNNs.
+Many pretrained models are available in `keras.applications`.
+For example, ResNet-50 trained on ImageNet can be loaded in one line of code.
+
+
+```python
+model = keras.applications.resnet50.ResNet50(weights='imagenet')
+```
+
+This model expects an input image of 224 x 224.
+The best way to resize an image is to use TF's `tf.image.resize()` or `resize_with_pad()` functions.
+
+
+```python
+test_image = np.array([
+    load_sample_image("flower.jpg") / 255, 
+    load_sample_image("china.jpg") / 255
+])
+test_image = tf.image.resize_with_pad(test_image, 224, 224)
+```
+
+
+```python
+fig, axes = plt.subplots(1, 2, figsize=(8, 5))
+for ax, img in zip(axes, test_image):
+    plot_image(img, ax)
+plt.show()
+```
+
+
+![png](homl_ch14_Deep-computer-vision-using-convolutional-neural-networks_files/homl_ch14_Deep-computer-vision-using-convolutional-neural-networks_23_0.png)
+
+
+Each pretrained model expects the input to be preprocessed in a specific way (e.g. scaling from 0 to 1).
+Thus, each model has a `preprocess_input()` method to handle this preparation step.
+These functions assume pixel values from 0 to 255, so I multiplied by 255 below to undo the scaling to 0 to 1, done above.
+
+
+```python
+test_image = keras.applications.resnet50.preprocess_input(test_image * 255)
+```
+
+Finally, we can use the model to make predictions.
+The output is a matrix of image x class (row x column).
+The `decode_predictions()` method is useful to obtaining the top $k$ predictions.
+
+
+```python
+Y_proba = model.predict(test_image)
+top_k = keras.applications.resnet50.decode_predictions(Y_proba, top=5)
+for image_idx in range(len(test_image)):
+    print(f'Image #{image_idx}:')
+    for class_id, name, y_proba, in top_k[image_idx]:
+        print(f'\t{class_id} - {name:12s} {y_proba * 100:.2f}%')
+    print()
+```
+
+    Image #0:
+    	n03530642 - honeycomb    37.23%
+    	n11939491 - daisy        12.07%
+    	n04522168 - vase         9.75%
+    	n09229709 - bubble       4.29%
+    	n07930864 - cup          3.45%
+    
+    Image #1:
+    	n03028079 - church       23.95%
+    	n02825657 - bell_cote    18.98%
+    	n04346328 - stupa        10.08%
+    	n03781244 - monastery    9.70%
+    	n02980441 - castle       7.51%
+    
+
+
+The results were very impressive: the flower was correctly classified as a "daisy" as the second choice and the temple was correctly classified as a "monastery" in the fourth choice.
+
+## Pretrained models for transfer learning
+
+If you want a more specialized CNN, it is usually best to perform transfer learning with a pretrained model.
+This will reduce the time and amount of training data required to achieve a high level of accuracy.
+
+As an example, we will train a model to classify pictures of flowers, reusing a pretrained Xception model.
+First, we must load the data set from TF.
+
+
+```python
+import tensorflow_datasets as tfds
+
+dataset, info = tfds.load('tf_flowers', as_supervised=True, with_info=True)
+```
+
+    WARNING:absl:Warning: Setting shuffle_files=True because split=TRAIN and shuffle_files=None. This behavior will be deprecated on 2019-08-06, at which point shuffle_files=False will be the default for all splits.
+
+
+
+```python
+dataset_size = info.splits['train'].num_examples
+dataset_size
+```
+
+
+
+
+    3670
+
+
+
+
+```python
+class_names = info.features['label'].names
+class_names
+```
+
+
+
+
+    ['dandelion', 'daisy', 'tulips', 'sunflowers', 'roses']
+
+
+
+
+```python
+n_classes = info.features['label'].num_classes
+n_classes
+```
+
+
+
+
+    5
+
+
+
+We must first split the training data into train, validation, and testing datasets.
+
+
+```python
+test_split, valid_split, train_split = tfds.Split.TRAIN.subsplit([10, 15, 75])
+
+test_set = tfds.load('tf_flowers', split=test_split, as_supervised=True)
+valid_set = tfds.load('tf_flowers', split=valid_split, as_supervised=True)
+train_set = tfds.load('tf_flowers', split=train_split, as_supervised=True)
+```
+
+The next step is to preprocess the images for the CNN.
+It expects images to be 224 x 224, so the flowers must be resized.
+
+
+```python
+def preprocess_image(img, lbl):
+    resized_img = tf.image.resize_with_pad(img, 224, 224)
+    final_img  = keras.applications.xception.preprocess_input(resized_img)
+    return final_img, lbl
+
+batch_size = 32
+train_set = train_set.shuffle(1000)
+train_set = train_set.map(preprocess_image).batch(batch_size).prefetch(1)
+valid_set = valid_set.map(preprocess_image).batch(batch_size).prefetch(1)
+test_set = test_set.map(preprocess_image).batch(batch_size).prefetch(1)
+```
+
+Finally, we can load the model, without its top layer, add a new top layer, and train.
+First, we must freeze the base model's layers.
+
+
+```python
+base_model = keras.applications.xception.Xception(weights='imagenet', 
+                                                  include_top=False)
+```
+
+
+```python
+for layer in base_model.layers:
+    layer.trainable = False
+```
+
+
+```python
+avg = keras.layers.GlobalAveragePooling2D()(base_model.output)
+output = keras.layers.Dense(n_classes, activation='softmax')(avg)
+model = keras.Model(inputs=base_model.input, outputs=output)
+```
+
+
+```python
+optimizer = keras.optimizers.Nadam(lr=0.2)
+model.compile(
+    loss=keras.losses.SparseCategoricalCrossentropy(),
+    optimizer=optimizer,
+    metrics=['accuracy']
+)
+# history = model.fit(train_set, epochs=5, validation_data=valid_set)
+```
+
+It would take to long for me to actually run the re-training locally on my MacBook Pro.
+
+After a few epochs, the accuracy should sit at 75% to 80%.
+When that happens, the lower layers can be unfrozen and the training can continue.
+*Don't forget to recompile the model after setting all layers to trainable.*
+
+
+```python
+for layer in base_model.layers:
+    layer.trainable = True
+
+optimizer = keras.optimizers.Nadam()
+model.compile(
+    loss=keras.losses.SparseCategoricalCrossentropy(),
+    optimizer=optimizer,
+    metrics=['accuracy']
+)
+# history = model.fit(train_set, epochs=100, validation_data=valid_set)
+```
+
+## Classification and localization
+
 
 ```python
 
