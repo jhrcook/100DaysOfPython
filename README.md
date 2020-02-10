@@ -483,3 +483,6 @@ I finished reading and taking notes on the explanations of various powerful and 
 We constructed a ResNet-34 model using a custom Residual Unit layer and the Keras Sequential API.
 We also learned about using pretrained models from TensorFlow.
 Finally, we breifly demonstrated a simple example of implementing transfer learning use a pretrained Xception model.
+
+**Day 107 - February 10, 2020:**
+I finished Chapter 14 on computer vision with deep models by learning about object localization, object detection, and semantic segmentation.

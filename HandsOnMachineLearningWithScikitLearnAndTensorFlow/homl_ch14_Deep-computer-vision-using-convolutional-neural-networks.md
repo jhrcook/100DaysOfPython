@@ -759,6 +759,94 @@ model.compile(
 
 ## Classification and localization
 
+Localization can be expressed as a regression task.
+Four parameters must be predicted: the horizontal and vertical coordinates of the center and the height and width.
+We can continue to use the same transfer learning process, just using a different output layer.
+Here, we add a second dense output layer on the model with four output nodes and train using the MSE loss.
+
+
+```python
+base_model = keras.applications.xception.Xception(weights='imagenet',
+                                                  include_top=False)
+avg = keras.layers.GlobalAveragePooling2D()(base_model.output)
+class_output = keras.layers.Dense(n_classes, activation='softmax')(avg)
+loc_output = keras.layers.Dense(4)(avg)
+
+model = keras.Model(inputs = base_model.input,
+                    outputs=[class_output, loc_output])
+
+model.compile(loss=[keras.losses.SparseCategoricalCrossentropy(),
+                    keras.losses.MeanSquaredError()],
+              loss_weights=[0.8, 0.2],
+              optimizer=keras.optimizers.Nadam(),
+              metrics=['accuracy'])
+```
+
+Now, there is the issue of creating the training data for the bounding boxes.
+This can either be done using a crowd-sourcing platform (e.g. AWS Mechanical Turks) or manually with the help of an open source tools (e.g. VGG Image  Annotator, LabelImg, etc.).
+Once this data has been collected, the dataset must be fully assembled to be used in batches.
+The dataset should be in the format `(images, (class_labels, bounding_boxes))`.
+Once all of this has been accomplished, the model can be trained.
+
+The most common cost function for bounding boxes is *Intersection over Union* (IoU) which is the area of the overlap of the predicted and target bounding boxes divided by the total area of their union.
+In TF, this is implemented in `keras.metrics.MeanIoU`.
+
+##  Object detection
+
+The task of classifying and localizing multiple objects in an image is called *object detection*.
+
+The original method for object detection was to break up the image into a grid and slide a CNN across it (more detail on this method is provided in the book, but not transcribed here).
+Now, there is a faster and better approach called *fully convolutional network* (FCN).
+
+### Fully convolutional networks
+
+The idea for a FCN is that the final dense layer is exchanged with a convolutional layer with the number of filters equal to the number of neurons in the original output layer.
+Now, the final layer can take any size image and output the same number of values.
+If the image is larger, then the output comes in a grid with each cell recieving values for the desired outputs.
+This occurs naturally based on the kernel size and stride of the output convolutional layer.
+(This architecture is covered more fully and better in the book.)
+
+The FCN is equivalent to taking a CNN and sliding it over a grid on the image, however, each image is only processed once, making this much more efficient than the older method.
+
+### You Only Look Once (YOLO)
+
+YOLO is an incredibly fast and accurate object detection architecture proposed in 2015, and updated in 2016 and 2018 with YOLOv2 and YOLOv3, respectively.
+It is fast enough to run in real time on a video!
+
+YOLOv3 has a few important distinctions:
+
+1. It outputs 5 bounding boxes per grid cell, each one with an objectness score. It also outputs 20 class probabilities per grid cell, as it was trained on the PASCAL VOC dataset.
+2. The center of the bounding boxes are expressed as offsets from (0, 0) in the top-left to (1, 1) in the bottom-right.
+3. Before training YOLOv3, it first creates 5 "prototype" bounding boxes (using a KNN-based method based off of the training set's bounding box sizes), and then learns to rescale them during the training.
+
+There are some models available in the TF Models project or TF Hub, but they evolve quickly as the field continually improves.
+
+### Semantic segmentation
+
+*Semantic segmentation* is the process of providing a class label to every pixel in an image.
+The main difficulty is maintaining spatial resolution through a deep CNN where this is lost due to pooling layers and strides greater than 1.
+
+One solution is to an *upsampling layer* that multiplies the resolution to regain the original dimensions.
+One upsampling technique is a *transposed convolutional layer* that first stretches the image by inserting empty rows and columns filled with zeros.
+This can be interpreted as using a fractional stride value, too.
+
+Skip layers can also help with the loss of spatial resolution, namely that introduced by pooling layers.
+Basically, the output of lower layers is added to the upsampled results of a later layer.
+
+Finally, it is possible to scale an image beyond its original resolution using *super resolution* (but this topic was not discussed in this book).
+
+There are plenty of models (some pretrained) avaialble on GitHub.
+Also, *Mask R-CNN* is pretrained model in the TF Models project.
+It is actually an *instance segmentation model* where each instance is kept separate instead of being lumped together with other instances (like a segmentation model would do).
+It provides output of both bounding boxes with estimated class probabilities and a pixel mask that locates pixels in the bounding box that belong to each object.
+
+
+
+```python
+# Use this tutorial to help download and use the MobileNetV2 pre-trained model.
+# https://www.tensorflow.org/tutorials/images/segmentation
+```
+
 
 ```python
 
