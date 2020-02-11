@@ -486,3 +486,7 @@ Finally, we breifly demonstrated a simple example of implementing transfer learn
 
 **Day 107 - February 10, 2020:**
 I finished Chapter 14 on computer vision with deep models by learning about object localization, object detection, and semantic segmentation.
+
+**Day 108 - February 11, 2020:**
+I experimented with using a pretraining neural network for image segmentation, but that failed - I may give it another shot in the future.
+I began the chapter on Recurrent Neural Networks (chapter 15).

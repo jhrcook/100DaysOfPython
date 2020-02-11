@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import tensorflow as tf
 import tensorflow.keras as keras
+import tensorflow_datasets as tfds
 
 np.random.seed(0)
 sns.set_style('whitegrid')
@@ -840,14 +841,3 @@ Also, *Mask R-CNN* is pretrained model in the TF Models project.
 It is actually an *instance segmentation model* where each instance is kept separate instead of being lumped together with other instances (like a segmentation model would do).
 It provides output of both bounding boxes with estimated class probabilities and a pixel mask that locates pixels in the bounding box that belong to each object.
 
-
-
-```python
-# Use this tutorial to help download and use the MobileNetV2 pre-trained model.
-# https://www.tensorflow.org/tutorials/images/segmentation
-```
-
-
-```python
-
-```
