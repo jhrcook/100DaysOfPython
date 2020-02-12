@@ -490,3 +490,7 @@ I finished Chapter 14 on computer vision with deep models by learning about obje
 **Day 108 - February 11, 2020:**
 I experimented with using a pretraining neural network for image segmentation, but that failed - I may give it another shot in the future.
 I began the chapter on Recurrent Neural Networks (chapter 15).
+
+**Day 109 - February 12, 2020:**
+We covered the basics of RNNs and the different types based on their input and output shapes.
+We began a simple example on mock training data.
