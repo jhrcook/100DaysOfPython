@@ -126,7 +126,7 @@ np.mean(keras.losses.mean_squared_error(y_valid, naive_pred))
 
 Another approach is to use a very simple neural network.
 Here we can use a single dense neuron; the output is thus a linear combination of the inputs.
-This model can make predictions on the validation data with a MSE of 0.003.
+This model can make predictions on the validation data with a MSE of 0.004.
 
 
 ```python
@@ -142,10 +142,9 @@ model.compile(
 
 history = model.fit(
     X_train, y_train,
-    epochs=100,
+    epochs=20,
     validation_data=(X_valid, y_valid),
-    verbose=0,
-    callbacks=[keras.callbacks.EarlyStopping(patience=5)]
+    verbose=0
 )
 ```
 
@@ -168,7 +167,7 @@ np.mean(keras.losses.mean_squared_error(y_valid, y_pred))
 
 
 
-    0.00327249
+    0.0036995797
 
 
 
@@ -195,10 +194,9 @@ simple_rnn.compile(
 
 history = simple_rnn.fit(
     X_train, y_train,
-    epochs=100,
+    epochs=20,
     validation_data=(X_valid, y_valid),
-    verbose=0,
-    callbacks=[keras.callbacks.EarlyStopping(patience=5)]
+    verbose=0
 )
 ```
 
@@ -221,8 +219,196 @@ np.mean(keras.losses.mean_squared_error(y_valid, y_pred))
 
 
 
-    0.011389356
+    0.13912646
 
 
 
 ### Deep RNNs
+
+Keras makes it easy to make a deep RNN by just stacking `SimpleRNN` layers.
+Note that it is necessary to explicitly tell each layer to output the entire sequence so that the next layer doesn't just receive the final output of the previous one.
+
+We can use another `SimpleRNN` for the final layer, but it is often preferrable to use a single `Dense` neuron.
+One reason is that there is only one hidden variable for the single recurrent neuron whereas the normal neuron has a weight for each input.
+Also, the recurrent neuron uses the tanh activation function, limiting the output to between -1 and 1.
+
+
+```python
+deep_rnn = keras.models.Sequential([
+    keras.layers.SimpleRNN(20, return_sequences=True, input_shape=[None, 1]),
+    keras.layers.SimpleRNN(20, return_sequences=False),
+    keras.layers.Dense(1)
+])
+
+deep_rnn.compile(
+    optimizer=keras.optimizers.Nadam(),
+    loss=keras.losses.MeanSquaredError()
+)
+
+history = deep_rnn.fit(
+    X_train, y_train,
+    epochs=10,
+    validation_data=(X_valid, y_valid),
+    verbose=0
+)
+```
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8, 6))
+plt.show()
+```
+
+
+![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_19_0.png)
+
+
+
+```python
+y_pred = deep_rnn.predict(X_valid)
+np.mean(keras.losses.mean_squared_error(y_valid, y_pred))
+```
+
+
+
+
+    0.003383608
+
+
+
+### Forecasting several time steps ahead
+
+So far, we have only predicted the value at the next time step, but we could have predicted the value after 10 additional steps by changing how we split the mock data into X and y datasets.
+But what if we wanted to predict all of the next 10 steps.
+
+One way to do this is to use the model trained above to predict the next step, then add that output to the input and have it predict the next step after that, and so on.
+
+
+```python
+np.random.seed(2)
+series = generate_time_series(1, n_steps + 10)
+X_new, Y_new = series[:, :n_steps], series[:, n_steps:]
+X = X_new
+for step_ahead in range(10):
+    y_pred_one = model.predict(X[:, step_ahead:])[:, np.newaxis, :]
+    X = np.concatenate([X, y_pred_one], axis=1)
+
+Y_pred = X[:, n_steps:]
+```
+
+
+```python
+fig = plt.figure(figsize=(8, 5))
+plt.plot(range(X_new.shape[1]), 
+         X_new[0, :, 0], 
+         'k-o')
+plt.plot(range(X_new.shape[1], X_new.shape[1] + Y_new.shape[1]), 
+         Y_new[0, :, 0], 
+         'g--x', label='real')
+plt.plot(range(X_new.shape[1], X_new.shape[1] + Y_pred.shape[1]), 
+         Y_pred[0, :, 0], 
+         'r--o', label='forecast')
+plt.xlabel('time step', fontsize=14)
+plt.ylabel('value', fontsize=14)
+plt.title('Forecasting several times steps ahead', fontsize=18)
+plt.legend(loc='best')
+plt.show()
+```
+
+
+![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_23_0.png)
+
+
+Another option is to train the RNN to predict all 10 next values at once.
+We will still use a sequence to vector model, but there will be 10 output values instead of 1.
+We must first, however, change the targets to be vectors containing the last 10 values.
+
+
+```python
+np.random.seed(0)
+series = generate_time_series(10000, n_steps + 10)
+X_train, Y_train = series[:7000, :n_steps], series[:7000, -10:, 0]
+X_valid, Y_valid = series[7000:9000, :n_steps], series[7000:9000, -10:, 0]
+X_test, Y_test = series[9000:, :n_steps], series[9000:, -10:, 0]
+```
+
+The only change to the model is that the final dense layer must have 10 neurons.
+
+
+```python
+deep_rnn_10steps = keras.models.Sequential([
+    keras.layers.SimpleRNN(20, return_sequences=True, input_shape=[None, 1]),
+    keras.layers.SimpleRNN(20),
+    keras.layers.Dense(10)
+])
+
+deep_rnn_10steps.compile(
+    optimizer=keras.optimizers.Nadam(),
+    loss=keras.losses.MeanSquaredError()
+)
+
+history = deep_rnn_10steps.fit(
+    X_train, Y_train,
+    epochs=20,
+    validation_data=(X_valid, Y_valid),
+    verbose=0
+)
+```
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8, 6))
+plt.show()
+```
+
+
+![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_28_0.png)
+
+
+
+```python
+Y_pred = deep_rnn_10steps.predict(X_valid)
+np.mean(keras.losses.mean_squared_error(Y_valid, Y_pred))
+```
+
+
+
+
+    0.008342622
+
+
+
+
+```python
+Y_pred = deep_rnn_10steps.predict(X_new)
+
+fig = plt.figure(figsize=(8, 5))
+plt.plot(range(X_new.shape[1]), 
+         X_new[0, :, 0], 
+         'k-o')
+plt.plot(range(X_new.shape[1], X_new.shape[1] + Y_new.shape[1]), 
+         Y_new[0, :, 0], 
+         'g--x', label='real')
+plt.plot(range(X_new.shape[1], X_new.shape[1] + Y_pred.shape[1]), 
+         Y_pred[0, :], 
+         'r--o', label='forecast')
+plt.xlabel('time step', fontsize=14)
+plt.ylabel('value', fontsize=14)
+plt.title('Forecasting several times steps ahead', fontsize=18)
+plt.legend(loc='best')
+plt.show()
+```
+
+
+![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_30_0.png)
+
+
+We can do still better by having the model constantly trying to predict the next 10 steps from the very beginning, not just the very end.
+This basically increases the amount of training data for the model.
+
+**To-Do**: finish up this section, tomorrow.
+
+
+```python
+
+```

@@ -494,3 +494,8 @@ I began the chapter on Recurrent Neural Networks (chapter 15).
 **Day 109 - February 12, 2020:**
 We covered the basics of RNNs and the different types based on their input and output shapes.
 We began a simple example on mock training data.
+
+**Day 110 - February 13, 2020:**
+We created our first deep RNN.
+Also, we learned about how to make predictions about the next N steps, not just the immediate next step.
+The model was trained for just a few epochs, but performed very well.
