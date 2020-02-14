@@ -167,7 +167,7 @@ np.mean(keras.losses.mean_squared_error(y_valid, y_pred))
 
 
 
-    0.0036995797
+    0.004301323
 
 
 
@@ -219,7 +219,7 @@ np.mean(keras.losses.mean_squared_error(y_valid, y_pred))
 
 
 
-    0.13912646
+    0.014256743
 
 
 
@@ -272,7 +272,7 @@ np.mean(keras.losses.mean_squared_error(y_valid, y_pred))
 
 
 
-    0.003383608
+    0.0032862981
 
 
 
@@ -374,7 +374,7 @@ np.mean(keras.losses.mean_squared_error(Y_valid, Y_pred))
 
 
 
-    0.008342622
+    0.010989715
 
 
 
@@ -406,7 +406,217 @@ plt.show()
 We can do still better by having the model constantly trying to predict the next 10 steps from the very beginning, not just the very end.
 This basically increases the amount of training data for the model.
 
-**To-Do**: finish up this section, tomorrow.
+To turn the model into a sequence-to-sequence model, `return_sequence` must be set to `True` for every recurrent layer.
+Also, the final dense output must be applied at every time step.
+For this, Keras offers the `TimeDistributed` layer.
+It wraps another layer and applied it at every time step of its input sequence.
+It treats each time step as a new input, thus reshaping the input from $[batch\ size,\ time\ steps,\ input\ dimension]$ to $[batch\ size\ \times\ time\ steps,\ input\ dimension]$
+
+First, we must change the target data.
+Each target must be a sequence of 10-dimensional vectors of the same length as the input sequence.
+
+
+```python
+Y = np.empty((10000, n_steps, 10))
+for step_ahead in range(1, 10 + 1):
+    Y[:, :, step_ahead - 1] = series[:, step_ahead:step_ahead + n_steps, 0]
+Y_train = Y[:7000]
+Y_valid = Y[7000:9000]
+Y_test = Y[9000:]
+```
+
+
+```python
+Y_train.shape
+```
+
+
+
+
+    (7000, 50, 10)
+
+
+
+All outputs from the model are used for training, but we only care about the last time step for prediction and evaluation purposes.
+Thus, we can use a custom metric to compute the MSE over the output at the last time step.
+
+
+```python
+def last_time_step_mse(Y_true, Y_pred):
+    return keras.metrics.mean_squared_error(Y_true[:, -1], Y_pred[:, -1])
+```
+
+
+```python
+s2s_rnn = keras.models.Sequential([
+    keras.layers.SimpleRNN(20, return_sequences=True, input_shape=[None, 1]),
+    keras.layers.SimpleRNN(20, return_sequences=True),
+    keras.layers.TimeDistributed(keras.layers.Dense(10))
+])
+
+s2s_rnn.compile(
+    optimizer=keras.optimizers.Nadam(),
+    loss=keras.losses.MeanSquaredError(),
+    metrics=[last_time_step_mse]
+)
+
+history = s2s_rnn.fit(
+    X_train, Y_train,
+    epochs=20,
+    validation_data=(X_valid, Y_valid),
+    verbose=0
+)
+```
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8, 6))
+plt.show()
+```
+
+
+![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_37_0.png)
+
+
+
+```python
+Y_pred = s2s_rnn.predict(X_valid)
+np.mean(keras.losses.mean_squared_error(Y_valid, Y_pred))
+```
+
+
+
+
+    0.02611927
+
+
+
+
+```python
+Y_pred = s2s_rnn.predict(X_new)
+
+fig = plt.figure(figsize=(8, 5))
+plt.plot(range(X.shape[1]), X[0, :, 0], 'k-')
+
+for i in range(1, Y_pred.shape[2] + 1):
+    plt.plot(range(i, X_new.shape[1] + i),
+             Y_pred[0, :, i-1],
+             'r--', label=i, alpha=0.5)
+
+plt.xlabel('time step', fontsize=14)
+plt.ylabel('value', fontsize=14)
+plt.title('Forecasting several times steps ahead', fontsize=18)
+plt.show()
+```
+
+
+![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_39_0.png)
+
+
+## Handling long sequences
+
+A nonsaturating activation function (e.g. ReLU) can leading to exploding outputs.
+Thus a saturating activation function, such as the hyperbolic tangent, is often the best choice (and is the default in Keras).
+
+Batch Normalization is not tremendously useful in RNNs, but instead *Layer Normalization* (LN) has proven successful.
+Instead of normalizing across the batch dimension, it normalizes across the features dimension.
+It has a few advantages including the ability to compute the required statistics on the fly at each time step, independently for each instance; it does not compute a running average like BN.
+LN learns a scale and offset parameter for each input and is typically used right after the linear combination of inputs and the hidden states.
+
+To implement LN in a single memory cell, we must make a custom memory cell.
+It is similar to a normal layer except its `call()` method takes two inputs: the `inputs` at the current time step, and the hidden `states` from the previous time step.
+Also, the cell must have a `state_size` and an `output_size` attributes, which for a simple RNN, are equal to the number of units.
+
+The following `LNSimpleRNNCell` is a custom memory cell that will behave just like a `SimpleRNNCell` except it will employ Layer Normalization.
+
+
+```python
+class LNSimpleRNNCell(keras.layers.Layer):
+    def __init__(self, units, activation='tanh', **kwargs):
+        super().__init__(**kwargs)
+        self.state_size = units
+        self.output_size = units
+        self.simple_rnn_cell = keras.layers.SimpleRNNCell(units,
+                                                          activation=None)
+        self.layer_norm = keras.layers.LayerNormalization()
+        self.activation = keras.activations.get(activation)
+
+    def call(self, inputs, states):
+        outputs, new_stats = self.simple_rnn_cell(inputs, states)
+        norm_outputs = self.activation(self.layer_norm(outputs))
+        return norm_outputs, [norm_outputs]
+```
+
+Now the new cell can be used in a RNN by passing it to the `RNN` layer in Keras.
+
+
+```python
+ln_rnn = keras.models.Sequential([
+    keras.layers.RNN(LNSimpleRNNCell(20), 
+                     return_sequences=True, 
+                     input_shape=[None, 1]),
+    keras.layers.RNN(LNSimpleRNNCell(20), return_sequences=True),
+    keras.layers.TimeDistributed(keras.layers.Dense(10))
+])
+
+ln_rnn.compile(
+    optimizer=keras.optimizers.Nadam(),
+    loss=keras.losses.MeanSquaredError(),
+    metrics=[last_time_step_mse]
+)
+
+history = ln_rnn.fit(
+    X_train, Y_train,
+    epochs=20,
+    validation_data=(X_valid, Y_valid),
+    verbose=0
+)
+```
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8, 6))
+plt.show()
+```
+
+
+![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_44_0.png)
+
+
+
+```python
+Y_pred = ln_rnn.predict(X_valid)
+np.mean(keras.losses.mean_squared_error(Y_valid, Y_pred))
+```
+
+
+
+
+    0.026189726
+
+
+
+
+```python
+Y_pred = ln_rnn.predict(X_new)
+
+fig = plt.figure(figsize=(8, 5))
+plt.plot(range(X.shape[1]), X[0, :, 0], 'k-')
+
+for i in range(1, Y_pred.shape[2] + 1):
+    plt.plot(range(i, X_new.shape[1] + i),
+             Y_pred[0, :, i-1],
+             'r--', label=i, alpha=0.5)
+
+plt.xlabel('time step', fontsize=14)
+plt.ylabel('value', fontsize=14)
+plt.title('Forecasting several times steps ahead', fontsize=18)
+plt.show()
+```
+
+
+![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_46_0.png)
+
 
 
 ```python

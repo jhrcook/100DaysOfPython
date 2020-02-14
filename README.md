@@ -499,3 +499,7 @@ We began a simple example on mock training data.
 We created our first deep RNN.
 Also, we learned about how to make predictions about the next N steps, not just the immediate next step.
 The model was trained for just a few epochs, but performed very well.
+
+**Day 111 - February 14, 2020:**
+I implemented the sequence-to-seuqence model which was able to predict quite well the entire curve made from combining two sine waves.
+We then learned about some of the problems with long sequences and implemented Layer Normalization in a custom memory cell to combat the exploding gradients.
