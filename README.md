@@ -503,3 +503,7 @@ The model was trained for just a few epochs, but performed very well.
 **Day 111 - February 14, 2020:**
 I implemented the sequence-to-seuqence model which was able to predict quite well the entire curve made from combining two sine waves.
 We then learned about some of the problems with long sequences and implemented Layer Normalization in a custom memory cell to combat the exploding gradients.
+
+**Day 112 - February 15, 2020:**
+I learned about alternaties to the simple RNN such as the LSTM cell and GRU cell.
+I also learned about using a convlutional layer with the RNN.

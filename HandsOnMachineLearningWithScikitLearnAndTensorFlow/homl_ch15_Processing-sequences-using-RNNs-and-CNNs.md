@@ -167,7 +167,7 @@ np.mean(keras.losses.mean_squared_error(y_valid, y_pred))
 
 
 
-    0.004301323
+    0.0040804083
 
 
 
@@ -194,7 +194,7 @@ simple_rnn.compile(
 
 history = simple_rnn.fit(
     X_train, y_train,
-    epochs=20,
+    epochs=10,
     validation_data=(X_valid, y_valid),
     verbose=0
 )
@@ -219,7 +219,7 @@ np.mean(keras.losses.mean_squared_error(y_valid, y_pred))
 
 
 
-    0.014256743
+    0.011384344
 
 
 
@@ -272,7 +272,7 @@ np.mean(keras.losses.mean_squared_error(y_valid, y_pred))
 
 
 
-    0.0032862981
+    0.0028538946
 
 
 
@@ -285,7 +285,7 @@ One way to do this is to use the model trained above to predict the next step, t
 
 
 ```python
-np.random.seed(2)
+np.random.seed(23)
 series = generate_time_series(1, n_steps + 10)
 X_new, Y_new = series[:, :n_steps], series[:, n_steps:]
 X = X_new
@@ -349,7 +349,7 @@ deep_rnn_10steps.compile(
 
 history = deep_rnn_10steps.fit(
     X_train, Y_train,
-    epochs=20,
+    epochs=10,
     validation_data=(X_valid, Y_valid),
     verbose=0
 )
@@ -374,7 +374,7 @@ np.mean(keras.losses.mean_squared_error(Y_valid, Y_pred))
 
 
 
-    0.010989715
+    0.008615565
 
 
 
@@ -462,7 +462,7 @@ s2s_rnn.compile(
 
 history = s2s_rnn.fit(
     X_train, Y_train,
-    epochs=20,
+    epochs=13,
     validation_data=(X_valid, Y_valid),
     verbose=0
 )
@@ -487,7 +487,7 @@ np.mean(keras.losses.mean_squared_error(Y_valid, Y_pred))
 
 
 
-    0.02611927
+    0.024657644
 
 
 
@@ -567,7 +567,7 @@ ln_rnn.compile(
 
 history = ln_rnn.fit(
     X_train, Y_train,
-    epochs=20,
+    epochs=10,
     validation_data=(X_valid, Y_valid),
     verbose=0
 )
@@ -592,7 +592,7 @@ np.mean(keras.losses.mean_squared_error(Y_valid, Y_pred))
 
 
 
-    0.026189726
+    0.02566188
 
 
 
@@ -616,6 +616,163 @@ plt.show()
 
 
 ![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_46_0.png)
+
+
+### Tackling the short-term memory problem
+
+Some information is lost at each time-step of an RNN to the point where by the end of the sequence, there is no trace of the initial inputs.
+Various types of cells with long-term memory have been created to tackle this problem.
+
+#### Long Short-Term Memory (LSTM) cells
+
+The *Long Short-Term Memory* (LSTM) cell was created in 1997 and steadily improved since.
+With Keras, it can be used as a drop-in replacement for the `SimpleRNN` layers we have been using thus far.
+This will lead to better performance and faster training as well as retaining long=term dependencies in the data.
+
+
+```python
+lstm_rnn = keras.models.Sequential([
+    keras.layers.LSTM(20, return_sequences=True, input_shape=[None, 1]),
+    keras.layers.LSTM(20, return_sequences=True),
+    keras.layers.TimeDistributed(keras.layers.Dense(10))
+])
+
+lstm_rnn.compile(
+    optimizer=keras.optimizers.Nadam(),
+    loss=keras.losses.MeanSquaredError(),
+    metrics=[last_time_step_mse]
+)
+
+history = lstm_rnn.fit(
+    X_train, Y_train,
+    epochs=10,
+    validation_data=(X_valid, Y_valid),
+    verbose=0
+)
+```
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8, 6))
+plt.show()
+```
+
+
+![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_49_0.png)
+
+
+
+```python
+Y_pred = lstm_rnn.predict(X_valid)
+np.mean(keras.losses.mean_squared_error(Y_valid, Y_pred))
+```
+
+
+
+
+    0.026746394
+
+
+
+
+```python
+Y_pred = lstm_rnn.predict(X_new)
+
+fig = plt.figure(figsize=(8, 5))
+plt.plot(range(X.shape[1]), X[0, :, 0], 'k-')
+
+for i in range(1, Y_pred.shape[2] + 1):
+    plt.plot(range(i, X_new.shape[1] + i),
+             Y_pred[0, :, i-1],
+             'r--', label=i, alpha=0.5)
+
+plt.xlabel('time step', fontsize=14)
+plt.ylabel('value', fontsize=14)
+plt.title('Forecasting several times steps ahead', fontsize=18)
+plt.show()
+```
+
+
+![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_51_0.png)
+
+
+The author continued on to explain LSTM in more detail, followed by explaining some of the popular variants including those with *peephole connections* and *Gated Recurrent Unit* (GRU) cells.
+He also provides explanations for implementing them both in Keras.
+
+#### Using 1D convolutional layers to process sequences
+
+It is also possible to use a convolutional layer to reduce the length of the sequence.
+Further, the filters are able to learn more subtle short-term patterns.
+Below is an example where the first layer is now a convolutional layer.
+Notice that the model learns much faster and performs better, too.
+
+
+```python
+conv_rnn = keras.models.Sequential([
+    keras.layers.Conv1D(filters=20, kernel_size=4, strides=2, padding="valid", 
+                        input_shape=[None, 1]),
+    keras.layers.LSTM(20, return_sequences=True),
+    keras.layers.LSTM(20, return_sequences=True),
+    keras.layers.TimeDistributed(keras.layers.Dense(10))
+])
+
+conv_rnn.compile(
+    optimizer=keras.optimizers.Nadam(),
+    loss=keras.losses.MeanSquaredError(),
+    metrics=[last_time_step_mse]
+)
+
+history = conv_rnn.fit(
+    X_train, Y_train[:, 3::2],
+    epochs=10,
+    validation_data=(X_valid, Y_valid[:, 3::2]),
+    verbose=0
+)
+```
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8, 6))
+plt.show()
+```
+
+
+![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_54_0.png)
+
+
+
+```python
+Y_pred = conv_rnn.predict(X_valid)
+np.mean(keras.losses.mean_squared_error(Y_valid[:, 3::2], Y_pred))
+```
+
+
+
+
+    0.021750728
+
+
+
+
+```python
+Y_pred = conv_rnn.predict(X_new)
+
+fig = plt.figure(figsize=(8, 5))
+plt.plot(range(X.shape[1]), X[0, :, 0], 'k-')
+
+for i in range(1, Y_pred.shape[2] + 1):
+    plt.plot([x * 2 - i + 2 for x in range(i, Y_pred.shape[1] + i)],
+             Y_pred[0, :, i-1],
+             'r--', label=i, alpha=0.5)
+
+plt.xlabel('time step', fontsize=14)
+plt.ylabel('value', fontsize=14)
+plt.title('Forecasting several times steps ahead', fontsize=18)
+plt.show()
+```
+
+
+![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_56_0.png)
 
 
 
