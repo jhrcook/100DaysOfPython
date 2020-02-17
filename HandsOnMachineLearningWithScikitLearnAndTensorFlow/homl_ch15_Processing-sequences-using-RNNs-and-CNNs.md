@@ -167,7 +167,7 @@ np.mean(keras.losses.mean_squared_error(y_valid, y_pred))
 
 
 
-    0.0040804083
+    0.0037825033
 
 
 
@@ -219,7 +219,7 @@ np.mean(keras.losses.mean_squared_error(y_valid, y_pred))
 
 
 
-    0.011384344
+    0.1480416
 
 
 
@@ -272,7 +272,7 @@ np.mean(keras.losses.mean_squared_error(y_valid, y_pred))
 
 
 
-    0.0028538946
+    0.002750152
 
 
 
@@ -374,7 +374,7 @@ np.mean(keras.losses.mean_squared_error(Y_valid, Y_pred))
 
 
 
-    0.008615565
+    0.010641455
 
 
 
@@ -487,7 +487,7 @@ np.mean(keras.losses.mean_squared_error(Y_valid, Y_pred))
 
 
 
-    0.024657644
+    0.028833391
 
 
 
@@ -592,7 +592,7 @@ np.mean(keras.losses.mean_squared_error(Y_valid, Y_pred))
 
 
 
-    0.02566188
+    0.036504794
 
 
 
@@ -670,7 +670,7 @@ np.mean(keras.losses.mean_squared_error(Y_valid, Y_pred))
 
 
 
-    0.026746394
+    0.02758335
 
 
 
@@ -711,8 +711,8 @@ Notice that the model learns much faster and performs better, too.
 conv_rnn = keras.models.Sequential([
     keras.layers.Conv1D(filters=20, kernel_size=4, strides=2, padding="valid", 
                         input_shape=[None, 1]),
-    keras.layers.LSTM(20, return_sequences=True),
-    keras.layers.LSTM(20, return_sequences=True),
+    keras.layers.GRU(20, return_sequences=True),
+    keras.layers.GRU(20, return_sequences=True),
     keras.layers.TimeDistributed(keras.layers.Dense(10))
 ])
 
@@ -749,7 +749,7 @@ np.mean(keras.losses.mean_squared_error(Y_valid[:, 3::2], Y_pred))
 
 
 
-    0.021750728
+    0.021186305
 
 
 
@@ -773,6 +773,93 @@ plt.show()
 
 
 ![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_56_0.png)
+
+
+#### WaveNet
+
+WaveNet is a convolutional neural network that has both a long and short term memory.
+It is just a stack of convolutional layers where each successive layer has a doubled *dilation rate* (how spread apart each neuron's inputs are).
+Thus, the lower layers with smaller dilation rates learn short-term patterns and the upper layers learn long term patterns.
+The diagram for the architecture helps to understand this concept.
+
+![](assets/ch15/wavenet_architecture.png)
+
+For the example used in this notebook, WaveNet not only outperformed the RNNs, but it was also faster to run through the same number of epochs.
+
+
+```python
+wavenet_model = keras.models.Sequential()
+wavenet_model.add(keras.layers.InputLayer(input_shape=[None, 1]))
+for rate in (1, 2, 4, 8) * 2:
+    wavenet_model.add(
+        keras.layers.Conv1D(filters=20,
+                            kernel_size=2,
+                            padding='causal',
+                            activation='relu',
+                            dilation_rate=rate)
+    )
+
+wavenet_model.add(
+    keras.layers.Conv1D(filters=10, kernel_size=1)
+)
+
+wavenet_model.compile(
+    optimizer=keras.optimizers.Nadam(),
+    loss=keras.losses.MeanSquaredError(),
+    metrics=[last_time_step_mse]
+)
+
+history = wavenet_model.fit(
+    X_train, Y_train,
+    epochs=10,
+    validation_data=(X_valid, Y_valid),
+    verbose=0
+)
+```
+
+
+```python
+pd.DataFrame(history.history).plot(figsize=(8, 6))
+plt.show()
+```
+
+
+![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_59_0.png)
+
+
+
+```python
+Y_pred = wavenet_model.predict(X_valid)
+np.mean(keras.losses.mean_squared_error(Y_valid, Y_pred))
+```
+
+
+
+
+    0.022441423
+
+
+
+
+```python
+Y_pred = wavenet_model.predict(X_new)
+
+fig = plt.figure(figsize=(8, 5))
+plt.plot(range(X.shape[1]), X[0, :, 0], 'k-')
+
+for i in range(1, Y_pred.shape[2] + 1):
+    plt.plot(range(i, X_new.shape[1] + i),
+             Y_pred[0, :, i-1],
+             'r--', label=i, alpha=0.5)
+
+plt.xlabel('time step', fontsize=14)
+plt.ylabel('value', fontsize=14)
+plt.title('Forecasting several times steps ahead', fontsize=18)
+plt.show()
+```
+
+
+![png](homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_61_0.png)
 
 
 

@@ -507,3 +507,7 @@ We then learned about some of the problems with long sequences and implemented L
 **Day 112 - February 15, 2020:**
 I learned about alternaties to the simple RNN such as the LSTM cell and GRU cell.
 I also learned about using a convlutional layer with the RNN.
+
+**Day 113 - February 17, 2020:**
+I finished Chapter 15 on RNNs by learning about WaveNet, a CNN architecture that can learn long and short patterns very efficiently.
+I began Chapter 17 (skipp 16 for now) on Autoencoders and Generative Adversarial Networks (GAN).
