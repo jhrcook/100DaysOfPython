@@ -55,3 +55,21 @@ Below is a collection of cool and interesting visualizations I created during my
 ### K-means clustering of the colors of a picture of a flower
 
 ![](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/homl_ch09_Unsupervised-learning-techniques_files/homl_ch09_Unsupervised-learning-techniques_22_0.png)
+
+### Learning patterns of mixed sine waves with RNNs and CNNs
+
+Examples of waves the models were trained on.
+
+![](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_4_0.png)
+
+Predicting the next 10 steps using a simple RNN.
+
+![](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_30_0.png)
+
+Predicting the entire sequence in time-steps using Long Short-Term Memory cells.
+
+![](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_51_0.png)
+
+Predicting the entire sequence in time-steps using a 1D Convolutional Neural Network based on the WaveNet architecture.
+
+![](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_61_0.png)
