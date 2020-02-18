@@ -511,3 +511,8 @@ I also learned about using a convlutional layer with the RNN.
 **Day 113 - February 17, 2020:**
 I finished Chapter 15 on RNNs by learning about WaveNet, a CNN architecture that can learn long and short patterns very efficiently.
 I began Chapter 17 (skipp 16 for now) on Autoencoders and Generative Adversarial Networks (GAN).
+
+**Day 114 - February 18, 2020:**
+I began coding Autoencoders today.
+We began with a simple one that effectively mimicked PCA.
+Then we built a Stacked AE that learned the Fashion MNIST data.
