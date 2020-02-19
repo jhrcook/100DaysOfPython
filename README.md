@@ -516,3 +516,7 @@ I began Chapter 17 (skipp 16 for now) on Autoencoders and Generative Adversarial
 I began coding Autoencoders today.
 We began with a simple one that effectively mimicked PCA.
 Then we built a Stacked AE that learned the Fashion MNIST data.
+
+**Day 115 - February 19, 2020:**
+We learned about using AE for dimensionality reduction and visualization and using it to pretrain a classification NN.
+We then began learning about a few training methods for AE, starting with tying weights of symmetric AE.
