@@ -520,3 +520,8 @@ Then we built a Stacked AE that learned the Fashion MNIST data.
 **Day 115 - February 19, 2020:**
 We learned about using AE for dimensionality reduction and visualization and using it to pretrain a classification NN.
 We then began learning about a few training methods for AE, starting with tying weights of symmetric AE.
+
+**Day 116 - February 20, 2020:**
+I learned about training one AE at a time and then assembling a stacked AE from those.
+We then covered other types of stacked AE inclduing Convolutional AE and Recurrent AE.
+We finished for the day learning about other constraints for training AE such as adding Gaussian noise or using dropout to introduce noise to the training and forcing sparsity using L1 or KL divergence regularization.
