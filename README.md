@@ -528,3 +528,8 @@ We finished for the day learning about other constraints for training AE such as
 
 **Day 117 - February 21, 2020:**
 I learned about Variational AE and used the Functional API of Keras to build and train one.
+
+**Day 118 - February 22, 2020:**
+We finished up AE by use a stacked AE for semantic interpolation.
+Basically, we interpolated between codings of Fashion MNIST images and found that the AE could make reasonble-looking articles of clothing from similar types of clothing.
+We then began the section on GANs by creating and training a simple model.
