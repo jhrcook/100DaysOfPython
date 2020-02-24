@@ -533,3 +533,6 @@ I learned about Variational AE and used the Functional API of Keras to build and
 We finished up AE by use a stacked AE for semantic interpolation.
 Basically, we interpolated between codings of Fashion MNIST images and found that the AE could make reasonble-looking articles of clothing from similar types of clothing.
 We then began the section on GANs by creating and training a simple model.
+
+**Day 119 - February 23, 2020:**
+We began learning about Deep Convolutional GANs.
