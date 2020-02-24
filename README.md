@@ -536,3 +536,6 @@ We then began the section on GANs by creating and training a simple model.
 
 **Day 119 - February 23, 2020:**
 We began learning about Deep Convolutional GANs.
+
+**Day 120 - February 24, 2020:**
+We finished the chapter by learning about Progressive Growing DCGANs and using a StyleGAN to improve the global consistency of generated images.
