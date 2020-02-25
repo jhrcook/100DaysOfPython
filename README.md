@@ -539,3 +539,6 @@ We began learning about Deep Convolutional GANs.
 
 **Day 120 - February 24, 2020:**
 We finished the chapter by learning about Progressive Growing DCGANs and using a StyleGAN to improve the global consistency of generated images.
+
+**Day 121 - February 25, 2020:**
+We began Chapter 18 on Reinforcement Learning and got a primer on OpenAI Gym.
