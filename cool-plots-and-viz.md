@@ -73,3 +73,12 @@ Predicting the entire sequence in time-steps using Long Short-Term Memory cells.
 Predicting the entire sequence in time-steps using a 1D Convolutional Neural Network based on the WaveNet architecture.
 
 ![](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_files/homl_ch15_Processing-sequences-using-RNNs-and-CNNs_61_0.png)
+
+### Autoencoder semantic interpolation of Fashion MNIST
+
+![](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/homl_ch17_Representation-learning-and-generative-learning-using-autoencoders-and-gans_files/homl_ch17_Representation-learning-and-generative-learning-using-autoencoders-and-gans_44_0.png)
+
+### Generative Adversarial Network on Fashion MNIST
+
+![](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/homl_ch17_Representation-learning-and-generative-learning-using-autoencoders-and-gans_files/homl_ch17_Representation-learning-and-generative-learning-using-autoencoders-and-gans_55_0.png)
+
