@@ -542,3 +542,7 @@ We finished the chapter by learning about Progressive Growing DCGANs and using a
 
 **Day 121 - February 25, 2020:**
 We began Chapter 18 on Reinforcement Learning and got a primer on OpenAI Gym.
+
+**Day 122 - February 26, 2020:**
+We built a simple nerual network to play the cart-pole game from OpenAI Gym and trained it using a REINFORCE algorithm.
+I trained the model on the HMS computing cluster.
