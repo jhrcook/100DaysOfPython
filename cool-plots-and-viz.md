@@ -82,3 +82,6 @@ Predicting the entire sequence in time-steps using a 1D Convolutional Neural Net
 
 ![](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/homl_ch17_Representation-learning-and-generative-learning-using-autoencoders-and-gans_files/homl_ch17_Representation-learning-and-generative-learning-using-autoencoders-and-gans_55_0.png)
 
+### Reinforcement learning trained ANN on "cart-pole" problem
+
+![](./HandsOnMachineLearningWithScikitLearnAndTensorFlow/assets/ch18/images/cart-pole-neural-network.gif)

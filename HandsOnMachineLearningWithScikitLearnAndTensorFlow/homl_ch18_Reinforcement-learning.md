@@ -3,7 +3,7 @@
 
 ```python
 import numpy as np
-import pandas as pd 
+import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -58,7 +58,7 @@ obs
 
 
 
-    array([ 0.01277255, -0.04996796,  0.01255002, -0.0463979 ])
+    array([-0.03100318, -0.01310485, -0.00181168, -0.00497128])
 
 
 
@@ -109,7 +109,7 @@ obs
 
 
 
-    array([ 0.01177319, -0.2452676 ,  0.01162206,  0.2502181 ])
+    array([-0.03126528, -0.20820077, -0.0019111 ,  0.28713949])
 
 
 
@@ -216,7 +216,7 @@ np.mean(totals), np.median(totals), np.std(totals), np.min(totals), np.max(total
 
 
 
-    (42.396, 41.0, 9.267102243959544, 24.0, 72.0)
+    (42.02, 41.0, 9.141094026428128, 24.0, 70.0)
 
 
 
@@ -279,6 +279,15 @@ The next function will use the `play_one_step()` function to play multiple episo
 It returns a list of reward lists: one reward list per episode containing one reward per step.
 It returns a list of gradient lists: one gradient list per episode, each containing one tuple of gradients per step, the tuples containing one gradient tensor per trainable variable.
 
+At the end of this section, the author recommended using prior knowledge to help the model.
+Thus, I used the angle of the pole to reduce the reward as the angle increases in either direction.
+
+
+```python
+def adjust_reward(reward, obs, max_subtraction=0.7):
+    return reward - tf.minimum(tf.abs(obs[2]), max_subtraction)
+```
+
 
 ```python
 def play_multiple_episodes(env, n_episodes, n_max_steps, model, loss_fn):
@@ -290,6 +299,7 @@ def play_multiple_episodes(env, n_episodes, n_max_steps, model, loss_fn):
         obs = env.reset()
         for step in range(n_max_steps):
             obs, reward, done, grads = play_one_step(env, obs, model, loss_fn)
+            reward = adjust_reward(reward, obs)
             current_rewards.append(reward)
             current_grads.append(grads)
             if done:
@@ -383,14 +393,13 @@ Finally, we can create the environment.
 env = gym.make("CartPole-v1")
 ```
 
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/gym/logger.py:30: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
-      warnings.warn(colorize('%s: %s'%('WARN', msg % args), 'yellow'))
-
-
 Now we can build the training loop.
 Here is how it works:
 
-1. 
+1. For each training iteration, the loop calls `play_multiple_episodes()` to play the game 10 times and return all of the rewards and gradients for each episode and step.
+2. The `discount_and_normalize_rewards()` compute each actions normalized advantage.
+3. For each trainable variable, the weighted mean of the gradients over all episodes and steps was calculated and weighted by `final_reward`.
+4. Finally, the mean gradients were applied using the optimizer.
 
 
 ```python
@@ -417,21 +426,28 @@ for iteration in range(n_iterations):
 ```
 
     iteration 0
+    WARNING:tensorflow:Layer dense is casting an input tensor from dtype float64 to the layer's dtype of float32, which is new behavior in TensorFlow 2.  The layer has dtype float32 because it's dtype defaults to floatx.
+    
+    If you intended to run this layer in float32, you can safely ignore this warning. If in doubt, this warning is likely only an issue if you are porting a TensorFlow 1.X model to TensorFlow 2.
+    
+    To change all layers to have dtype float64 by default, call `tf.keras.backend.set_floatx('float64')`. To change just this layer, pass dtype='float64' to the layer constructor. If you are the author of this layer, you can disable autocasting by passing autocast=False to the base Layer constructor.
+    
     iteration 1
     iteration 2
 
 
 
 ```python
-obs = env.reset()
-for _ in range(1000):
-    env.render()
-    
-    left_proba = model(obs[np.newaxis])
-    action = (tf.random.uniform([1, 1]) > left_proba)
-    obs, reward, done, info = env.step(int(action[0, 0].numpy()))
-    
-env.close()
+if True:
+    obs = env.reset()
+    for _ in range(300):
+        env.render()
+
+        left_proba = model(obs[np.newaxis])
+        action = (tf.random.uniform([1, 1]) > left_proba)
+        obs, reward, done, info = env.step(int(action[0, 0].numpy()))
+        
+    env.close()
 ```
 
     /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/gym/logger.py:30: UserWarning: [33mWARN: You are calling 'step()' even though this environment has already returned done = True. You should always call 'reset()' once you receive 'done = True' -- any further steps are undefined behavior.[0m
@@ -450,20 +466,72 @@ o2model = tf.keras.models.load_model(
 
 
 ```python
-obs = env.reset()
-for _ in range(1000):
-    env.render()
-    
-    left_proba = o2model(obs[np.newaxis])
-    action = (tf.random.uniform([1, 1]) > left_proba)
-    obs, reward, done, info = env.step(int(action[0, 0].numpy()))
-    
-env.close()
+if False:
+    obs = env.reset()
+    for _ in range(500):
+        env.render()
+
+        left_proba = o2model(obs[np.newaxis])
+        action = (tf.random.uniform([1, 1]) > left_proba)
+        obs, reward, done, info = env.step(int(action[0, 0].numpy()))
+
+        if done:
+            break
+
+    env.close()
 ```
 
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/gym/logger.py:30: UserWarning: [33mWARN: You are calling 'step()' even though this environment has already returned done = True. You should always call 'reset()' once you receive 'done = True' -- any further steps are undefined behavior.[0m
-      warnings.warn(colorize('%s: %s'%('WARN', msg % args), 'yellow'))
+<img src="assets/ch18/images/cart-pole-neural-network.gif" width=500 >
 
+Unfortunately, the approach we used here does not scale well to larger and more complex tasks.
+It is highly *sample inefficient* meaning that it requires more time to start making meaningful improvement.
+This is primarily due to the fact that it must run multiple episodes to estimate the advantage of each action.
+
+To help alleviate these issues we will learn about other optimization algorithms.
+This time where the agent learns to estimate the expected return for each state or action in a state, then use that knowledge to make decisions.
+To understand these algorithms, we must first understand *Markov decision processes*.
+
+## Markov decision processes
+
+A *Markov chain* is a process with a fixed number of states and randomly evolves from one to another at each step.
+The probability for it to evolve from a state $s$ to $s'$ is fixed and depends only on the pair, not the past states (this is why we say it has no memory).
+A *Markov decision process* (MDP) is similar, except that at each step, an agent can choose one of several possible actions, and the actions have transition probabilities to other steps.
+In addition, some transitions return a reward (positive or negative).
+The agent's goal is to find a policy that maximizes the reward over time.
+
+The *optimal state value* of any state $s$, $V^*(s)$, is the sum of all discounted future rewards the agent can expect on average when it reaches a state $s$, assuming it acts optimally.
+The *Bellman Optimality Equation* can calculate this value.
+
+$V^*(s) = \max_a \sum_s T(s, a, s') [R(s, a, s') + \gamma \cdot V^*(s')] \quad$ for all $s$
+
+where:
+
+* $T(s, a, s')$ is the transition probability from state $s$ to $s'$ given the agent chose action $a$
+* $R(s, a, s')$ is the reward that the agent receives when it goes from state $s$ to $s'$ given the agent chose action $a$
+* $\gamma$ is the discount factor
+
+The *Value Iteration algorithm* can be used to estimate the optimal state value for every possible state (initializing the values at 0).
+
+$V_{k+1}(s) \leftarrow \max_{a} \sum_{s'} T(s, a, s') [R(s, a, s') + \gamma \cdot V_k(s')] \quad$ for all $s$
+
+where $V_k(s)$ is the estimate value of state $s$ at the $k^{th}$ iteration of the algorithm.
+This recursive algorithm produces the optimal state values to help evaluate a policy, but it does not provide the optimal policy for an agent.
+instead, the optimal *state-action values*, generally called *Quality Values* (Q-Values), can be estimated.
+The Q-Value of a state-action pair $(s, a)$, $Q^*(s, a)$ is the sum of discounted future rewards the agent can expect on average after it reaches state $s$ and chooses action $a$, but before it sees the outcome of the action.
+The *Q-Value Iteration* algorithm can be used to estimate the Q-Values.
+
+$Q_{k+1}(s,a) \leftarrow \sum_{s'} T(s,a,s') [R(s,a,s') + \gamma \cdot \max_{a'} Q_k(s'a')] \quad$ for all $(s',a)$
+
+Once the optimal Q-Values have been found, defining the optimal policy, denoted $\pi^*(s)$, is trival: when the agent is in state $s$, it should choose the action with the highest Q-Value
+
+$
+\DeclareMathOperator*{\argmax}{argmax}
+\pi^*(s) = \argmax_a Q^*(s, a)
+$
+
+(The author demonstrates how to implement this algorithm in Python based on an example in the book.)
+
+## Temporal Difference (TD) Learning
 
 
 ```python
