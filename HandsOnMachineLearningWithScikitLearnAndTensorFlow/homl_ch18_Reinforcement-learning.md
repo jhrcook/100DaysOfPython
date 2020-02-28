@@ -58,7 +58,7 @@ obs
 
 
 
-    array([-0.03100318, -0.01310485, -0.00181168, -0.00497128])
+    array([-0.03726314,  0.01048634, -0.01756487,  0.01227879])
 
 
 
@@ -109,7 +109,7 @@ obs
 
 
 
-    array([-0.03126528, -0.20820077, -0.0019111 ,  0.28713949])
+    array([-0.03705342, -0.18437937, -0.0173193 ,  0.29936845])
 
 
 
@@ -205,7 +205,7 @@ plt.show()
 ```
 
 
-![png](homl_ch18_Reinforcement-learning_files/homl_ch18_Reinforcement-learning_17_0.png)
+![png](homl_ch18_Reinforcement-learning_files/homl_ch18_Reinforcement-learning_18_0.png)
 
 
 
@@ -216,7 +216,7 @@ np.mean(totals), np.median(totals), np.std(totals), np.min(totals), np.max(total
 
 
 
-    (42.02, 41.0, 9.141094026428128, 24.0, 70.0)
+    (42.388, 40.0, 8.824367172777887, 24.0, 68.0)
 
 
 
@@ -403,6 +403,8 @@ Here is how it works:
 
 
 ```python
+avg_episode_lengths = []
+
 for iteration in range(n_iterations):
     print(f"iteration {iteration}")
     all_rewards, all_grads = play_multiple_episodes(env,
@@ -423,6 +425,8 @@ for iteration in range(n_iterations):
         )
         all_mean_grads.append(mean_grads)
     optimizer.apply_gradients(zip(all_mean_grads, model.trainable_variables))
+    
+    avg_episode_lengths.append(np.mean([len(x) for x in all_rewards]))
 ```
 
     iteration 0
@@ -438,7 +442,19 @@ for iteration in range(n_iterations):
 
 
 ```python
-if True:
+plt.plot(avg_episode_lengths, 'b-')
+plt.xlabel('iteration', fontsize=15)
+plt.ylabel('average reward', fontsize=15)
+plt.show()
+```
+
+
+![png](homl_ch18_Reinforcement-learning_files/homl_ch18_Reinforcement-learning_43_0.png)
+
+
+
+```python
+if False:
     obs = env.reset()
     for _ in range(300):
         env.render()
@@ -449,10 +465,6 @@ if True:
         
     env.close()
 ```
-
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/gym/logger.py:30: UserWarning: [33mWARN: You are calling 'step()' even though this environment has already returned done = True. You should always call 'reset()' once you receive 'done = True' -- any further steps are undefined behavior.[0m
-      warnings.warn(colorize('%s: %s'%('WARN', msg % args), 'yellow'))
-
 
 I trained the model on 200 iteration on the HMS computing cluster.
 The results of that model are shown below.
@@ -532,6 +544,43 @@ $
 (The author demonstrates how to implement this algorithm in Python based on an example in the book.)
 
 ## Temporal Difference (TD) Learning
+
+When training a model, however, the states, transition probabilities, and rewards are not known.
+Therefore, the model must explore the environment to learn about the possible states.
+The *Temporal Difference Learning* (TD Learning) algorithm, is similar to the Value Iteration algorithm, but beginning under the assumption that the model only knows the possible states and actions, but nothing more.
+Thus, the agent uses an *exploration policy* (e.g. randomly making decisions) to explore the MDP.
+As it learns, it updates the estimates of the state values based on the transitions and rewards that are actually observed.
+
+$
+V_{k+1}(s) \leftarrow (1-\alpha)V_{k}(s) + \alpha (r + \gamma \cdot V_k(s')) \\
+V_{k+1}(s) \leftarrow V_{k}(s) + \alpha \cdot \delta_k(s, r, s') \\
+\quad \text{where} \quad \delta_k(s,r,s') = r + \gamma \cdot V_k(s') - V_k(s)
+$
+
+where:
+
+* $\alpha$ is the learning rate
+* $r + \gamma \cdot V_k(s')$ is called the *TD target*
+* $delta_k(s,r,s')$ is called the *TD error*
+
+For each state $s$, the algorithm keeps a running average of the immediate rewards the agent gets upon choosing an action plus the rewards it expects to get later.
+
+## Q-Learning
+
+The Q-Learning algorithm is an adaptation of the Q-Value Iteration algorithm to the situation where the MDP system values are unknown.
+Q-Learns watches an agent play (e.g. randomly) and gradually improves its estimates of the unknown system parameters.
+Once the estimates are good enough, the optimal policy is the choose the action with the highest Q-Value (i.e. a greedy policy).
+
+$
+Q(s, a) \xleftarrow[\alpha]{} r + \gamma \cdot \max_{a'} Q(s', a')
+$
+
+where $a \xleftarrow[\alpha]{} b \,$ means $\, a_{k+1} \leftarrow (1-\alpha) \cdot a_k + \alpha \cdot b_k$.
+
+For each state-action pair $(s,a)$, the algorithms records a running average of the rewards $r$ the agent receives upon leaving state $s$ with action $a$, plus the sum of discounted expected future rewards.
+The maximum Q-Value of the next state is taken as this value because it is assumed the agent will act optimally from then on.
+
+Now we can implement the Q-Learning algorithm.
 
 
 ```python

@@ -549,3 +549,8 @@ I trained the model on the HMS computing cluster.
 
 **Day 123 - February 27, 2020:**
 We learned about Markov Descision Processes and how to estimate the optimal policy by modeling the system as a Markov process.
+
+**Day 124 - February 28, 2020:**
+I implemented a way of using the angle of the pole to help train the NN for the cart-pole game.
+I also recorded the average length of the episode on each algorithm.
+I also learned about the Temporal Difference learning and Q-Learning algorithms for training models using MDP.
