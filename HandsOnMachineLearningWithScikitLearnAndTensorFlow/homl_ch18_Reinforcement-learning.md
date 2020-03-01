@@ -58,7 +58,7 @@ obs
 
 
 
-    array([-0.03726314,  0.01048634, -0.01756487,  0.01227879])
+    array([-0.02638173,  0.04348419, -0.0041665 ,  0.02941701])
 
 
 
@@ -109,7 +109,7 @@ obs
 
 
 
-    array([-0.03705342, -0.18437937, -0.0173193 ,  0.29936845])
+    array([-0.02551205, -0.15157777, -0.00357816,  0.32078245])
 
 
 
@@ -216,7 +216,7 @@ np.mean(totals), np.median(totals), np.std(totals), np.min(totals), np.max(total
 
 
 
-    (42.388, 40.0, 8.824367172777887, 24.0, 68.0)
+    (42.75, 41.0, 8.64705152060516, 24.0, 67.0)
 
 
 
@@ -472,7 +472,7 @@ The results of that model are shown below.
 
 ```python
 o2model = tf.keras.models.load_model(
-    "assets/ch18/o2-trained-models/trained-cart-pole.tfmodel"
+    'assets/ch18/o2-trained-models/trained-cart-pole.tfmodel'
 )
 ```
 
@@ -480,7 +480,7 @@ o2model = tf.keras.models.load_model(
 ```python
 if False:
     obs = env.reset()
-    for _ in range(500):
+    while True:
         env.render()
 
         left_proba = o2model(obs[np.newaxis])
@@ -493,7 +493,41 @@ if False:
     env.close()
 ```
 
+The first video below is the model trained only using the normal reward returned by the gym.
+
 <img src="assets/ch18/images/cart-pole-neural-network.gif" width=500 >
+
+I then implemented an adjustment for the reward based on the angle of the pole.
+This worked much better!
+
+<img src="assets/ch18/images/cart-pole-neural-network-2.gif" width=500 >
+
+If I implement an early stopping mechanism to stop training if the model is performing very well for a few iterations, it become much better, still.
+It usually finishes the game still holding the pole up-right, meaning it won!
+
+<img src="assets/ch18/images/cart-pole-neural-network-3.gif" width=500 >
+
+Below is the curve of the length of the episodes during the training of the model.
+In previous versions, this was how I realized early stopping would be effective.
+There are strange periods of poor performance followed by quick advancements.
+
+
+```python
+o2_rewards = pd.read_csv(
+    'assets/ch18/o2-trained-models/average_episode_lengths.csv'
+)
+
+fig = plt.figure(figsize=(8, 5))
+plt.plot(o2_rewards.avg_episode_lengths, 'b-')
+plt.xlabel('iteration', fontsize=15)
+plt.ylabel('average length of episodes', fontsize=15)
+plt.title('Improvement of model over training iterations', fontsize=20)
+plt.show()
+```
+
+
+![png](homl_ch18_Reinforcement-learning_files/homl_ch18_Reinforcement-learning_49_0.png)
+
 
 Unfortunately, the approach we used here does not scale well to larger and more complex tasks.
 It is highly *sample inefficient* meaning that it requires more time to start making meaningful improvement.
@@ -580,9 +614,158 @@ where $a \xleftarrow[\alpha]{} b \,$ means $\, a_{k+1} \leftarrow (1-\alpha) \cd
 For each state-action pair $(s,a)$, the algorithms records a running average of the rewards $r$ the agent receives upon leaving state $s$ with action $a$, plus the sum of discounted expected future rewards.
 The maximum Q-Value of the next state is taken as this value because it is assumed the agent will act optimally from then on.
 
-Now we can implement the Q-Learning algorithm.
+Now we can implement the Q-Learning algorithm for the example system used in the book.
+First, I must encode the system in a series of lists of lists.
 
 
 ```python
+# Code the transition probabilities as: [s, a, s']
+transition_probabilities = [
+    [[0.7, 0.3, 0.0], [1.0, 0.0, 0.0], [0.8, 0.2, 0.0]],
+    [[0.0, 1.0, 0.0], None, [0.0, 0.0, 1.0]],
+    [None, [0.8, 0.1, 0.1], None]
+]
 
+# Code the rewards as: [s, a, s']
+rewards = [
+    [[10, 0, 0], [0, 0, 0], [0, 0, 0]],
+    [[0, 0, 0], [0, 0, 0], [0, 0, -50]],
+    [[0, 0, 0], [40, 0, 0], [0, 0, 0]]
+]
+
+# Code the possible actions an agent can take in each state:
+possible_actions = [
+    [0, 1, 2],
+    [0, 2],
+    [1]
+]
 ```
+
+We can now create an agent to "explore" the environment.
+To do this, we must create a `step()` function so the agent can execute one action and get the resulting state and reward.
+
+
+```python
+def step(state, action):
+    probas = transition_probabilities[state][action]
+    next_state = np.random.choice([0, 1, 2], p=probas)
+    reward = rewards[state][action][next_state]
+    return next_state, reward
+```
+
+Since the system is small, we can use a random policy for exploration.
+
+
+```python
+def exploration_policy(state):
+    return np.random.choice(possible_actions[state])
+```
+
+The Q-Values are initialized to negative infinity for impossible actions and as 0 for possible actions.
+
+
+```python
+Q_values = np.full((3, 3), -np.inf)
+for state, actions in enumerate(possible_actions):
+    Q_values[state, actions] = 0.0
+    
+Q_values
+```
+
+
+
+
+    array([[  0.,   0.,   0.],
+           [  0., -inf,   0.],
+           [-inf,   0., -inf]])
+
+
+
+Finally, we can run the Q-Learning algorithm, using a decaying learning rate.
+
+
+```python
+alpha0 = 0.05   # Initial learning rate.
+decay = 0.005  # Learning rate decay.
+gamma = 0.90    # Discount factor.
+
+# Initial state.
+state = 0
+
+Q_values_history = []
+
+for iteration in range(10000):
+    # Use the exploration policy to take a step.
+    action = exploration_policy(state)
+    next_state, reward = step(state, action)
+    
+    # Get the next expected Q-Value.
+    next_value = np.max(Q_values[next_state])
+    
+    # Adjust the alpha depending on the iteration.
+    alpha = alpha0 / (1 + iteration * decay)
+    
+    # Update the expected Q-Values.
+    new_q_value = (1 - alpha) * Q_values[state, action]
+    new_q_value = new_q_value + (alpha * (reward + gamma * next_value))
+    Q_values[state, action] = new_q_value 
+    state = next_state
+    
+    Q_values_history.append(Q_values.copy())
+    
+Q_values
+```
+
+
+
+
+    array([[17.42396333, 15.63029327, 12.53790579],
+           [ 0.        ,        -inf, -8.92572028],
+           [       -inf, 48.37290605,        -inf]])
+
+
+
+As the algorithm ran, I copied each state of the Q-Values list so I could plot the learning processes.
+This plot is shown below.
+
+
+```python
+fig = plt.figure(figsize=(10, 8))
+
+
+for state in range(3):
+    for action in range(3):
+        x = [qv[state][action] for qv in Q_values_history]
+        plt.plot(x, label=f'$s_{state}, a_{action}$')
+
+plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), fontsize=15)
+plt.title('Training of the Q-Value algorithm', fontsize=20)
+plt.xlabel('steps', fontsize=15)
+plt.ylabel('Q-Value ($s_0, a_0$)', fontsize=15)
+plt.xlim((0, 10000))
+plt.show()
+```
+
+
+![png](homl_ch18_Reinforcement-learning_files/homl_ch18_Reinforcement-learning_64_0.png)
+
+
+### Exploration policies
+
+Of course, we can do better than a random search to explore the unknown MDP.
+A better algorithm is the *$\epsilon$-greedy policy*: at each step, the agent acts randomly with a probability $\epsilon$ or greedily by choosing the option with the highest Q-Value at a probability $1-\epsilon$.
+It is common to also adjust $\epsilon$ from 1.0 down to 0.05 as training progresses.
+
+An alternative method is to encourage the agent to try actions it hasn't tried before.
+This can be implemented by adding a bonus to the Q-Value estimates as shown in the following equation:
+
+$Q(s, a) \xleftarrow[\alpha]{} r + \gamma \cdot \max_{a'} f(Q(s', a', N(s', a'))$
+
+where:
+
+* $N(s', a')$ counts the number of times the action $a'$ has been chosen in state $s'$
+* $f(Q, N)$ is an *exploration function* such as $f(Q, N) = Q + \kappa / (1 + N)$ where $\kappa$ is a hyperparamter controlling the influence of the count.
+
+### Approximate Q-Learning and Deep Q-Learning
+
+
