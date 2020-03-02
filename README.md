@@ -559,3 +559,7 @@ I also learned about the Temporal Difference learning and Q-Learning algorithms 
 I implemented the Q-Learning algorithm and made a fun plot showing it learn the Q-Values over time.
 We then covered some optimizations to make the training run faster.
 Still, the Q-Learning Algorithm is not scalable to more complex systems, so we will next learn about using a DNN to estimate the values.
+
+**Day 126 - March 02, 2020:**
+We implemented a Deep Q Network to learn the cart-pole game.
+I had to tweak a few hyperparameters, but finally got a good model.
