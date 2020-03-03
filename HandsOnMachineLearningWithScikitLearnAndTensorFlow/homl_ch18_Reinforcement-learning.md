@@ -58,7 +58,7 @@ obs
 
 
 
-    array([-0.04093676,  0.03407977, -0.00101475, -0.00837826])
+    array([-0.01623369,  0.00014481,  0.0242343 ,  0.04329089])
 
 
 
@@ -109,7 +109,7 @@ obs
 
 
 
-    array([-0.04025516, -0.16102762, -0.00118231,  0.28398433])
+    array([-0.0162308 , -0.19531612,  0.02510012,  0.34352037])
 
 
 
@@ -216,7 +216,7 @@ np.mean(totals), np.median(totals), np.std(totals), np.min(totals), np.max(total
 
 
 
-    (41.582, 40.0, 8.545131713437774, 24.0, 66.0)
+    (41.864, 40.0, 8.541984781068155, 24.0, 72.0)
 
 
 
@@ -796,10 +796,6 @@ input_shape = env.observation_space.shape
 n_outputs = env.action_space.n
 ```
 
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/gym/logger.py:30: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
-      warnings.warn(colorize('%s: %s'%('WARN', msg % args), 'yellow'))
-
-
 
 ```python
 dqn_model = keras.models.Sequential([
@@ -865,7 +861,7 @@ We can create another function that samples a batch of experiences from the repl
 
 
 ```python
-batch_size = 50
+batch_size = 32
 discount_factor = 0.95
 optimizer = keras.optimizers.Adam(learning_rate=0.001)
 loss_fn = keras.losses.mean_squared_error
@@ -873,21 +869,21 @@ loss_fn = keras.losses.mean_squared_error
 
 
 ```python
-def training_step(model, replay_buffer, optimizer, loss_fxn, batch_size, gamma):
+def training_step(mdl, replay_buffer, optimizer, loss_fxn, batch_size, gamma):
     experiences = sample_experiences(replay_buffer, batch_size)
     states, actions, rewards, next_states, dones = experiences
-    next_Q_values = model.predict(next_states)
+    next_Q_values = mdl.predict(next_states)
     max_next_Q_values = np.max(next_Q_values, axis = 1)
     target_Q_values = rewards + (1 - dones) * gamma * max_next_Q_values
     mask = tf.one_hot(actions, n_outputs)
     
     with tf.GradientTape() as tape:
-        all_Q_values = model(states)
+        all_Q_values = mdl(states)
         Q_values = tf.reduce_sum(all_Q_values * mask, axis=1, keepdims=True)
         loss = tf.reduce_mean(loss_fxn(target_Q_values, Q_values))
 
-    grads = tape.gradient(loss, model.trainable_variables)
-    optimizer.apply_gradients(zip(grads, model.trainable_variables))
+    grads = tape.gradient(loss, mdl.trainable_variables)
+    optimizer.apply_gradients(zip(grads, mdl.trainable_variables))
 ```
 
 Finally, we can write the training loop.
@@ -900,7 +896,7 @@ env.seed(42)
 np.random.seed(42)
 tf.random.set_seed(42)
 
-for episode in range(500):
+for episode in range(600):
     obs = env.reset()
     for step in range(200):
         epsilon = max(1 - episode / 500, 0.01)
@@ -909,12 +905,18 @@ for episode in range(500):
         if done:
             break
     rewards_history.append(step)
+    
+    # early stopping
+    if np.all([x > 190 for x in rewards_history[-3:]]):
+        print(f'Stopping early at episode {episode}')
+        break
+    
     if episode > 50:
         training_step(dqn_model, replay_buffer, optimizer, loss_fn,
                       batch_size, discount_factor)
 ```
 
-    WARNING:tensorflow:Layer dense_29 is casting an input tensor from dtype float64 to the layer's dtype of float32, which is new behavior in TensorFlow 2.  The layer has dtype float32 because it's dtype defaults to floatx.
+    WARNING:tensorflow:Layer dense_2 is casting an input tensor from dtype float64 to the layer's dtype of float32, which is new behavior in TensorFlow 2.  The layer has dtype float32 because it's dtype defaults to floatx.
     
     If you intended to run this layer in float32, you can safely ignore this warning. If in doubt, this warning is likely only an issue if you are porting a TensorFlow 1.X model to TensorFlow 2.
     
@@ -924,7 +926,11 @@ for episode in range(500):
 
 
 ```python
+fig = plt.figure(figsize=(8, 5))
 plt.plot(rewards_history, 'b-')
+plt.xlabel('training episodes', fontsize=15)
+plt.ylabel('length of cart-pole episode', fontsize=15)
+plt.title('Training of a DQN on the cart-pole game', fontsize=20)
 plt.show()
 ```
 
@@ -932,4 +938,141 @@ plt.show()
 ![png](homl_ch18_Reinforcement-learning_files/homl_ch18_Reinforcement-learning_83_0.png)
 
 
-TODO: implement an early stopping process
+
+```python
+if True:
+    obs = env.reset()
+    while True:
+        env.render()
+
+        predicted_q_values = dqn_model(obs[np.newaxis]).numpy()[0]
+        action = int(predicted_q_values[0] < predicted_q_values[1])
+        obs, reward, done, info = env.step(action)
+
+        if done:
+            break
+
+    env.close()
+env.close()
+```
+
+Here is one of the stellar examples of this model defeating the cart-pole problem.
+
+<img src="assets/ch18/images/DQN-model_1.gif" width=500 >
+
+The training of the DQN is highly variable.
+It takes awhile for noticeable improvement, and when there is finally a spike, it quickly drops back down to poor performance.
+This is a noted issue with RL algorithms and is called *catastrophic forgetting*.
+It often occurs when what the policy learns for one part of the environment breaks what it had learned for another part.
+It demonstrates that RL is difficult and takes a lot of tuning of hyperparameters.
+
+## Deep Q-Learning Variants
+
+Below we will look at a few variants of the Deep Q-Learning algorithm that can stabilize and speed-up training.
+
+### Fixed Q-Value targets
+
+In the training regime used above, the model created both the predictions are the target values.
+Instead, DeepMind used two DQN models: the *online model* learns at each step and moves the agent around, while the *target model* defined the targets.
+The target model is just a clone of the online model, and is updated with the online model's weights at fixed intervals.
+
+This is implemented below using two new DQN models, an updated `training_step()` function, and the weights are copied to the target model every 50 episodes.
+(The hyperparameters likely need to be adjusted, but the structure is there.)
+
+
+```python
+online_dqn = keras.models.Sequential([
+    keras.layers.Dense(32, activation='elu', input_shape=input_shape),
+    keras.layers.Dense(32, activation='elu'),
+    keras.layers.Dense(n_outputs)
+])
+
+target_dqn = keras.models.clone_model(online_dqn)
+target_dqn.set_weights(online_dqn.get_weights())
+```
+
+
+```python
+def training_step2(online_mdl, target_mdl, 
+                   replay_buffer, optimizer, loss_fxn, batch_size, gamma):
+    experiences = sample_experiences(replay_buffer, batch_size)
+    states, actions, rewards, next_states, dones = experiences
+    next_Q_values = target_mdl.predict(next_states)
+    max_next_Q_values = np.max(next_Q_values, axis = 1)
+    target_Q_values = rewards + (1 - dones) * gamma * max_next_Q_values
+    mask = tf.one_hot(actions, n_outputs)
+    
+    with tf.GradientTape() as tape:
+        all_Q_values = online_mdl(states)
+        Q_values = tf.reduce_sum(all_Q_values * mask, axis=1, keepdims=True)
+        loss = tf.reduce_mean(loss_fxn(target_Q_values, Q_values))
+
+    grads = tape.gradient(loss, online_mdl.trainable_variables)
+    optimizer.apply_gradients(zip(grads, online_mdl.trainable_variables))
+```
+
+
+```python
+batch_size = 32
+discount_factor = 0.95
+optimizer = keras.optimizers.Adam(learning_rate=0.001)
+loss_fn = keras.losses.mean_squared_error
+
+replay_buffer = deque(maxlen=2000)
+
+rewards_history = []
+
+env.seed(42)
+np.random.seed(42)
+tf.random.set_seed(42)
+
+for episode in range(600):
+    obs = env.reset()
+    for step in range(200):
+        epsilon = max(1 - episode / 600, 0.01)
+        obs, reward, done, info = play_one_step(env, online_dqn, replay_buffer,
+                                                obs, epsilon)
+        if done:
+            break
+    rewards_history.append(step)
+    
+    # early stopping
+    if np.all([x > 190 for x in rewards_history[-3:]]):
+        print(f'Stopping early at episode {episode}')
+        break
+    
+    if episode > 50:
+        training_step2(online_dqn, target_dqn, 
+                       replay_buffer, optimizer, loss_fn,
+                       batch_size, discount_factor)
+    
+    if episode % 50 == 0:
+        target_dqn.set_weights(online_dqn.get_weights())
+```
+
+    WARNING:tensorflow:Layer dense_5 is casting an input tensor from dtype float64 to the layer's dtype of float32, which is new behavior in TensorFlow 2.  The layer has dtype float32 because it's dtype defaults to floatx.
+    
+    If you intended to run this layer in float32, you can safely ignore this warning. If in doubt, this warning is likely only an issue if you are porting a TensorFlow 1.X model to TensorFlow 2.
+    
+    To change all layers to have dtype float64 by default, call `tf.keras.backend.set_floatx('float64')`. To change just this layer, pass dtype='float64' to the layer constructor. If you are the author of this layer, you can disable autocasting by passing autocast=False to the base Layer constructor.
+    
+
+
+
+```python
+fig = plt.figure(figsize=(8, 5))
+plt.plot(rewards_history, 'b-')
+plt.xlabel('training episodes', fontsize=15)
+plt.ylabel('length of cart-pole episode', fontsize=15)
+plt.title('Training of a DQN on the cart-pole game', fontsize=20)
+plt.show()
+```
+
+
+![png](homl_ch18_Reinforcement-learning_files/homl_ch18_Reinforcement-learning_90_0.png)
+
+
+
+```python
+
+```

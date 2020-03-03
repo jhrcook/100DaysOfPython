@@ -563,3 +563,7 @@ Still, the Q-Learning Algorithm is not scalable to more complex systems, so we w
 **Day 126 - March 02, 2020:**
 We implemented a Deep Q Network to learn the cart-pole game.
 I had to tweak a few hyperparameters, but finally got a good model.
+
+**Day 127 - March 03, 2020:**
+I tuned the hyperparameters for the first DQN we made and then implemented the two DQN-model system from DeepMind to traing another DQN.
+Overall, we demonstrated just how finiky RL training can be.
