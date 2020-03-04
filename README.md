@@ -567,3 +567,6 @@ I had to tweak a few hyperparameters, but finally got a good model.
 **Day 127 - March 03, 2020:**
 I tuned the hyperparameters for the first DQN we made and then implemented the two DQN-model system from DeepMind to traing another DQN.
 Overall, we demonstrated just how finiky RL training can be.
+
+**Day 128 - March 04, 2020:**
+We learned about some more updates to RL made by DeepMind including Double DQN, PER, and Dueling DQN.

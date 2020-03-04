@@ -58,7 +58,7 @@ obs
 
 
 
-    array([-0.01623369,  0.00014481,  0.0242343 ,  0.04329089])
+    array([ 0.04916234, -0.01195665,  0.01878708, -0.03852683])
 
 
 
@@ -109,7 +109,7 @@ obs
 
 
 
-    array([-0.0162308 , -0.19531612,  0.02510012,  0.34352037])
+    array([ 0.04892321, -0.20734289,  0.01801655,  0.2600239 ])
 
 
 
@@ -216,7 +216,7 @@ np.mean(totals), np.median(totals), np.std(totals), np.min(totals), np.max(total
 
 
 
-    (41.864, 40.0, 8.541984781068155, 24.0, 72.0)
+    (41.538, 40.0, 8.921466023025587, 24.0, 68.0)
 
 
 
@@ -922,6 +922,7 @@ for episode in range(600):
     
     To change all layers to have dtype float64 by default, call `tf.keras.backend.set_floatx('float64')`. To change just this layer, pass dtype='float64' to the layer constructor. If you are the author of this layer, you can disable autocasting by passing autocast=False to the base Layer constructor.
     
+    Stopping early at episode 477
 
 
 
@@ -940,7 +941,7 @@ plt.show()
 
 
 ```python
-if True:
+if False:
     obs = env.reset()
     while True:
         env.render()
@@ -979,6 +980,19 @@ The target model is just a clone of the online model, and is updated with the on
 This is implemented below using two new DQN models, an updated `training_step()` function, and the weights are copied to the target model every 50 episodes.
 (The hyperparameters likely need to be adjusted, but the structure is there.)
 
+This method works because the target Q-Values become more stable, reducing the feedback loop that can happen if the DQN being trained is also producing the Q-Value targets.
+The method does not work here, likely because I have not tuned the hyperparameters.
+Also, since the target DQN is updated infrequently, usually more episodes are required for the training.
+
+### Double DQN
+
+In 2015, DeepMind realized a problem with the target DQN: it was prone to overestimating Q-Values.
+Since the target Q-Values were only approximations, even if the true Q-Values were the same, there would be some differences in the target DQN's estimates.
+Even if the error is only a small amount, it can still cause one action to consistently have a higher Q-Value than the others due to random chance.
+
+To fix this, they proposed using the online model instead of the target model when selecting the best actions for the next states, using the target model only to estimate Q-Values for the best actions.
+This has also been implemented below.
+
 
 ```python
 online_dqn = keras.models.Sequential([
@@ -993,15 +1007,24 @@ target_dqn.set_weights(online_dqn.get_weights())
 
 
 ```python
-def training_step2(online_mdl, target_mdl, 
-                   replay_buffer, optimizer, loss_fxn, batch_size, gamma):
+def training_step2(online_mdl,
+                   target_mdl,
+                   replay_buffer,
+                   optimizer,
+                   loss_fxn,
+                   batch_size,
+                   gamma,
+                   n_outputs):
     experiences = sample_experiences(replay_buffer, batch_size)
     states, actions, rewards, next_states, dones = experiences
-    next_Q_values = target_mdl.predict(next_states)
-    max_next_Q_values = np.max(next_Q_values, axis = 1)
-    target_Q_values = rewards + (1 - dones) * gamma * max_next_Q_values
-    mask = tf.one_hot(actions, n_outputs)
+    next_Q_values = online_mdl.predict(next_states)
+    best_next_actions = np.argmax(next_Q_values, axis=1)
+    next_mask = tf.one_hot(best_next_actions, n_outputs).numpy()
+    next_best_Q_values = (target_mdl.predict(next_states) * next_mask).sum(axis=1)
     
+    target_Q_values = rewards + (1 - dones) * gamma * next_best_Q_values
+    mask = tf.one_hot(actions, n_outputs)
+
     with tf.GradientTape() as tape:
         all_Q_values = online_mdl(states)
         Q_values = tf.reduce_sum(all_Q_values * mask, axis=1, keepdims=True)
@@ -1026,7 +1049,7 @@ env.seed(42)
 np.random.seed(42)
 tf.random.set_seed(42)
 
-for episode in range(600):
+for episode in range(400):
     obs = env.reset()
     for step in range(200):
         epsilon = max(1 - episode / 600, 0.01)
@@ -1044,7 +1067,7 @@ for episode in range(600):
     if episode > 50:
         training_step2(online_dqn, target_dqn, 
                        replay_buffer, optimizer, loss_fn,
-                       batch_size, discount_factor)
+                       batch_size, discount_factor, n_outputs)
     
     if episode % 50 == 0:
         target_dqn.set_weights(online_dqn.get_weights())
@@ -1071,6 +1094,46 @@ plt.show()
 
 ![png](homl_ch18_Reinforcement-learning_files/homl_ch18_Reinforcement-learning_90_0.png)
 
+
+### Prioritized Experience Replay (PER)
+
+Up to now, the experiences used for training have been randomly sampled from the replay buffer.
+PER is a method for sampling the most important experiences more frequently.
+The importance of an experience can be estimated using the TD (Temporal Difference) error, $\delta = r + \gamma \cdot V(s') - V(s)$, because a large TD error indicates a transition $(s, r, s')$ was suprizing and probably worth learning from.
+
+To implement this, when an experience is recorded in the replay buffer, its priority is set very high to ensure it gets sampled at least once.
+Once it is sampled, the TD error $\delta$ is calculated and its priority is set as $p = |\delta| + \epsilon$ (where $\epsilon$ is just a small non-zero value).
+The probability $P$ os sampling an experience with priority $p$ is proportional to $p^\zeta$, where $\zeta$ is a hyperparameter controlling how much the priority should matter; when $\zeta = 0$ the sampling is uniform, and when $\zeta = 1$, the sampling is determined by priority.
+The optimal value for $\zeta$ will depend on the task.
+
+To prevent overfitting to the more important experiences, the impact of the training should be downweighted according the the importance of the experiences.
+Thus, because the more important experiences will get used more often, they must be given a lower weight during training.
+The training weight can be calculated as $w = (nP)^{-\beta}$, where $n$ is the number of experiences in the replay buffer and $\beta$ is a hyperparameter to control the level of compensation to apply.
+When this method was introduced, the authors started with $\beta = 0.4$ and increased it to $\beta = 1$ over the training processes.
+
+### Dueling DQN (DDQN)
+
+The Q-Value of a state-action pair $(s,a)$ can be described as $Q(s,a) = V(s) + A(s,a)$ where $V(s)$ is the value of state $s$ and $A(s,a)$ is the *advantage* of taking action $a$ in state $s$ compared to all other possible actions in the state.
+If the Q-Value of a state is equal to the Q-Value of the best action $a^*$ for that state, then $V(s) = Q(s,a^*)$ and $A(s,a^*) = 0$.
+In a Dueling DQN (DDQN), the model estimates both the value of the state and the advantage of each possible action.
+Since the best action should have a value of 0, the model subtracts the maximum predicted advantage from all predicted advantages.
+Below is a DDQN model built using the functional API.
+
+
+```python
+K = keras.backend
+
+input_states = keras.layers.Input(shape=[4])
+hidden1 = keras.layers.Dense(32, activation='elu')(input_states)
+hidden2 = keras.layers.Dense(32, activation='elu')(hidden1)
+state_values = keras.layers.Dense(1)(hidden2)
+raw_advantages = keras.layers.Dense(n_outputs)(hidden2)
+advantages = raw_advantages - K.max(raw_advantages, axis=1, keepdims=True)
+Q_values = state_values + advantages
+model = keras.Model(inputs=[input_states], outputs=[Q_values])
+```
+
+## The TF-Agents library
 
 
 ```python
