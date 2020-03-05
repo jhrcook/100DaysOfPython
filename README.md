@@ -570,3 +570,6 @@ Overall, we demonstrated just how finiky RL training can be.
 
 **Day 128 - March 04, 2020:**
 We learned about some more updates to RL made by DeepMind including Double DQN, PER, and Dueling DQN.
+
+**Day 129 - March 05, 2020:**
+I learned about setting up a TF Agents environment and the common wrappers applied to Atari games.

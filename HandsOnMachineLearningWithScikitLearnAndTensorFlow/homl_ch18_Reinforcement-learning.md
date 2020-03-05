@@ -51,14 +51,10 @@ obs = env.reset()
 obs
 ```
 
-    /opt/anaconda3/envs/daysOfCode-env/lib/python3.7/site-packages/gym/logger.py:30: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
-      warnings.warn(colorize('%s: %s'%('WARN', msg % args), 'yellow'))
 
 
 
-
-
-    array([ 0.04916234, -0.01195665,  0.01878708, -0.03852683])
+    array([ 0.03024519, -0.03961465, -0.03585694, -0.00028358])
 
 
 
@@ -109,7 +105,7 @@ obs
 
 
 
-    array([ 0.04892321, -0.20734289,  0.01801655,  0.2600239 ])
+    array([ 0.02945289, -0.2342045 , -0.03586261,  0.2808739 ])
 
 
 
@@ -216,7 +212,7 @@ np.mean(totals), np.median(totals), np.std(totals), np.min(totals), np.max(total
 
 
 
-    (41.538, 40.0, 8.921466023025587, 24.0, 68.0)
+    (42.754, 41.0, 9.098872677425485, 24.0, 67.0)
 
 
 
@@ -922,7 +918,6 @@ for episode in range(600):
     
     To change all layers to have dtype float64 by default, call `tf.keras.backend.set_floatx('float64')`. To change just this layer, pass dtype='float64' to the layer constructor. If you are the author of this layer, you can disable autocasting by passing autocast=False to the base Layer constructor.
     
-    Stopping early at episode 477
 
 
 
@@ -1134,6 +1129,245 @@ model = keras.Model(inputs=[input_states], outputs=[Q_values])
 ```
 
 ## The TF-Agents library
+
+The TF-Agents library is a Reinforcement Learning library based on TF.
+It provides many environments, including wrapping around OpenAI Gym, physics engines, and models.
+We will use it to train a DQN to play the Atari game *Breakout*.
+
+### TG-Agents environment
+
+We can create Breakout environment which is a wrapper around an OpenAI Gym environment.
+
+
+```python
+from tf_agents.environments import suite_gym
+
+breakout_env = suite_gym.load('Breakout-v4')
+breakout_env
+```
+
+
+
+
+    <tf_agents.environments.wrappers.TimeLimit at 0x146ff3790>
+
+
+
+There are some differences between the APIs of OpenAI Gym and TF-Agents.
+For instance, calling the `reset()` method of an environment does not return just the observations, but a `TimeStep` object with a bunch of information.
+
+
+```python
+breakout_env.reset()
+```
+
+
+
+
+    TimeStep(step_type=array(0, dtype=int32), reward=array(0., dtype=float32), discount=array(1., dtype=float32), observation=array([[[0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            ...,
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]],
+    
+           [[0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            ...,
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]],
+    
+           [[0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            ...,
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]],
+    
+           ...,
+    
+           [[0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            ...,
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]],
+    
+           [[0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            ...,
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]],
+    
+           [[0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            ...,
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]]], dtype=uint8))
+
+
+
+
+```python
+breakout_env.step(1)
+```
+
+
+
+
+    TimeStep(step_type=array(1, dtype=int32), reward=array(0., dtype=float32), discount=array(1., dtype=float32), observation=array([[[0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            ...,
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]],
+    
+           [[0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            ...,
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]],
+    
+           [[0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            ...,
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]],
+    
+           ...,
+    
+           [[0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            ...,
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]],
+    
+           [[0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            ...,
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]],
+    
+           [[0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+            ...,
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]]], dtype=uint8))
+
+
+
+We can also get the parameters of an environment through specific methods.
+
+
+```python
+breakout_env.observation_spec()
+```
+
+
+
+
+    BoundedArraySpec(shape=(210, 160, 3), dtype=dtype('uint8'), name='observation', minimum=0, maximum=255)
+
+
+
+
+```python
+breakout_env.action_spec()
+```
+
+
+
+
+    BoundedArraySpec(shape=(), dtype=dtype('int64'), name='action', minimum=0, maximum=3)
+
+
+
+
+```python
+breakout_env.time_step_spec()
+```
+
+
+
+
+    TimeStep(step_type=ArraySpec(shape=(), dtype=dtype('int32'), name='step_type'), reward=ArraySpec(shape=(), dtype=dtype('float32'), name='reward'), discount=BoundedArraySpec(shape=(), dtype=dtype('float32'), name='discount', minimum=0.0, maximum=1.0), observation=BoundedArraySpec(shape=(210, 160, 3), dtype=dtype('uint8'), name='observation', minimum=0, maximum=255))
+
+
+
+
+```python
+breakout_env.gym.get_action_meanings()
+```
+
+
+
+
+    ['NOOP', 'FIRE', 'RIGHT', 'LEFT']
+
+
+
+### Environment wrappers and Atari preprocessing
+
+TF-Agents includes *environment wrappers*: wrappers for environments that are automatically involved in very step of the environment and add some extra functionality.
+Here are some that seem quite useful:
+
+* `ActionClipWrapper`: Clips the actions to the action specification.
+* `ActionDiscretizeWrapper`: If an environment has actions on a continuous scale, this can turn them into a specified number of discrete steps.
+* `ActionRepeat`: Repeats each action for multiple steps, accumulating the rewards - this can be useful to speed up the training in some environments.
+* `RunStats`: Records environment statistics.
+* `TimeLimit`: Interrupts the environment if it runs for longer than a maximum number of steps.
+* `VideoWrapper`: Records a video of the environment.
+
+The wrappers for Atari environments are fairly standardized - greyscale and downsampling the observations, max pooling of the last two frames of the game using a 1x1 filter, frame skipping (the default is to skip every 4 frames), end-of-life loss (whether or not to end the game after the player loses a life).
+
+We will not use the frame skipping in this case, but will apply a wrapper that merges 4 frames into one (it helps the agent learn about the direction the ball is moving in).
+
+
+```python
+from tf_agents.environments import suite_atari
+from tf_agents.environments.atari_preprocessing import AtariPreprocessing
+from tf_agents.environments.atari_wrappers import FrameStack4
+
+max_episode_steps = 27000
+environment_name = 'BreakoutNoFrameskip-v4'
+
+breakout_env = suite_atari.load(
+    environment_name,
+    max_episode_steps=max_episode_steps,
+    gym_env_wrappers=[AtariPreprocessing, FrameStack4]
+)
+```
+
+Lastly, we can wrap this environment in `TFPyEnvironment` so it is usable from within a TF graph.
+
+
+```python
+from tf_agents.environments.tf_py_environment import TFPyEnvironment
+
+tf_env = TFPyEnvironment(breakout_env)
+```
+
+### Training architecture
 
 
 ```python
