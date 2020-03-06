@@ -54,7 +54,7 @@ obs
 
 
 
-    array([ 0.03024519, -0.03961465, -0.03585694, -0.00028358])
+    array([ 0.00369344, -0.03429507, -0.01185087,  0.04203845])
 
 
 
@@ -105,7 +105,7 @@ obs
 
 
 
-    array([ 0.02945289, -0.2342045 , -0.03586261,  0.2808739 ])
+    array([ 0.00300754, -0.2292451 , -0.0110101 ,  0.33095888])
 
 
 
@@ -212,7 +212,7 @@ np.mean(totals), np.median(totals), np.std(totals), np.min(totals), np.max(total
 
 
 
-    (42.754, 41.0, 9.098872677425485, 24.0, 67.0)
+    (41.936, 41.0, 9.222358917326956, 25.0, 68.0)
 
 
 
@@ -1149,7 +1149,7 @@ breakout_env
 
 
 
-    <tf_agents.environments.wrappers.TimeLimit at 0x146ff3790>
+    <tf_agents.environments.wrappers.TimeLimit at 0x13e300f50>
 
 
 
@@ -1368,6 +1368,97 @@ tf_env = TFPyEnvironment(breakout_env)
 ```
 
 ### Training architecture
+
+The TF-Agents training program is usually split into two components, *Collection* and *Training*, and are run in parallel.
+These two pieces are shown in the diagram below.
+
+![](assets/ch18/images/tf-agents_training_architecture.jpg)
+
+On the left, the driver explores the environments using a collect policy to choose actions.
+The driver collections *trajectories* (i.e. experiences) and sends them to an observer to be saved to the replay buffer.
+On the right, an agent selects batches of trajectories from the replay buffer and trains some networks which the collect policy can use, too.
+Overall, the pieces on the left explore the environment and collect trajectories, while the pieces on the right learn and update the collect policy.
+
+Now we can create the components one at a time.
+
+### Creating the Deep Q-Network
+
+The TF-Agents library offers many networks in the `tf_agents.networks` module and submodules.
+
+
+```python
+from tf_agents.networks.q_network import QNetwork
+
+preprocessing_layer = keras.layers.Lambda(
+    lambda obs: tf.cast(obs, np.float32) / 255.0
+)
+
+conv_layer_params = [(32, (8, 8), 4), (64, (4, 4), 2), (64, (3, 3), 1)]
+fc_layer_params = [512]
+
+q_net = QNetwork(
+    tf_env.observation_spec(),
+    tf_env.action_spec(),
+    preprocessing_layers=preprocessing_layer,
+    conv_layer_params=conv_layer_params,
+    fc_layer_params=fc_layer_params
+)
+```
+
+We used the `tf_agents.networks.q_network.QNetwork`.
+The first two arguments are the `input_tensor_spec` and `action_spec` for the environment.
+This is followed by a preprocessing layer that casts the data to 32-bit floats and normalizes the data to fall between 0 and 1.
+There are 3 convolutional layers: 32 8x8 filters with stride 4, 64 4x4 filters with a stride of 2, and 64  3x3 filters with a stride of 1.
+The last layer is a dense layer with 512 units.
+The output is automatically a dense network with the number of units as there are actions (4 in this case).
+All layers except for the output layer use a ReLU action funtion, though this can be adjusted using the `activation_fc` argument.
+The outputs do not have an activation function and represent the Q-Values for each action given the input state.
+
+### Creating the DQN agent
+
+The TF-Agents library has many types of agents implemented in the `tf_agents.agents` module and its submodules.
+We will the use `tf_agents.agents.dqn.dqn_agent.DqnAgent` class and notes on the following code are below.
+
+
+```python
+from tf_agents.agents.dqn.dqn_agent import DqnAgent
+
+train_step = tf.Variable(0)
+update_period = 4
+optimizer = keras.optimizers.RMSprop(learning_rate=1.5e-4,
+                                     rho=0.95,
+                                     momentum=0.0,
+                                     epsilon=0.00001,
+                                     centered=True)
+
+epsilon_fn = keras.optimizers.schedules.PolynomialDecay(
+    initial_learning_rate=1.0,
+    decay_steps=250000 // update_period,
+    end_learning_rate=0.01
+)
+
+agent = DqnAgent(
+    tf_env.time_step_spec(),
+    tf_env.action_spec(),
+    q_network=q_net,
+    optimizer=optimizer,
+    target_update_period=2000,
+    td_errors_loss_fn=keras.losses.Huber(reduction='none'),
+    gamma=0.99,
+    train_step_counter=train_step,
+    epsilon_greedy=lambda: epsilon_fn(train_step)
+)
+
+agent.initialize()
+```
+
+1. The `train_step` variable will track the training step number and the model will be trained every `update_period` steps.
+2. The optimizer is created and the hyperparameters were taken from one of the original DQN papers from 2015.
+3. The `epsilon_fn` variable is a `PolynomialDecay` object that will compute the $\epsilon$ value for the $\epsilon$-greedy collect policy, given the current training step. It will scale down from 1.0 to 0.01 over 1 million ALE frames, or 250,000 steps (since we skip with a period of 4). Further, we will training the agent every 4 steps (16 ALE frames), so $\epsilon$ will actually decay over 62,500 training steps.
+4. The `DQNAgent` is then built, passing it the time step and action specifications for the environment. It is also given the `QNetwork` we built previously, the optimizer, the number of training steps between target model updates, the loss function to use, the discount factor $\gamma$, the `train_step` variable, and a function with no arguments that returns the $\epsilon$. For the loss function, `reduction = none` prevents the function from taking the mean loss over all instances, and instead returns an error for each instance.
+5. The agent is initialized at the end.
+
+### Creating the replay buffer and corresponding observer
 
 
 ```python

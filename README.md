@@ -573,3 +573,8 @@ We learned about some more updates to RL made by DeepMind including Double DQN, 
 
 **Day 129 - March 05, 2020:**
 I learned about setting up a TF Agents environment and the common wrappers applied to Atari games.
+
+**Day 130 - March 06, 2020:**
+We began building the architecture for training the DQN using TF-Agents.
+We built the DQN itself and the agent that will train it.
+I am making slow progress, but that is because I am trying to really understand each step in this construction process and the code behind it.
