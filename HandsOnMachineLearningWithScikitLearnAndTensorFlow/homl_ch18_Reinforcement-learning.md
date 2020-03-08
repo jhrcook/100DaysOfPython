@@ -54,7 +54,7 @@ obs
 
 
 
-    array([ 0.00369344, -0.03429507, -0.01185087,  0.04203845])
+    array([ 0.03196014,  0.01341673, -0.02871294,  0.04743216])
 
 
 
@@ -105,7 +105,7 @@ obs
 
 
 
-    array([ 0.00300754, -0.2292451 , -0.0110101 ,  0.33095888])
+    array([ 0.03222848, -0.18128199, -0.0277643 ,  0.33091941])
 
 
 
@@ -212,7 +212,7 @@ np.mean(totals), np.median(totals), np.std(totals), np.min(totals), np.max(total
 
 
 
-    (41.936, 41.0, 9.222358917326956, 25.0, 68.0)
+    (42.144, 40.5, 8.881399889657034, 24.0, 68.0)
 
 
 
@@ -1149,7 +1149,7 @@ breakout_env
 
 
 
-    <tf_agents.environments.wrappers.TimeLimit at 0x13e300f50>
+    <tf_agents.environments.wrappers.TimeLimit at 0x140775050>
 
 
 
@@ -1459,6 +1459,183 @@ agent.initialize()
 5. The agent is initialized at the end.
 
 ### Creating the replay buffer and corresponding observer
+
+The TF-Agents library provides replay buffers implemented in pure Python (submodules beginning with `py_`) or in TF (submodules beginning with `tf_`).
+We will use the `TFUniformReplayBuffer` because it provides a high-performance implementation of a replay buffer with uniform sampling.
+Some discussion of the parameters are discussed below the code.
+
+
+```python
+from tf_agents.replay_buffers import tf_uniform_replay_buffer
+
+replay_buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
+    data_spec=agent.collect_data_spec,
+    batch_size=tf_env.batch_size,
+    max_length=1000000
+)
+```
+
+* `data_spec`: A `Trajectory` with a description of the various data types reported by the agent.
+* `batch_size`: The number of trajectories that will be added at each step. For our purposes this will be 1, but a *batched environment* can group a series of steps into one batch.
+* `max_length`: The maximum size of the buffer. This number was taken from the 2015 DQN paper again and is quite large.
+
+Now we can create the observer that will write the trajectories to the replay buffer.
+An observer is just a function (or callable object) that takes a trajectory argument.
+Thus, we will use the `add_batch()` method from the replay buffer to be the observer.
+
+
+```python
+replay_buffer_observer = replay_buffer.add_batch
+```
+
+### Creating training metrics
+
+The TF-Agents library provides several RL metrics in the `tf_agents.metrics` module, again, some implemented in pure Python and others using TF.
+We will use a few to count the number of episodes, number of steps taken, the average return per episode, and average episode length.
+
+
+```python
+from tf_agents.metrics import tf_metrics
+
+train_metrics = [
+    tf_metrics.NumberOfEpisodes(),
+    tf_metrics.EnvironmentSteps(),
+    tf_metrics.AverageReturnMetric(),
+    tf_metrics.AverageEpisodeLengthMetric()
+]
+```
+
+We can the values of each of these metrics using their `result()` methods.
+Alternatively, we can log all of the metrics by calling `log_metrics(train_metrics)`.
+
+
+```python
+from tf_agents.eval.metric_utils import log_metrics
+import logging
+
+logging.basicConfig(level=logging.INFO)
+log_metrics(train_metrics)
+```
+
+### Creating the collect driver
+
+The driver is the object the explores an environment using a policy, collects experiences, and broadcasts them to some observers.
+At each step, the following can happen:
+
+1. The driver passes the current time step to the collect policy, which uses the time step to choose an action and return and *action step* object containing the action to take.
+2. The driver passes the action to the environment which returns the next time step.
+3. The drivers creates a trajectory object to represent the this transition and broadcasts it to all the observers.
+
+There are two main driver classes available through TF-Agents: `DynamicStepDriver` and `DynamicEpisodeDriver`.
+The former collections experiences for a given number of steps and the latter collects experiences for a given number of episodes.
+We will use the `DynamicStepDriver` to collect experiences for 4 steps for each training iteration (as was done in the 2015 paper).
+
+
+```python
+from tf_agents.drivers.dynamic_step_driver import DynamicStepDriver
+
+collect_driver = DynamicStepDriver(
+    tf_env,
+    agent.collect_policy,
+    observers=[replay_buffer_observer] + train_metrics,
+    num_steps=update_period
+)
+```
+
+We could not train it by calling its `run()` method, but its best to "warm-up" the replay buffer using a random policy, first.
+For this, we will use the `RandomTFPolicy` and create a second driver to run 20,000 steps.
+
+
+```python
+from tf_agents.policies.random_tf_policy import RandomTFPolicy
+
+initial_collect_policy = RandomTFPolicy(
+    tf_env.time_step_spec(),
+    tf_env.action_spec()
+)
+
+init_driver = DynamicStepDriver(
+    tf_env,
+    initial_collect_policy,
+    observers=[replay_buffer.add_batch],
+    num_steps=20000
+)
+
+final_time_step, final_policy_state = init_driver.run()
+```
+
+
+```python
+final_time_step
+```
+
+
+
+
+    TimeStep(step_type=<tf.Tensor: shape=(1,), dtype=int32, numpy=array([1], dtype=int32)>, reward=<tf.Tensor: shape=(1,), dtype=float32, numpy=array([0.], dtype=float32)>, discount=<tf.Tensor: shape=(1,), dtype=float32, numpy=array([1.], dtype=float32)>, observation=<tf.Tensor: shape=(1, 84, 84, 4), dtype=uint8, numpy=
+    array([[[[0, 0, 0, 0],
+             [0, 0, 0, 0],
+             [0, 0, 0, 0],
+             ...,
+             [0, 0, 0, 0],
+             [0, 0, 0, 0],
+             [0, 0, 0, 0]],
+    
+            [[0, 0, 0, 0],
+             [0, 0, 0, 0],
+             [0, 0, 0, 0],
+             ...,
+             [0, 0, 0, 0],
+             [0, 0, 0, 0],
+             [0, 0, 0, 0]],
+    
+            [[0, 0, 0, 0],
+             [0, 0, 0, 0],
+             [0, 0, 0, 0],
+             ...,
+             [0, 0, 0, 0],
+             [0, 0, 0, 0],
+             [0, 0, 0, 0]],
+    
+            ...,
+    
+            [[0, 0, 0, 0],
+             [0, 0, 0, 0],
+             [0, 0, 0, 0],
+             ...,
+             [0, 0, 0, 0],
+             [0, 0, 0, 0],
+             [0, 0, 0, 0]],
+    
+            [[0, 0, 0, 0],
+             [0, 0, 0, 0],
+             [0, 0, 0, 0],
+             ...,
+             [0, 0, 0, 0],
+             [0, 0, 0, 0],
+             [0, 0, 0, 0]],
+    
+            [[0, 0, 0, 0],
+             [0, 0, 0, 0],
+             [0, 0, 0, 0],
+             ...,
+             [0, 0, 0, 0],
+             [0, 0, 0, 0],
+             [0, 0, 0, 0]]]], dtype=uint8)>)
+
+
+
+
+```python
+final_policy_state
+```
+
+
+
+
+    ()
+
+
 
 
 ```python

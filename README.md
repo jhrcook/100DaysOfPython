@@ -578,3 +578,7 @@ I learned about setting up a TF Agents environment and the common wrappers appli
 We began building the architecture for training the DQN using TF-Agents.
 We built the DQN itself and the agent that will train it.
 I am making slow progress, but that is because I am trying to really understand each step in this construction process and the code behind it.
+
+**Day 131 - March 08, 2020:**
+We continued creating the architecture for training the DQN using RL.
+We made the replay buffer, some training metricstwo collect drivers - one for the training of the agent, and another for warming up the replay buffer with a random policy.
