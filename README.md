@@ -582,3 +582,7 @@ I am making slow progress, but that is because I am trying to really understand 
 **Day 131 - March 08, 2020:**
 We continued creating the architecture for training the DQN using RL.
 We made the replay buffer, some training metricstwo collect drivers - one for the training of the agent, and another for warming up the replay buffer with a random policy.
+
+**Day 132 - March 09, 2020:**
+We finished up creating the training architecture by creating the training data set from the replay buffer and writing a training loop.
+I still have a few other things I would like to do (saving the trained model, recording game-play video) before pushing the script to O2 and running the full training session.

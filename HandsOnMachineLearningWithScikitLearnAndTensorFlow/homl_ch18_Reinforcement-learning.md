@@ -54,7 +54,7 @@ obs
 
 
 
-    array([ 0.03196014,  0.01341673, -0.02871294,  0.04743216])
+    array([-0.01092148,  0.00695632, -0.01364597, -0.02109238])
 
 
 
@@ -105,7 +105,7 @@ obs
 
 
 
-    array([ 0.03222848, -0.18128199, -0.0277643 ,  0.33091941])
+    array([-0.01078236, -0.1879673 , -0.01406781,  0.26725404])
 
 
 
@@ -212,7 +212,7 @@ np.mean(totals), np.median(totals), np.std(totals), np.min(totals), np.max(total
 
 
 
-    (42.144, 40.5, 8.881399889657034, 24.0, 68.0)
+    (42.37, 41.0, 9.138987908953595, 24.0, 72.0)
 
 
 
@@ -1149,7 +1149,7 @@ breakout_env
 
 
 
-    <tf_agents.environments.wrappers.TimeLimit at 0x140775050>
+    <tf_agents.environments.wrappers.TimeLimit at 0x140e65250>
 
 
 
@@ -1517,6 +1517,13 @@ logging.basicConfig(level=logging.INFO)
 log_metrics(train_metrics)
 ```
 
+    INFO:absl: 
+    		 NumberOfEpisodes = 0
+    		 EnvironmentSteps = 0
+    		 AverageReturn = 0.0
+    		 AverageEpisodeLength = 0.0
+
+
 ### Creating the collect driver
 
 The driver is the object the explores an environment using a policy, collects experiences, and broadcasts them to some observers.
@@ -1636,6 +1643,195 @@ final_policy_state
     ()
 
 
+
+### Creating the dataset
+
+To sample a batch of trajectories from the replay buffer, call its `get_next()` method.
+This returns the batch of trajectories and a `BufferInfo` object that contains the sample identifiers and their sampling probabilities.
+For example, the following code samples a small batch of two trajectories ("subepisodes") each containing three consecutive steps.
+
+The `trajectories` object is a named tuple with 7 fields.
+
+
+```python
+trajectories, buffer_info = replay_buffer.get_next(sample_batch_size=2,
+                                                   num_steps=3)
+trajectories._fields
+```
+
+
+
+
+    ('step_type',
+     'observation',
+     'action',
+     'policy_info',
+     'next_step_type',
+     'reward',
+     'discount')
+
+
+
+There are 2 trajaectories each of size 3.
+Each trajectory is of size 84x84x4.
+
+
+```python
+trajectories.observation.shape
+```
+
+
+
+
+    TensorShape([2, 3, 84, 84, 4])
+
+
+
+
+```python
+trajectories.step_type.numpy()
+```
+
+
+
+
+    array([[1, 1, 1],
+           [1, 1, 1]], dtype=int32)
+
+
+
+
+```python
+def plot_observation(obs):
+    # Since there are only 3 color channels, you cannot display 4 frames
+    # with one primary color per frame. So this code computes the delta between
+    # the current frame and the mean of the other frames, and it adds this delta
+    # to the red and blue channels to get a pink color for the current frame.
+    obs = obs.astype(np.float32)
+    img = obs[..., :3]
+    current_frame_delta = np.maximum(obs[..., 3] - obs[..., :3].mean(axis=-1), 0.)
+    img[..., 0] += current_frame_delta
+    img[..., 2] += current_frame_delta
+    img = np.clip(img / 150, 0, 1)
+    plt.imshow(img)
+    plt.axis("off")
+```
+
+
+```python
+plt.figure(figsize=(10, 6.8))
+for row in range(2):
+    for col in range(3):
+        plt.subplot(2, 3, row * 3 + col + 1)
+        plot_observation(trajectories.observation[row, col].numpy())
+plt.subplots_adjust(left=0, right=1, bottom=0, top=1, hspace=0, wspace=0.02)
+plt.show()
+```
+
+
+![png](homl_ch18_Reinforcement-learning_files/homl_ch18_Reinforcement-learning_131_0.png)
+
+
+For the main training loop, we will use a `tf.data.Dataset` so we can benefit from the power of the Data API.
+This can be accessed via the replay buffer's `as_dataset()` function.
+
+
+```python
+dataset = replay_buffer.as_dataset(sample_batch_size=64,
+                                   num_steps=2,
+                                   num_parallel_calls=3).prefetch(3)
+```
+
+### Creating the training loop
+
+Converting the main functions to F functions will speed up training.
+
+
+```python
+from tf_agents.utils.common import function
+
+collect_driver.run = function(collect_driver.run)
+agent.train = function(agent.train)
+```
+
+Now we can create a small function to train the agent over `n_iterations`.
+
+
+```python
+def train_agent(agent, n_iterations, env, collect_driver):
+    time_step = None
+    policy_state = agent.collect_policy.get_initial_state(env.batch_size)
+    
+    iterator = iter(dataset)
+    for iteration in range(n_iterations):
+        time_step, policy_state = collect_driver.run(time_step, policy_state)
+        trajectories, buffer_info = next(iterator)
+        train_loss = agent.train(trajectories)
+        print(f"\r{iteration} loss: {train_loss.loss.numpy():.5f}", end="")
+        if iteration % 1000 == 0:
+            log_metrics(train_metrics)
+```
+
+
+```python
+train_agent(agent, 10, tf_env, collect_driver)
+```
+
+    INFO:absl: 
+    		 NumberOfEpisodes = 0
+    		 EnvironmentSteps = 4
+    		 AverageReturn = 0.0
+    		 AverageEpisodeLength = 0.0
+
+
+    9 loss: 0.00010
+
+### Recording the game
+
+I followed the example in this TF [tutorial](https://github.com/tensorflow/agents/blob/master/docs/tutorials/1_dqn_tutorial.ipynb) to record a game.
+
+
+```python
+def embed_mp4(filename):
+    """Embeds an mp4 file in the notebook."""
+    video = open(filename,'rb').read()
+    b64 = base64.b64encode(video)
+    tag = '''
+    <video width="640" height="480" controls>
+    <source src="data:video/mp4;base64,{0}" type="video/mp4">
+    Your browser does not support the video tag.
+    </video>'''.format(b64.decode())
+
+    return IPython.display.HTML(tag)
+```
+
+
+```python
+import imageio
+import base64
+
+def create_policy_eval_video(policy, filename, num_episodes=5, fps=30):
+    filename = filename + ".mp4"
+    with imageio.get_writer(filename, fps=fps) as video:
+        for _ in range(num_episodes):
+            time_step = tf_env.reset()
+            video.append_data(breakout_env.render())
+            while not time_step.is_last():
+                action_step = policy.action(time_step)
+                time_step = tf_env.step(action_step.action)
+                video.append_data(breakout_env.render())
+    return embed_mp4(filename)
+```
+
+
+```python
+# create_policy_eval_video(agent.policy, "trained-agent", num_episodes=2, fps=5)
+```
+
+
+```python
+
+```
 
 
 ```python
