@@ -586,3 +586,6 @@ We made the replay buffer, some training metricstwo collect drivers - one for th
 **Day 132 - March 09, 2020:**
 We finished up creating the training architecture by creating the training data set from the replay buffer and writing a training loop.
 I still have a few other things I would like to do (saving the trained model, recording game-play video) before pushing the script to O2 and running the full training session.
+
+**Day 133 - March 11, 2020:**
+I began a jupyter lab on O2 as a RL playground where I can experiement with RL and train models with plenty of resources.
