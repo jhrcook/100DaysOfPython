@@ -594,3 +594,8 @@ I began a jupyter lab on O2 as a RL playground where I can experiement with RL a
 I continued working in the O2 playground I set up.
 I fixed a few bugs, but to make real progress I will need to go through the TF-Agents tutorials.
 That is my plan for the next few days.
+
+**Day 135 - March 13, 2020:**
+I began working on the tutorials offered for TF-Agents.
+The first was a breief recap on RL and the standard algorithms.
+I bagen the second which was another take on the Cart-Pole game.
