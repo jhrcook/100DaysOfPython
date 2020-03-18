@@ -599,3 +599,8 @@ That is my plan for the next few days.
 I began working on the tutorials offered for TF-Agents.
 The first was a breief recap on RL and the standard algorithms.
 I bagen the second which was another take on the Cart-Pole game.
+
+**Day 136 - March 18, 2020:**
+I finished the TF-Agents first tutorial on training a DQN to play the Cart-Pole game.
+It was very successful.
+I pushed the Jupyter Lab I am using for this experiementation to GitHub at 'jhrcook/rl-playground'.
