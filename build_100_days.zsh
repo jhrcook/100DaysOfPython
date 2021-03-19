@@ -1,6 +1,4 @@
 #!/bin/zsh
-#!/bin/zsh
-
 
 ## Get day number
 tail README.md
@@ -36,17 +34,13 @@ MESSAGE_FILE_NAME=".tmp_dialy_message_file.txt"
 rm $MESSAGE_FILE_NAME
 vim $MESSAGE_FILE_NAME
 
-readmeMessage="
-**Day $dayNumber - $currentDate:**
-$(cat $MESSAGE_FILE_NAME | sed 's/\. */.\
-/g')"
+readmeMessage="**Day $dayNumber - $currentDate:**\n$(cat $MESSAGE_FILE_NAME | sed 's/\. */.\/g')"
 echo $readmeMessage
 echo $readmeMessage >> README.md
 
 
 ## Git Commit
-commitMessage="$dayNumber of 100 Days of Python
-$(cat $MESSAGE_FILE_NAME | fold -w 80 -s)"
+commitMessage="$dayNumber of 100 Days of Python\n$(cat $MESSAGE_FILE_NAME | fold -w 80 -s)"
 
 rm $MESSAGE_FILE_NAME
 
